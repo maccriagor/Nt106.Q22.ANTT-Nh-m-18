@@ -1,7 +1,7 @@
 # Nt106.Q22.ANTT-Nhóm-18
 
 ## Đồ án quản lý quán cà phê do nhóm 18 lớp NT106.Q22.ANTT thực hiện
-** Ứng dụng quản lý quán cà phê **
+**Ứng dụng quản lý quán cà phê**
 ## Danh sách tính năng:
 - Tạo tài khoản, đăng nhập, quên mật khẩu, sửa mật khẩu.
 - Tạo menu, chỉnh sửa menu, thêm/xóa món và cập nhật giá đồ uống (dành cho tài khoản quản lý).
