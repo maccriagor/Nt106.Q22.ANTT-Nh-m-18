@@ -1,189 +1,107 @@
-﻿CREATE DATABASE QUANLYQUANCAPHE
-GO
-USE QUANLYQUANCAPHE
-GO
-
--- =============================================
--- 1. TÀI KHOẢN HỆ THỐNG
--- =============================================
+﻿-- 1. Tài khoản hệ thống
 CREATE TABLE Account (
-    AccID INT IDENTITY(1,1) PRIMARY KEY,
-    Username NVARCHAR(50) NOT NULL UNIQUE, -- Không được trùng tên đăng nhập
-    UserPassword NVARCHAR(255) NOT NULL, -- Độ dài lớn để lưu Hash mật khẩu [cite: 35]
-    Email NVARCHAR(100) NOT NULL UNIQUE, -- Phục vụ OTP/Quên mật khẩu [cite: 84, 104]
-    PhoneNumber NVARCHAR(15),
-    Role NVARCHAR(20) NOT NULL CHECK (Role IN ('Admin', 'Waiter', 'Kitchen', 'Customer')),
-    CreatedAt SMALLDATETIME DEFAULT GETDATE()
-)
-GO
+    AccID SERIAL PRIMARY KEY,
+    Username VARCHAR(50) NOT NULL UNIQUE,
+    UserPassword TEXT NOT NULL, 
+    Email VARCHAR(100) NOT NULL UNIQUE,
+    PhoneNumber VARCHAR(15),
+    Role VARCHAR(20) NOT NULL CHECK (Role IN ('Admin', 'Waiter', 'Kitchen', 'Customer')),
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- =============================================
--- 2. THÔNG TIN NHÂN VIÊN & KHÁCH HÀNG
--- =============================================
+-- 2. Nhân viên & Khách hàng
 CREATE TABLE Employees (
-    EmpID INT IDENTITY(1,1) PRIMARY KEY,
-    AccID INT NOT NULL,
-    FullName NVARCHAR(100) NOT NULL,
-    Position NVARCHAR(50) NOT NULL,
-    PhoneNumber NVARCHAR(15),
-    FOREIGN KEY (AccID) REFERENCES Account(AccID) ON DELETE CASCADE
-)
-GO
+    EmpID SERIAL PRIMARY KEY,
+    AccID INT NOT NULL REFERENCES Account(AccID) ON DELETE CASCADE,
+    FullName TEXT NOT NULL,
+    Position TEXT NOT NULL,
+    PhoneNumber VARCHAR(15)
+);
 
 CREATE TABLE Customers (
-    CustID INT IDENTITY(1,1) PRIMARY KEY,
-    AccID INT NULL, -- Có thể là khách vãng lai không cần tài khoản
-    FullName NVARCHAR(100) NOT NULL,
-    PhoneNumber NVARCHAR(15) UNIQUE,
-    Points FLOAT DEFAULT 0 CHECK (Points >= 0), -- Điểm tích lũy không âm [cite: 77, 93]
-    FOREIGN KEY (AccID) REFERENCES Account(AccID) ON DELETE SET NULL
-)
-GO
+    CustID SERIAL PRIMARY KEY,
+    AccID INT REFERENCES Account(AccID) ON DELETE SET NULL,
+    FullName TEXT NOT NULL,
+    PhoneNumber VARCHAR(15) UNIQUE,
+    Points FLOAT DEFAULT 0 CHECK (Points >= 0)
+);
 
--- =============================================
--- 3. THỰC ĐƠN & BÀN ĂN
--- =============================================
+-- 3. Thực đơn & Bàn
 CREATE TABLE Category (
-    CatID INT IDENTITY(1,1) PRIMARY KEY,
-    CatName NVARCHAR(100) NOT NULL
-)
-GO
+    CatID SERIAL PRIMARY KEY,
+    CatName TEXT NOT NULL
+);
 
 CREATE TABLE Products (
-    ProdID INT IDENTITY(1,1) PRIMARY KEY,
-    CatID INT NOT NULL,
-    ProdName NVARCHAR(100) NOT NULL,
-    Price MONEY NOT NULL CHECK (Price >= 0),
-    ProductStatus NVARCHAR(20) DEFAULT N'Còn hàng' CHECK (ProductStatus IN (N'Còn hàng', N'Hết hàng')),
-    FOREIGN KEY (CatID) REFERENCES Category(CatID)
-)
-GO
+    ProdID SERIAL PRIMARY KEY,
+    CatID INT NOT NULL REFERENCES Category(CatID),
+    ProdName TEXT NOT NULL,
+    Price NUMERIC NOT NULL CHECK (Price >= 0),
+    ProductStatus TEXT DEFAULT 'Còn hàng'
+);
 
 CREATE TABLE TableFood (
-    TableID INT IDENTITY(1,1) PRIMARY KEY,
-    TableName NVARCHAR(50) NOT NULL,
-    TableStatus NVARCHAR(20) DEFAULT N'Trống' CHECK (TableStatus IN (N'Trống', N'Có khách', N'Đã đặt')) 
-)
-GO
+    TableID SERIAL PRIMARY KEY,
+    TableName TEXT NOT NULL,
+    TableStatus TEXT DEFAULT 'Trống' CHECK (TableStatus IN ('Trống', 'Có khách', 'Đã đặt'))
+);
 
--- =============================================
--- 4. ĐƠN HÀNG & CHI TIẾT (XỬ LÝ REAL-TIME)
--- =============================================
+-- 4. Đơn hàng & Chi tiết
 CREATE TABLE Orders (
-    OrderID INT IDENTITY(1,1) PRIMARY KEY,
-    TableID INT NOT NULL,
-    EmpID INT NOT NULL, -- Nhân viên phục vụ tạo đơn
-    OrderDate SMALLDATETIME DEFAULT GETDATE(),
-    OrderStatus INT DEFAULT 0 CHECK (OrderStatus IN (0, 1, 2, 3)), -- 0: Chờ, 1: Pha chế, 2: Xong, 3: Hủy [cite: 100]
-    FOREIGN KEY (TableID) REFERENCES TableFood(TableID),
-    FOREIGN KEY (EmpID) REFERENCES Employees(EmpID)
-)
-GO
+    OrderID SERIAL PRIMARY KEY,
+    TableID INT NOT NULL REFERENCES TableFood(TableID),
+    EmpID INT NOT NULL REFERENCES Employees(EmpID),
+    OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    OrderStatus INT DEFAULT 0 CHECK (OrderStatus IN (0, 1, 2, 3))
+);
 
 CREATE TABLE OrderInfo (
-    OrderItemID INT IDENTITY(1,1) PRIMARY KEY,
-    OrderID INT NOT NULL,
-    ProdID INT NOT NULL,
+    OrderItemID SERIAL PRIMARY KEY,
+    OrderID INT NOT NULL REFERENCES Orders(OrderID) ON DELETE CASCADE,
+    ProdID INT NOT NULL REFERENCES Products(ProdID),
     Quantity INT NOT NULL CHECK (Quantity > 0),
-    Notes NVARCHAR(255), -- Ghi chú yêu cầu đặc biệt [cite: 91]
-    ItemStatus INT DEFAULT 0 CHECK (ItemStatus IN (0, 1)), -- 0: Đang làm, 1: Đã xong
-    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID) ON DELETE CASCADE,
-    FOREIGN KEY (ProdID) REFERENCES Products(ProdID)
-)
-GO
+    Notes TEXT,
+    ItemStatus INT DEFAULT 0 CHECK (ItemStatus IN (0, 1))
+);
 
--- =============================================
--- 5. KHUYẾN MÃI & HÓA ĐƠN
--- =============================================
+-- 5. Khuyến mãi & Hóa đơn
 CREATE TABLE VoucherList (
-    VoucherID INT IDENTITY(1,1) PRIMARY KEY,
-    VoucherCode NVARCHAR(50) NOT NULL UNIQUE,
+    VoucherID SERIAL PRIMARY KEY,
+    VoucherCode VARCHAR(50) NOT NULL UNIQUE,
     SalePercentage FLOAT CHECK (SalePercentage BETWEEN 0 AND 100),
-    MaxSaleAmount MONEY CHECK (MaxSaleAmount >= 0),
-    StartDate SMALLDATETIME NOT NULL DEFAULT GETDATE(), 
-    ExpDate SMALLDATETIME NOT NULL,
-    -- Thời điểm tạo bản ghi (Dùng để kiểm toán/Audit)
-    CreatedAt SMALLDATETIME DEFAULT GETDATE(),
-    IsActive BIT DEFAULT 1,
+    MaxSaleAmount NUMERIC CHECK (MaxSaleAmount >= 0),
+    StartDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ExpDate TIMESTAMP NOT NULL,
+    IsActive BOOLEAN DEFAULT TRUE,
     CONSTRAINT CHK_VoucherDate CHECK (ExpDate > StartDate)
-)
-GO
+);
 
 CREATE TABLE Bills (
-    BillID INT IDENTITY(1,1) PRIMARY KEY,
-    OrderID INT NOT NULL UNIQUE, -- Một đơn hàng chỉ có một hóa đơn [cite: 77]
-    VoucherID INT NULL,
-    CustID INT NULL,
-    PayDate SMALLDATETIME DEFAULT GETDATE(),
-    TotalPrice MONEY NOT NULL,
-    FinalPrice MONEY NOT NULL,
-    CashReceived MONEY CHECK (CashReceived >= 0), --**cashreceived > finalprice
-    CONSTRAINT CHK_Payment CHECK (CashReceived > FinalPrice),
-    ChangePrice AS (CashReceived - FinalPrice), -- Tiền thừa tự động tính
-    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
-    FOREIGN KEY (VoucherID) REFERENCES VoucherList(VoucherID),
-    FOREIGN KEY (CustID) REFERENCES Customers(CustID)
-)
-GO
+    BillID SERIAL PRIMARY KEY,
+    OrderID INT NOT NULL UNIQUE REFERENCES Orders(OrderID),
+    VoucherID INT REFERENCES VoucherList(VoucherID),
+    CustID INT REFERENCES Customers(CustID),
+    PayDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    TotalPrice NUMERIC NOT NULL,
+    FinalPrice NUMERIC NOT NULL,
+    CashReceived NUMERIC NOT NULL,
+    ChangePrice NUMERIC GENERATED ALWAYS AS (CashReceived - FinalPrice) STORED,
+    CONSTRAINT CHK_Payment CHECK (CashReceived >= FinalPrice)
+);
 
--- =============================================
--- 6. QUẢN LÝ KHO & CÔNG THỨC
--- =============================================
+-- 6. Kho & Tin nhắn
 CREATE TABLE Ingredients (
-    IngID INT IDENTITY(1,1) PRIMARY KEY,
-    IngName NVARCHAR(100) NOT NULL,
+    IngID SERIAL PRIMARY KEY,
+    IngName TEXT NOT NULL,
     Quantity FLOAT NOT NULL CHECK (Quantity >= 0),
-    Unit NVARCHAR(20) NOT NULL -- Gram, Lít... [cite: 77, 94]
-    CONSTRAINT CHK_Unit CHECK (Unit IN (N'gram', N'lít', N'ml', N'cái', N'hộp', N'kg'))
-)
-GO
-
-CREATE TABLE IngReceipts (
-    ReceiptID INT IDENTITY(1,1) PRIMARY KEY,
-    IngID INT NOT NULL,
-    ImportDate SMALLDATETIME DEFAULT GETDATE(),
-    ImportQuantity FLOAT NOT NULL CHECK (ImportQuantity > 0),
-    TotalCost MONEY NOT NULL,
-    Source NVARCHAR(100),
-    FOREIGN KEY (IngID) REFERENCES Ingredients(IngID)
-)
-GO
-
-CREATE TABLE Recipe (
-    ProdID INT NOT NULL,
-    IngID INT NOT NULL,
-    Amount FLOAT NOT NULL CHECK (Amount > 0), -- Lượng tiêu hao
-    PRIMARY KEY (ProdID, IngID),
-    FOREIGN KEY (ProdID) REFERENCES Products(ProdID),
-    FOREIGN KEY (IngID) REFERENCES Ingredients(IngID)
-)
-GO
-
--- =============================================
--- 7. CHAT & PHẢN HỒI (CHO NT106 & ANTT)
--- =============================================
-CREATE TABLE Feedbacks (
-    FeedID INT IDENTITY(1,1) PRIMARY KEY,
-    AccID INT NOT NULL,
-    Content NVARCHAR(MAX) NOT NULL,
-    Rating INT CHECK (Rating BETWEEN 1 AND 5),
-    FeedDate SMALLDATETIME DEFAULT GETDATE(),
-    FOREIGN KEY (AccID) REFERENCES Account(AccID)
-)
-GO
+    Unit VARCHAR(20) NOT NULL CHECK (Unit IN ('gram', 'lít', 'ml', 'cái', 'hộp', 'kg'))
+);
 
 CREATE TABLE Messages (
-    MsgID INT IDENTITY(1,1) PRIMARY KEY,
-    SenderID INT NOT NULL,
-    ReceiverID INT NULL, -- NULL nếu là thông báo chung (Broadcast) [cite: 75, 87]
-    Content NVARCHAR(MAX) NOT NULL,
-    SendTime SMALLDATETIME DEFAULT GETDATE(),
-    IsRead BIT DEFAULT 0,
-    FOREIGN KEY (SenderID) REFERENCES Account(AccID),
-    FOREIGN KEY (ReceiverID) REFERENCES Account(AccID)
-)
-GO
-
-
---**********
-
+    MsgID SERIAL PRIMARY KEY,
+    SenderID INT NOT NULL REFERENCES Account(AccID),
+    ReceiverID INT REFERENCES Account(AccID),
+    Content TEXT NOT NULL,
+    SendTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    IsRead BOOLEAN DEFAULT FALSE
+);
