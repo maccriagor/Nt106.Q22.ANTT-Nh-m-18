@@ -16,5 +16,17 @@ namespace CafeClient
         {
             InitializeComponent();
         }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+            Login loginform = new Login();
+            loginform.Show();
+            this.Hide();
+        }
     }
 }

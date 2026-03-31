@@ -10,18 +10,11 @@ using System.Windows.Forms;
 
 namespace CafeClient
 {
-    public partial class ForgotPassword : Form
+    public partial class TaiKhoan : Form
     {
-        public ForgotPassword()
+        public TaiKhoan()
         {
             InitializeComponent();
-        }
-
-        private void label7_Click(object sender, EventArgs e)
-        {
-            Login loginform = new Login();
-            loginform.Show();
-            this.Hide();
         }
     }
 }

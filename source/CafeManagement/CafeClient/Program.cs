@@ -1,4 +1,4 @@
-namespace CafeClient
+﻿namespace CafeClient
 {
     internal static class Program
     {
@@ -11,7 +11,10 @@ namespace CafeClient
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Login());
+
+
+
+            Application.Run(new AdminMain()); //---> ae thay đổi AdminMain thành form mà ae muốn mở lên đầu tiên
         }
     }
 }

@@ -6,5 +6,12 @@ namespace CafeClient
         {
             InitializeComponent();
         }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+            Register registerform = new Register();
+            registerform.Show();
+            this.Hide();
+        }
     }
 }
