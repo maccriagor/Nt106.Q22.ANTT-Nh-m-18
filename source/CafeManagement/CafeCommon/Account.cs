@@ -1,4 +1,7 @@
-﻿namespace CafeCommon
+﻿using System.Security.Cryptography;
+using System.Text;
+
+namespace CafeCommon
 {
     public class Account //này là dữ liệu mẫu thôi
     {
