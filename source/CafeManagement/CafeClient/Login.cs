@@ -13,7 +13,7 @@ namespace CafeClient
         }
         private async void btnLogin_Click(object sender, EventArgs e)
         {
-            // Check if the user actually typed something (Basic validation)
+           
             if (string.IsNullOrWhiteSpace(txtUsername.Text) || string.IsNullOrWhiteSpace(txtPassword.Text))
             {
                 MessageBox.Show("Please enter both username and password.");
@@ -26,15 +26,13 @@ namespace CafeClient
                 using (TcpClient client = new TcpClient("127.0.0.1", 8080))
                 using (NetworkStream stream = client.GetStream())
                 {
-                    // 2. Hash the password (Task 3)
-                    // We extract the text directly using .Text
                     string hashedPassword = SecurityHelper.HashPassword(txtPassword.Text);
 
                     var acc = new Account
                     {
                         Username = txtUsername.Text,
                         Password = hashedPassword,
-                        Role = "Waiter" // You can later change this to a ComboBox selection
+                        Role = "Waiter" 
                     };
 
                     // 3. Wrap and Send
