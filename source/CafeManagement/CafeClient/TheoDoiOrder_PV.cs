@@ -10,16 +10,11 @@ using System.Windows.Forms;
 
 namespace CafeClient
 {
-    public partial class Menu : Form
+    public partial class TheoDoiOrder_PV : Form
     {
-        public Menu()
+        public TheoDoiOrder_PV()
         {
             InitializeComponent();
-        }
-
-        private void Menu_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

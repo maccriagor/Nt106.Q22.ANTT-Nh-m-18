@@ -10,14 +10,14 @@ using System.Windows.Forms;
 
 namespace CafeClient
 {
-    public partial class Menu : Form
+    public partial class ThongKe_BEP : Form
     {
-        public Menu()
+        public ThongKe_BEP()
         {
             InitializeComponent();
         }
 
-        private void Menu_Load(object sender, EventArgs e)
+        private void groupBox2_Enter(object sender, EventArgs e)
         {
 
         }

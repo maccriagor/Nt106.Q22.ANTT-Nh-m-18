@@ -10,14 +10,14 @@ using System.Windows.Forms;
 
 namespace CafeClient
 {
-    public partial class Menu : Form
+    public partial class Order_Ban : Form
     {
-        public Menu()
+        public Order_Ban()
         {
             InitializeComponent();
         }
 
-        private void Menu_Load(object sender, EventArgs e)
+        private void label2_Click(object sender, EventArgs e)
         {
 
         }

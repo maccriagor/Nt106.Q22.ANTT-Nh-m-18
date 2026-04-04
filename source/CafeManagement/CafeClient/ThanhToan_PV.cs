@@ -10,16 +10,11 @@ using System.Windows.Forms;
 
 namespace CafeClient
 {
-    public partial class Menu : Form
+    public partial class ThanhToan_PV : Form
     {
-        public Menu()
+        public ThanhToan_PV()
         {
             InitializeComponent();
-        }
-
-        private void Menu_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

@@ -196,7 +196,7 @@
             label7.AutoSize = true;
             label7.Cursor = Cursors.Hand;
             label7.ForeColor = Color.FromArgb(128, 64, 0);
-            label7.Location = new Point(127, 566);
+            label7.Location = new Point(127, 545);
             label7.Name = "label7";
             label7.Size = new Size(141, 21);
             label7.TabIndex = 64;

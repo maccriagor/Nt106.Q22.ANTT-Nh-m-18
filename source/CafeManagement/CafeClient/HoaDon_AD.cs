@@ -10,16 +10,11 @@ using System.Windows.Forms;
 
 namespace CafeClient
 {
-    public partial class Menu : Form
+    public partial class HoaDon_AD : Form
     {
-        public Menu()
+        public HoaDon_AD()
         {
             InitializeComponent();
-        }
-
-        private void Menu_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

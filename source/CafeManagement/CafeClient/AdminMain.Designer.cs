@@ -39,11 +39,12 @@
             btnMenu = new Button();
             btnDoanhThu = new Button();
             panel2 = new Panel();
-            label2 = new Label();
             AdminName = new Label();
             pictureBox2 = new PictureBox();
             PnlFormLoader = new Panel();
             lblTitle = new Label();
+            button1 = new Button();
+            panel3 = new Panel();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
@@ -190,7 +191,6 @@
             // 
             // panel2
             // 
-            panel2.Controls.Add(label2);
             panel2.Controls.Add(AdminName);
             panel2.Controls.Add(pictureBox2);
             panel2.Dock = DockStyle.Top;
@@ -198,16 +198,6 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(209, 151);
             panel2.TabIndex = 2;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Calibri", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.Location = new Point(24, 118);
-            label2.Name = "label2";
-            label2.Size = new Size(158, 18);
-            label2.TabIndex = 2;
-            label2.Text = "được thì thêm thời gian";
             // 
             // AdminName
             // 
@@ -250,21 +240,47 @@
             lblTitle.TabIndex = 2;
             lblTitle.Text = "Doanh thu";
             // 
+            // button1
+            // 
+            button1.BackColor = Color.Transparent;
+            button1.FlatAppearance.BorderSize = 0;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Font = new Font("Cascadia Mono", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button1.ForeColor = Color.FromArgb(128, 64, 0);
+            button1.Location = new Point(1025, 0);
+            button1.Name = "button1";
+            button1.Size = new Size(40, 34);
+            button1.TabIndex = 7;
+            button1.Text = "x";
+            button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
+            // 
+            // panel3
+            // 
+            panel3.Location = new Point(760, 12);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(250, 53);
+            panel3.TabIndex = 8;
+            panel3.Paint += panel3_Paint;
+            // 
             // AdminMain
             // 
             AutoScaleDimensions = new SizeF(9F, 21F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.White;
+            BackColor = Color.OldLace;
             ClientSize = new Size(1070, 606);
+            Controls.Add(panel3);
+            Controls.Add(button1);
             Controls.Add(PnlFormLoader);
             Controls.Add(lblTitle);
             Controls.Add(panel1);
             Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            ForeColor = Color.WhiteSmoke;
+            ForeColor = Color.White;
             FormBorderStyle = FormBorderStyle.None;
             Name = "AdminMain";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "AdminMain";
+            Load += AdminMain_Load;
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
@@ -279,7 +295,6 @@
         private PictureBox pictureBox2;
         private Panel panel2;
         private Label AdminName;
-        private Label label2;
         private Button btnDoanhThu;
         private Button btnTaiKhoan;
         private Button btnChat;
@@ -291,5 +306,7 @@
         private Panel pnlNav;
         private Panel PnlFormLoader;
         private Label lblTitle;
+        private Button button1;
+        private Panel panel3;
     }
 }

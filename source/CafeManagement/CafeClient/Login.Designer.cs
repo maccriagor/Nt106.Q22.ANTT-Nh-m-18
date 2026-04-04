@@ -32,12 +32,13 @@
             label5 = new Label();
             label1 = new Label();
             button1 = new Button();
-            btnReg = new Button();
+            btnLogin = new Button();
             checkBxShowPass = new CheckBox();
             txtpassword = new TextBox();
             txtusername = new TextBox();
             label3 = new Label();
             label2 = new Label();
+            lbForgotPass = new Label();
             SuspendLayout();
             // 
             // label6
@@ -55,7 +56,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(110, 443);
+            label5.Location = new Point(110, 441);
             label5.Name = "label5";
             label5.Size = new Size(144, 21);
             label5.TabIndex = 33;
@@ -85,19 +86,20 @@
             button1.Text = "Xóa";
             button1.UseVisualStyleBackColor = false;
             // 
-            // btnReg
+            // btnLogin
             // 
-            btnReg.BackColor = Color.FromArgb(128, 64, 0);
-            btnReg.Cursor = Cursors.Hand;
-            btnReg.FlatAppearance.BorderSize = 0;
-            btnReg.FlatStyle = FlatStyle.Flat;
-            btnReg.ForeColor = Color.White;
-            btnReg.Location = new Point(39, 328);
-            btnReg.Name = "btnReg";
-            btnReg.Size = new Size(289, 35);
-            btnReg.TabIndex = 48;
-            btnReg.Text = "Đăng ký";
-            btnReg.UseVisualStyleBackColor = false;
+            btnLogin.BackColor = Color.FromArgb(128, 64, 0);
+            btnLogin.Cursor = Cursors.Hand;
+            btnLogin.FlatAppearance.BorderSize = 0;
+            btnLogin.FlatStyle = FlatStyle.Flat;
+            btnLogin.ForeColor = Color.White;
+            btnLogin.Location = new Point(39, 328);
+            btnLogin.Name = "btnLogin";
+            btnLogin.Size = new Size(289, 35);
+            btnLogin.TabIndex = 48;
+            btnLogin.Text = "Đăng nhập";
+            btnLogin.UseVisualStyleBackColor = false;
+            btnLogin.Click += btnLogin_Click;
             // 
             // checkBxShowPass
             // 
@@ -154,6 +156,16 @@
             label2.TabIndex = 40;
             label2.Text = "Tên đăng nhập";
             // 
+            // lbForgotPass
+            // 
+            lbForgotPass.AutoSize = true;
+            lbForgotPass.Location = new Point(115, 487);
+            lbForgotPass.Name = "lbForgotPass";
+            lbForgotPass.Size = new Size(127, 21);
+            lbForgotPass.TabIndex = 33;
+            lbForgotPass.Text = "Quên mật khẩu?";
+            lbForgotPass.Click += lbForgotPass_Click;
+            // 
             // Login
             // 
             AutoScaleDimensions = new SizeF(9F, 21F);
@@ -161,13 +173,14 @@
             BackColor = Color.White;
             ClientSize = new Size(366, 639);
             Controls.Add(button1);
-            Controls.Add(btnReg);
+            Controls.Add(btnLogin);
             Controls.Add(checkBxShowPass);
             Controls.Add(txtpassword);
             Controls.Add(txtusername);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label6);
+            Controls.Add(lbForgotPass);
             Controls.Add(label5);
             Controls.Add(label1);
             Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
@@ -186,11 +199,12 @@
         private Label label5;
         private Label label1;
         private Button button1;
-        private Button btnReg;
+        private Button btnLogin;
         private CheckBox checkBxShowPass;
         private TextBox txtpassword;
         private TextBox txtusername;
         private Label label3;
         private Label label2;
+        private Label lbForgotPass;
     }
 }

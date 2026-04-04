@@ -33,24 +33,22 @@
             label3 = new Label();
             label4 = new Label();
             label5 = new Label();
-            label6 = new Label();
             btnUpdateProf = new Button();
             txtfullname = new TextBox();
             txtusername = new TextBox();
             txtEmail = new TextBox();
             txtRole = new TextBox();
-            txtNewPass = new TextBox();
-            checkBxShowPass = new CheckBox();
+            button1 = new Button();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Calibri", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.FromArgb(128, 64, 0);
-            label1.Location = new Point(277, 85);
+            label1.Font = new Font("Calibri", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.ForeColor = Color.FromArgb(128, 64, 64);
+            label1.Location = new Point(252, 72);
             label1.Name = "label1";
-            label1.Size = new Size(291, 41);
+            label1.Size = new Size(343, 49);
             label1.TabIndex = 0;
             label1.Text = "Thông tin tài khoản";
             label1.TextAlign = ContentAlignment.TopCenter;
@@ -58,52 +56,46 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.ForeColor = Color.FromArgb(64, 64, 64);
-            label2.Location = new Point(190, 206);
+            label2.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            label2.ForeColor = Color.FromArgb(64, 0, 0);
+            label2.Location = new Point(161, 236);
             label2.Name = "label2";
-            label2.Size = new Size(113, 21);
+            label2.Size = new Size(133, 24);
             label2.TabIndex = 1;
             label2.Text = "Tên đăng nhập";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.ForeColor = Color.FromArgb(64, 64, 64);
-            label3.Location = new Point(190, 167);
+            label3.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            label3.ForeColor = Color.FromArgb(64, 0, 0);
+            label3.Location = new Point(161, 192);
             label3.Name = "label3";
-            label3.Size = new Size(78, 21);
+            label3.Size = new Size(91, 24);
             label3.TabIndex = 2;
             label3.Text = "Họ và tên";
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.ForeColor = Color.FromArgb(64, 64, 64);
-            label4.Location = new Point(188, 245);
+            label4.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            label4.ForeColor = Color.FromArgb(64, 0, 0);
+            label4.Location = new Point(159, 281);
             label4.Name = "label4";
-            label4.Size = new Size(48, 21);
+            label4.Size = new Size(56, 24);
             label4.TabIndex = 3;
             label4.Text = "Email";
             // 
             // label5
             // 
             label5.AutoSize = true;
-            label5.ForeColor = Color.FromArgb(64, 64, 64);
-            label5.Location = new Point(190, 284);
+            label5.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            label5.ForeColor = Color.FromArgb(64, 0, 0);
+            label5.Location = new Point(161, 326);
             label5.Name = "label5";
-            label5.Size = new Size(67, 21);
+            label5.Size = new Size(78, 24);
             label5.TabIndex = 4;
             label5.Text = "Chức vụ";
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.ForeColor = Color.FromArgb(64, 64, 64);
-            label6.Location = new Point(190, 323);
-            label6.Name = "label6";
-            label6.Size = new Size(110, 21);
-            label6.TabIndex = 5;
-            label6.Text = "Mật khẩu mới";
             // 
             // btnUpdateProf
             // 
@@ -111,102 +103,91 @@
             btnUpdateProf.Cursor = Cursors.Hand;
             btnUpdateProf.FlatAppearance.BorderSize = 0;
             btnUpdateProf.FlatStyle = FlatStyle.Flat;
+            btnUpdateProf.Font = new Font("Calibri", 12F, FontStyle.Bold);
             btnUpdateProf.ForeColor = Color.White;
-            btnUpdateProf.Location = new Point(336, 361);
+            btnUpdateProf.Location = new Point(323, 370);
             btnUpdateProf.Name = "btnUpdateProf";
-            btnUpdateProf.Size = new Size(164, 35);
+            btnUpdateProf.Size = new Size(167, 56);
             btnUpdateProf.TabIndex = 6;
             btnUpdateProf.Text = "Cập nhật";
             btnUpdateProf.UseVisualStyleBackColor = false;
             // 
             // txtfullname
             // 
-            txtfullname.BackColor = Color.WhiteSmoke;
+            txtfullname.BackColor = Color.White;
             txtfullname.BorderStyle = BorderStyle.None;
             txtfullname.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            txtfullname.Location = new Point(336, 164);
+            txtfullname.Location = new Point(323, 188);
             txtfullname.Multiline = true;
             txtfullname.Name = "txtfullname";
-            txtfullname.Size = new Size(320, 28);
+            txtfullname.Size = new Size(356, 32);
             txtfullname.TabIndex = 7;
             // 
             // txtusername
             // 
-            txtusername.BackColor = Color.WhiteSmoke;
+            txtusername.BackColor = Color.White;
             txtusername.BorderStyle = BorderStyle.None;
             txtusername.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            txtusername.Location = new Point(336, 203);
+            txtusername.Location = new Point(323, 233);
             txtusername.Multiline = true;
             txtusername.Name = "txtusername";
-            txtusername.Size = new Size(320, 28);
+            txtusername.Size = new Size(356, 32);
             txtusername.TabIndex = 7;
             // 
             // txtEmail
             // 
-            txtEmail.BackColor = Color.WhiteSmoke;
+            txtEmail.BackColor = Color.White;
             txtEmail.BorderStyle = BorderStyle.None;
             txtEmail.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            txtEmail.Location = new Point(336, 242);
+            txtEmail.Location = new Point(323, 278);
             txtEmail.Multiline = true;
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(320, 28);
+            txtEmail.Size = new Size(356, 32);
             txtEmail.TabIndex = 7;
             // 
             // txtRole
             // 
-            txtRole.BackColor = Color.WhiteSmoke;
+            txtRole.BackColor = Color.White;
             txtRole.BorderStyle = BorderStyle.None;
             txtRole.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            txtRole.Location = new Point(336, 281);
+            txtRole.Location = new Point(323, 322);
             txtRole.Multiline = true;
             txtRole.Name = "txtRole";
-            txtRole.Size = new Size(320, 28);
+            txtRole.Size = new Size(356, 32);
             txtRole.TabIndex = 7;
             // 
-            // txtNewPass
+            // button1
             // 
-            txtNewPass.BackColor = Color.WhiteSmoke;
-            txtNewPass.BorderStyle = BorderStyle.None;
-            txtNewPass.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            txtNewPass.Location = new Point(336, 320);
-            txtNewPass.Multiline = true;
-            txtNewPass.Name = "txtNewPass";
-            txtNewPass.Size = new Size(320, 28);
-            txtNewPass.TabIndex = 7;
-            // 
-            // checkBxShowPass
-            // 
-            checkBxShowPass.AutoSize = true;
-            checkBxShowPass.Cursor = Cursors.Hand;
-            checkBxShowPass.FlatStyle = FlatStyle.Flat;
-            checkBxShowPass.Font = new Font("Calibri", 9F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            checkBxShowPass.Location = new Point(541, 356);
-            checkBxShowPass.Name = "checkBxShowPass";
-            checkBxShowPass.Size = new Size(115, 22);
-            checkBxShowPass.TabIndex = 15;
-            checkBxShowPass.Text = "Hiện mật khẩu";
-            checkBxShowPass.UseVisualStyleBackColor = true;
+            button1.BackColor = Color.White;
+            button1.Cursor = Cursors.Hand;
+            button1.FlatStyle = FlatStyle.Flat;
+            button1.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            button1.ForeColor = Color.FromArgb(128, 64, 0);
+            button1.Location = new Point(512, 370);
+            button1.Name = "button1";
+            button1.Size = new Size(167, 56);
+            button1.TabIndex = 6;
+            button1.Text = "Đổi mật khẩu";
+            button1.UseVisualStyleBackColor = false;
             // 
             // TaiKhoan
             // 
-            AutoScaleDimensions = new SizeF(9F, 21F);
+            AutoScaleDimensions = new SizeF(10F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.White;
+            BackColor = Color.OldLace;
             ClientSize = new Size(861, 526);
-            Controls.Add(checkBxShowPass);
-            Controls.Add(txtNewPass);
             Controls.Add(txtRole);
             Controls.Add(txtEmail);
             Controls.Add(txtusername);
             Controls.Add(txtfullname);
+            Controls.Add(button1);
             Controls.Add(btnUpdateProf);
-            Controls.Add(label6);
             Controls.Add(label5);
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
-            Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            Font = new Font("Calibri", 12F, FontStyle.Bold);
             FormBorderStyle = FormBorderStyle.None;
             Name = "TaiKhoan";
             Text = "TaiKhoan";
@@ -221,13 +202,11 @@
         private Label label3;
         private Label label4;
         private Label label5;
-        private Label label6;
         private Button btnUpdateProf;
         private TextBox txtfullname;
         private TextBox txtusername;
         private TextBox txtEmail;
         private TextBox txtRole;
-        private TextBox txtNewPass;
-        private CheckBox checkBxShowPass;
+        private Button button1;
     }
 }

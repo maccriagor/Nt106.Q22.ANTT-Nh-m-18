@@ -33,13 +33,18 @@ namespace CafeClient
             pnlNav.Height = btnDoanhThu.Height;
             pnlNav.Top = btnDoanhThu.Top;
             pnlNav.Left = btnDoanhThu.Left;
-            btnDoanhThu.BackColor = Color.FromArgb(128,64,0);
+            btnDoanhThu.BackColor = Color.FromArgb(128, 64, 0);
 
             lblTitle.Text = "Doanh thu";
             this.PnlFormLoader.Controls.Clear();
-            DoanhThu formDoanhthu = new DoanhThu() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
+            DoanhThu_AD formDoanhthu = new DoanhThu_AD() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(formDoanhthu);
             formDoanhthu.Show();
+
+            ThoiGian form = new ThoiGian() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
+            panel3.Controls.Clear();
+            panel3.Controls.Add(form);
+            form.Show();
         }
 
         private void btnDoanhThu_Click(object sender, EventArgs e)
@@ -51,7 +56,7 @@ namespace CafeClient
 
             lblTitle.Text = "Doanh thu";
             this.PnlFormLoader.Controls.Clear();
-            DoanhThu formDoanhthu = new DoanhThu() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true};
+            DoanhThu_AD formDoanhthu = new DoanhThu_AD() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(formDoanhthu);
             formDoanhthu.Show();
         }
@@ -61,6 +66,12 @@ namespace CafeClient
             pnlNav.Height = btnMenu.Height;
             pnlNav.Top = btnMenu.Top;
             btnMenu.BackColor = Color.FromArgb(255, 128, 0);
+
+            lblTitle.Text = "Menu";
+            this.PnlFormLoader.Controls.Clear();
+            Menu formMenu = new Menu() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
+            this.PnlFormLoader.Controls.Add(formMenu);
+            formMenu.Show();
         }
 
         private void btnBanAn_Click(object sender, EventArgs e)
@@ -68,6 +79,12 @@ namespace CafeClient
             pnlNav.Height = btnBanAn.Height;
             pnlNav.Top = btnBanAn.Top;
             btnBanAn.BackColor = Color.FromArgb(255, 128, 0);
+
+            lblTitle.Text = "Sơ đồ bàn ăn";
+            this.PnlFormLoader.Controls.Clear();
+            BanAn_AD formBanAn = new BanAn_AD() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
+            this.PnlFormLoader.Controls.Add(formBanAn);
+            formBanAn.Show();
         }
 
         private void btnHoaDon_Click(object sender, EventArgs e)
@@ -75,6 +92,12 @@ namespace CafeClient
             pnlNav.Height = btnHoaDon.Height;
             pnlNav.Top = btnHoaDon.Top;
             btnHoaDon.BackColor = Color.FromArgb(255, 128, 0);
+
+            lblTitle.Text = "Hóa đơn";
+            this.PnlFormLoader.Controls.Clear();
+            HoaDon_AD formHoaDon = new HoaDon_AD() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
+            this.PnlFormLoader.Controls.Add(formHoaDon);
+            formHoaDon.Show();
         }
 
         private void btnNhanVien_Click(object sender, EventArgs e)
@@ -82,6 +105,12 @@ namespace CafeClient
             pnlNav.Height = btnNhanVien.Height;
             pnlNav.Top = btnNhanVien.Top;
             btnNhanVien.BackColor = Color.FromArgb(255, 128, 0);
+
+            lblTitle.Text = "Nhân viên";
+            this.PnlFormLoader.Controls.Clear();
+            NhanVien_AD formNhanVien = new NhanVien_AD() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
+            this.PnlFormLoader.Controls.Add(formNhanVien);
+            formNhanVien.Show();
         }
 
         private void btnChat_Click(object sender, EventArgs e)
@@ -89,6 +118,12 @@ namespace CafeClient
             pnlNav.Height = btnChat.Height;
             pnlNav.Top = btnChat.Top;
             btnChat.BackColor = Color.FromArgb(255, 128, 0);
+
+            lblTitle.Text = "Chat";
+            this.PnlFormLoader.Controls.Clear();
+            Chat formChat = new Chat() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
+            this.PnlFormLoader.Controls.Add(formChat);
+            formChat.Show();
         }
 
         private void btnTaiKhoan_Click(object sender, EventArgs e)
@@ -110,6 +145,11 @@ namespace CafeClient
             pnlNav.Height = btnLogout.Height;
             pnlNav.Top = btnLogout.Top;
             btnLogout.BackColor = Color.FromArgb(255, 128, 0);
+
+
+            Login form = new Login();
+            this.Hide();
+            form.Show();
         }
 
         private void btnDoanhThu_Leave(object sender, EventArgs e)
@@ -150,6 +190,21 @@ namespace CafeClient
         private void btnLogout_Leave(object sender, EventArgs e)
         {
             btnLogout.BackColor = Color.FromArgb(128, 64, 0);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void panel3_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void AdminMain_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

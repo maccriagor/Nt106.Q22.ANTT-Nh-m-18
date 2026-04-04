@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace CafeClient
 {
-    public partial class DoanhThu : Form
+    public partial class ChiTietOrder_BEP : Form
     {
-        public DoanhThu()
+        public ChiTietOrder_BEP()
         {
             InitializeComponent();
+        }
+
+        private void ChiTietOrder_BEP_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
