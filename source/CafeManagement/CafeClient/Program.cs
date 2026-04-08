@@ -14,7 +14,7 @@
 
 
 
-            Application.Run(new KitchenMain()); //---> ae thay đổi AdminMain thành form mà ae muốn mở lên đầu tiên
+            Application.Run(new Login()); //---> ae thay đổi form thành form mà ae muốn mở lên đầu tiên
         }
     }
 }

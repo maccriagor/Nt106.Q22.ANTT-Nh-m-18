@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using CafeCommon;
 
 namespace CafeClient
 {
@@ -204,7 +205,9 @@ namespace CafeClient
 
         private void AdminMain_Load(object sender, EventArgs e)
         {
-
+            AdminName.Text = UserSession.HoTen;
         }
+
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CafeCommon;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -147,6 +148,11 @@ namespace CafeClient
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void WaiterMain_Load(object sender, EventArgs e)
+        {
+            AdminName.Text = UserSession.HoTen;
         }
     }
 }

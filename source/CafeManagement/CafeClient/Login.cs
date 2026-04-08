@@ -19,81 +19,89 @@ namespace CafeClient
 
         private async void btnLogin_Click(object sender, EventArgs e)
         {
-            // Check if the user actually typed something (Basic validation)
+            // 1. Kiểm tra nhập liệu
             if (string.IsNullOrWhiteSpace(txtusername.Text) || string.IsNullOrWhiteSpace(txtpassword.Text))
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.");
+                MessageBox.Show("Vui lòng nhập đầy đủ tài khoản và mật khẩu!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             try
             {
-                // 1. Kết nối tới Server (check IP/Port cho đúng nhé)
-                TcpClient client = new TcpClient("127.0.0.1", 8080);
-                NetworkStream stream = client.GetStream();
+                btnLogin.Enabled = false;
 
-                // 2. Chuẩn bị dữ liệu Đăng nhập
-                var loginReq = new LoginRequest
+                string request = $"LOGIN|{txtusername.Text.Trim()}|{txtpassword.Text.Trim()}";
+                string response = await SocketClient.SendRequestAsync(request);
+
+                if (response.StartsWith("ERROR"))
                 {
-                    TenDangNhap = txtusername.Text,
-                    MatKhau = SecurityHelper.HashPassword(txtpassword.Text)
-                };
-
-                // 3. Đóng gói và GỬI (Send)
-                var packet = NetworkPacket<LoginRequest>.Create(PacketType.Login, loginReq);
-                string json = JsonSerializer.Serialize(packet);
-                byte[] data = System.Text.Encoding.UTF8.GetBytes(json);
-                await stream.WriteAsync(data, 0, data.Length);
-
-                // 4. ĐỢI PHẢN HỒI (Receive)
-                byte[] responseBuffer = new byte[4096];
-                int bytesRead = await stream.ReadAsync(responseBuffer, 0, responseBuffer.Length);
-                string responseJson = System.Text.Encoding.UTF8.GetString(responseBuffer, 0, bytesRead);
-
-                // Giải mã gói tin phản hồi
-                var responsePacket = JsonSerializer.Deserialize<NetworkPacket<LoginResponse>>(responseJson);
-
-                if (responsePacket != null && responsePacket.Payload.IsSuccess)
-                {
-                    // Đăng nhập thành công -> Lưu thông tin vào Session
-                    UserSession.Token = responsePacket.Payload.Token;
-                    UserSession.FullName = responsePacket.Payload.FullName;
-                    UserSession.Role = responsePacket.Payload.Role;
-
-                    MessageBox.Show($"Đăng nhập thành công! Chào {UserSession.FullName}");
-
-                    // Chuyển Form tùy theo Role
-                    NavigateToDashboard(UserSession.Role);
-                    this.Hide();
+                    MessageBox.Show("Lỗi kết nối: " + response.Split('|')[1], "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
-                else
+
+                // Tách chuỗi phản hồi thành mảng
+                string[] result = response.Split('|');
+                string status = result[0];
+
+                if (status == "LOGIN_SUCCESS")
                 {
-                    MessageBox.Show("Lỗi: " + (responsePacket?.Payload.Message ?? "Tài khoản không tồn tại"));
-                    client.Close(); // Thất bại thì đóng kết nối
+                    // Kiểm tra xem Server gửi đủ món không (ví dụ 7 phần tử)
+                    if (result.Length >= 7)
+                    {
+
+                        UserSession.MaNguoiDung = int.Parse(result[1]);
+                        UserSession.HoTen = result[2];
+                        UserSession.TenDangNhap = result[3];
+                        UserSession.Email = result[4];
+                        UserSession.VaiTro = result[5];
+                        UserSession.SDT = result[6];
+
+                        string role = UserSession.VaiTro;
+                        string fullName = UserSession.HoTen;
+
+                        MessageBox.Show($"Chào mừng {fullName} ({role}) quay trở lại!", "Thành công");
+
+
+                        this.Hide();
+
+
+                        if (role == "Admin")
+                        {
+                            AdminMain form = new AdminMain();
+                            form.ShowDialog();
+                        }
+                        else if (role == "Waiter")
+                        {
+                            WaiterMain form = new WaiterMain();
+                            form.ShowDialog();
+                        }
+                        else if (role == "Kitchen")
+                        {
+                            KitchenMain form = new KitchenMain();
+                            form.ShowDialog();
+                        }
+
+
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Dữ liệu Server gửi về không đủ!", "Lỗi giao thức");
+                    }
+                }
+                else if (status == "LOGIN_FAIL")
+                {
+                    string message = result.Length > 1 ? result[1] : "Sai tài khoản hoặc mật khẩu!";
+                    MessageBox.Show(message, "Lỗi đăng nhập", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Không thể kết nối đến Server Cafe: " + ex.Message);
+                MessageBox.Show("Có lỗi xảy ra: " + ex.Message, "Lỗi hệ thống");
             }
-        }
-
-        private void NavigateToDashboard(string role)
-        {
-            switch (role)
+            finally
             {
-                case "Admin":
-                    new AdminMain().Show();
-                    break;
-                case "Waiter":
-                    new WaiterMain().Show();
-                    break;
-                case "Kitchen":
-                    new KitchenMain().Show();
-                    break;
-                default:
-                    MessageBox.Show("Vai trò không hợp lệ!");
-                    break;
+                btnLogin.Enabled = true;
             }
         }
 
@@ -102,6 +110,30 @@ namespace CafeClient
             ForgotPassword forrmm = new ForgotPassword();
             forrmm.Show();
             this.Hide();
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void checkBxShowPass_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBxShowPass.Checked)
+            {
+                txtpassword.PasswordChar = '\0';
+            }
+            else
+            {
+                txtpassword.PasswordChar = '*';
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            txtusername.Text = "";
+            txtpassword.Text = "";
+            txtusername.Focus();
         }
     }
 }

@@ -55,7 +55,7 @@
             btnReg.Name = "btnReg";
             btnReg.Size = new Size(289, 35);
             btnReg.TabIndex = 58;
-            btnReg.Text = "Gửi";
+            btnReg.Text = "Gửi mã OTP";
             btnReg.UseVisualStyleBackColor = false;
             // 
             // txtpassword
@@ -86,9 +86,9 @@
             label3.ForeColor = Color.Gray;
             label3.Location = new Point(51, 218);
             label3.Name = "label3";
-            label3.Size = new Size(173, 21);
+            label3.Size = new Size(216, 21);
             label3.TabIndex = 52;
-            label3.Text = "Nhập mã gửi qua email";
+            label3.Text = "Nhập mã gửi qua email (6 số)";
             // 
             // label2
             // 
@@ -134,6 +134,7 @@
             checkBxShowPass.TabIndex = 63;
             checkBxShowPass.Text = "Hiện mật khẩu";
             checkBxShowPass.UseVisualStyleBackColor = true;
+            checkBxShowPass.Visible = false;
             // 
             // txtconPass
             // 
@@ -145,6 +146,7 @@
             txtconPass.Name = "txtconPass";
             txtconPass.Size = new Size(291, 26);
             txtconPass.TabIndex = 61;
+            txtconPass.Visible = false;
             // 
             // textBox1
             // 
@@ -156,6 +158,7 @@
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(291, 26);
             textBox1.TabIndex = 62;
+            textBox1.Visible = false;
             // 
             // label5
             // 
@@ -166,6 +169,7 @@
             label5.Size = new Size(137, 21);
             label5.TabIndex = 59;
             label5.Text = "Nhập lại mật khẩu";
+            label5.Visible = false;
             // 
             // label6
             // 
@@ -176,6 +180,7 @@
             label6.Size = new Size(77, 21);
             label6.TabIndex = 60;
             label6.Text = "Mật khẩu";
+            label6.Visible = false;
             // 
             // button1
             // 
@@ -190,6 +195,7 @@
             button1.TabIndex = 58;
             button1.Text = "Cập nhật";
             button1.UseVisualStyleBackColor = false;
+            button1.Visible = false;
             // 
             // label7
             // 

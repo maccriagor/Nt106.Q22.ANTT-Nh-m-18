@@ -8,31 +8,34 @@ using System.Threading.Tasks;
 
 namespace CafeCommon
 {
-    [Table ("UserAccount")]
+    [Table ("useraccount")]
     public class UserAccount : BaseModel
     {
-        [PrimaryKey("MaNguoiDung", false)] // false vì dùng SERIAL tự tăng
+        [PrimaryKey("manguoidung", false)] // false vì dùng SERIAL tự tăng
         public int MaNguoiDung { get; set; }
 
-        [Column("TenDangNhap")]
+        [Column("tendangnhap")]
         public string TenDangNhap { get; set; }
 
-        [Column("MatKhau")]
+        [Column("sdt")]
+        public string SDT { get; set; }
+
+        [Column("matkhau")]
         public string MatKhau { get; set; }
 
-        [Column("VaiTro")]
+        [Column("vaitro")]
         public string VaiTro { get; set; }
 
-        [Column("HoTen")]
+        [Column("hoten")]
         public string HoTen { get; set; }
 
-        [Column("TrangThaiOnline")]
+        [Column("trangthaionline")]
         public bool TrangThaiOnline { get; set; }
 
-        [Column("Token")]
+        [Column("token")]
         public string Token { get; set; }
 
-        [Column("Email")]
+        [Column("email")]
         public string Email { get; set; }
     }
 }

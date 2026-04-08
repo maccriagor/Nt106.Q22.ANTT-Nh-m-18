@@ -178,6 +178,7 @@
             AdminName.Size = new Size(95, 24);
             AdminName.TabIndex = 2;
             AdminName.Text = "hiện tên...";
+            AdminName.TextAlign = ContentAlignment.TopCenter;
             // 
             // pictureBox2
             // 
@@ -247,6 +248,7 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "WaiterMain";
             Text = "WaiterMain";
+            Load += WaiterMain_Load;
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();

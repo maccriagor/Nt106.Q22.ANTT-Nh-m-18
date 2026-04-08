@@ -1,23 +1,28 @@
-﻿using System;
+﻿using CafeCommon;
+using Supabase;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Supabase;
 
 namespace CafeServer
 {
     public class DatabaseService
     {
         private static string url = "https://alcocggifvzlrjdcvjeo.supabase.co";
-        private static string key = "sb_publishable_StzdBcwl9tH1ys21QCElsg_X8FJLB48";
-        public static Client Client { get; private set; }
+        private static string key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFsY29jZ2dpZnZ6bHJqZGN2amVvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDUxMTI5MywiZXhwIjoyMDkwMDg3MjkzfQ.JAFtQCMGmv4OKWy1PknhXwhnFfP-r5zszf_-vUsW5ow";
+        private static Client _supabase;
+        public static Client Client => _supabase;
 
         public static async Task InitializeAsync()
         {
+            if (_supabase != null) return;
             var options = new SupabaseOptions { AutoConnectRealtime = true };
-            Client = new Client(url, key, options);
-            await Client.InitializeAsync();
+            _supabase = new Client(url, key, options);
+            await _supabase.InitializeAsync();
+
+            System.Console.WriteLine("--- Kết nối Supabase thành công! ---");
         }
     }
 }

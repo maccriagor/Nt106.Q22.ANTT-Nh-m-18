@@ -178,6 +178,7 @@
             AdminName.Size = new Size(95, 24);
             AdminName.TabIndex = 2;
             AdminName.Text = "hiện tên...";
+            AdminName.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // pictureBox2
             // 
@@ -248,6 +249,7 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "KitchenMain";
             Text = "KitchenMain";
+            Load += KitchenMain_Load;
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel2.PerformLayout();

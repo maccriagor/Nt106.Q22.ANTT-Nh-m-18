@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CafeCommon;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -148,6 +149,11 @@ namespace CafeClient
         private void panel3_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void KitchenMain_Load(object sender, EventArgs e)
+        {
+            AdminName.Text = UserSession.HoTen;
         }
     }
 }

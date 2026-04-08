@@ -209,6 +209,7 @@
             AdminName.Size = new Size(95, 24);
             AdminName.TabIndex = 2;
             AdminName.Text = "hiện tên...";
+            AdminName.TextAlign = ContentAlignment.TopCenter;
             // 
             // pictureBox2
             // 

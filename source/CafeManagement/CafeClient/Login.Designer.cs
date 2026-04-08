@@ -39,6 +39,7 @@
             label3 = new Label();
             label2 = new Label();
             lbForgotPass = new Label();
+            btnClose = new Button();
             SuspendLayout();
             // 
             // label6
@@ -85,6 +86,7 @@
             button1.TabIndex = 47;
             button1.Text = "Xóa";
             button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
             // 
             // btnLogin
             // 
@@ -113,6 +115,7 @@
             checkBxShowPass.TabIndex = 46;
             checkBxShowPass.Text = "Hiện mật khẩu";
             checkBxShowPass.UseVisualStyleBackColor = true;
+            checkBxShowPass.CheckedChanged += checkBxShowPass_CheckedChanged;
             // 
             // txtpassword
             // 
@@ -122,6 +125,7 @@
             txtpassword.Location = new Point(39, 261);
             txtpassword.Multiline = true;
             txtpassword.Name = "txtpassword";
+            txtpassword.PasswordChar = '*';
             txtpassword.Size = new Size(291, 26);
             txtpassword.TabIndex = 42;
             // 
@@ -159,12 +163,27 @@
             // lbForgotPass
             // 
             lbForgotPass.AutoSize = true;
-            lbForgotPass.Location = new Point(115, 487);
+            lbForgotPass.Location = new Point(117, 487);
             lbForgotPass.Name = "lbForgotPass";
             lbForgotPass.Size = new Size(127, 21);
             lbForgotPass.TabIndex = 33;
             lbForgotPass.Text = "Quên mật khẩu?";
             lbForgotPass.Click += lbForgotPass_Click;
+            // 
+            // btnClose
+            // 
+            btnClose.BackColor = Color.Transparent;
+            btnClose.FlatAppearance.BorderSize = 0;
+            btnClose.FlatStyle = FlatStyle.Flat;
+            btnClose.Font = new Font("Cascadia Mono", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnClose.ForeColor = Color.FromArgb(128, 64, 0);
+            btnClose.Location = new Point(326, 1);
+            btnClose.Name = "btnClose";
+            btnClose.Size = new Size(40, 34);
+            btnClose.TabIndex = 49;
+            btnClose.Text = "x";
+            btnClose.UseVisualStyleBackColor = false;
+            btnClose.Click += btnClose_Click;
             // 
             // Login
             // 
@@ -172,6 +191,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(366, 639);
+            Controls.Add(btnClose);
             Controls.Add(button1);
             Controls.Add(btnLogin);
             Controls.Add(checkBxShowPass);
@@ -206,5 +226,6 @@
         private Label label3;
         private Label label2;
         private Label lbForgotPass;
+        private Button btnClose;
     }
 }
