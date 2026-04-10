@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using CafeServer.Services;
+using CafeCommon;
 
 namespace CafeServer
 {
@@ -14,7 +15,7 @@ namespace CafeServer
         private TcpListener _listener;
         private int _port = 8888;
         private bool _isRunning;
-
+        public static System.Collections.Concurrent.ConcurrentDictionary<string, string> OtpStorage = new System.Collections.Concurrent.ConcurrentDictionary<string, string>();
         public void Start()
         {
             _listener = new TcpListener(IPAddress.Any, _port);
@@ -48,7 +49,7 @@ namespace CafeServer
                     int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
                     if (bytesRead == 0) break;
 
-                    string request = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    string request = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim('\0', ' ', '\r', '\n');
                     Console.WriteLine($"[CLIENT SAYS]: {request}");
 
                     // XỬ LÝ AUTH TẠI ĐÂY
@@ -72,11 +73,16 @@ namespace CafeServer
         {
             // Định dạng gói tin: COMMAND|DATA1|DATA2|...
             string[] parts = request.Split('|');
+            if (parts.Length == 0)
+                return "ERROR|Invalid request";
+
             string command = parts[0];
 
             switch (command)
             {
                 case "LOGIN":
+                    if (parts.Length < 3)
+                        return "LOGIN_FAIL|Thiếu thông tin";
                     var account = await ServiceManager.User.LoginAsync(parts[1], parts[2]);
 
                     if (account != null)
@@ -104,18 +110,66 @@ namespace CafeServer
                     );
                     return regResult;
 
-                case "FORGOT":
-                    //// Dữ liệu: FORGOT|email
-                    //try
-                    //{
-                    //    string otp = await ServiceManager.SendOtpEmailAsync(parts[1]);
-                    //    return $"OTP_SENT|{otp}"; // Trong thực tế không nên gửi OTP về Client, đây là demo
-                    //}
-                    //catch
-                    //{
-                    //    return "FORGOT_FAIL";
-                    //}
+                case "CHECK_EMAIL":
+                    if (parts.Length < 2)
+                        return "ERROR|Thiếu email";
+                    string email = parts[1];
 
+                    // 1. Check Supabase via DatabaseService
+                    bool exists = await DatabaseService.IsEmailRegisteredAsync(email);
+
+                    if (exists)
+                    {
+                        // 2. Generate a 6-digit OTP
+                        string otpCode = new Random().Next(100000, 999999).ToString();
+
+                        // 3. Store it temporarily (to verify later)
+                        OtpStorage[email] = otpCode;
+
+                        // 4. Send the Email
+                        try
+                        {
+                            await EmailService.SendOtpAsync(email, otpCode);
+                            return "EMAIL_EXISTS|OTP_SENT";
+                        }
+                        catch (Exception ex)
+                        {
+                            return $"ERROR|Could not send email: {ex.Message}";
+                        }
+                    }
+                    else
+                    {
+                        return "EMAIL_NOT_FOUND|Email này không tồn tại trong hệ thống";
+                    }
+
+                case "VERIFY_OTP":
+                    if (parts.Length < 3) return "VERIFY_FAIL";
+                    string emailKey = parts[1].Trim();
+                    string userOtp = parts[2].Trim();
+                    if (OtpStorage.TryGetValue(emailKey, out string actualOtp))
+                    {
+                        if (actualOtp == userOtp)
+                        {
+                            return "VERIFY_SUCCESS";
+                        }
+                    }
+                    return "VERIFY_FAIL";
+
+                case "UPDATE_PASSWORD":
+                    if (parts.Length < 3) return "UPDATE_FAIL|Missing data";
+
+                    string targetEmail = parts[1].Trim();
+                    string newPasswordRaw = parts[2].Trim();
+                    string hashedNewPassword = CafeCommon.SercurityHelper.HashPassword(newPasswordRaw);
+                    bool isUpdated = await DatabaseService.UpdateUserPasswordAsync(targetEmail, hashedNewPassword);
+                    if (isUpdated)
+                    {
+                        return "UPDATE_SUCCESS";
+                    }
+                    else
+                    {
+                        return "UPDATE_FAIL|Database update failed";
+                    }
                 default:
                     return "UNKNOWN_COMMAND";
             }

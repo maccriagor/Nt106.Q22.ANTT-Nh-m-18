@@ -1,4 +1,6 @@
-﻿namespace CafeClient
+﻿using Supabase.Gotrue.Mfa;
+
+namespace CafeClient
 {
     public partial class ForgotPassword : Form
     {
@@ -12,6 +14,111 @@
             Login loginform = new Login();
             loginform.Show();
             this.Hide();
+        }
+
+        private async void btnReg_Click(object sender, EventArgs e) //OTP
+        {
+            string emailInput = txtusername.Text.Trim();
+            if (string.IsNullOrWhiteSpace(emailInput))
+            {
+                MessageBox.Show("Vui lòng nhập Email để nhận OTP!", "Thông báo");
+                return;
+            }
+
+            try
+            {
+                btnReg.Enabled = false;
+                string request = $"CHECK_EMAIL|{emailInput}";
+                string response = await CafeClient.SocketClient.SendRequestAsync(request);
+                string[] res = response.Split('|');
+                if (res[0] == "EMAIL_EXISTS")
+                {
+                    MessageBox.Show("Email hợp lệ. Đang gửi mã OTP...", "Thành công");
+                }
+                else if (res[0] == "EMAIL_NOT_FOUND")
+                {
+                    MessageBox.Show("Email này chưa được đăng ký trong hệ thống!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show("Lỗi: " + res[1], "Thông báo");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi kết nối: " + ex.Message);
+            }
+            finally
+            {
+                btnReg.Enabled = true;
+            }
+        }
+
+        private void txtusername_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtpassword_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private async void btnVerify_Click(object sender, EventArgs e)
+        {
+            string request = $"VERIFY_OTP|{txtusername.Text.Trim()}|{txtpassword.Text.Trim()}";
+            string response = await SocketClient.SendRequestAsync(request);
+
+            if (response == "VERIFY_SUCCESS")
+            {
+                MessageBox.Show("Mã chính xác! Bây giờ bạn có thể nhập mật khẩu mới.");
+                txtNewPass.Enabled = true;
+                txtConfirmPass.Enabled = true;
+                btnUpdate.Enabled = true;
+                txtNewPass.Visible = true;
+                txtConfirmPass.Visible = true;
+                btnUpdate.Visible = true;
+                label5.Visible = true;
+                label6.Visible = true;
+                txtNewPass.Enabled = true;
+                txtConfirmPass.Enabled = true;
+                btnUpdate.Enabled = true;
+            }
+            else
+            {
+                MessageBox.Show("Mã OTP không đúng hoặc đã hết hạn.");
+            }
+
+           
+        }
+
+        private async void btnUpdate_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtNewPass.Text)) return;
+            if (txtNewPass.Text != txtConfirmPass.Text)
+            {
+                MessageBox.Show("Mật khẩu nhập lại không khớp!");
+                return;
+            }
+
+            // 3. Send update request
+            string request = $"UPDATE_PASSWORD|{txtusername.Text}|{txtNewPass.Text}";
+            string response = await SocketClient.SendRequestAsync(request);
+
+            if (response == "UPDATE_SUCCESS")
+            {
+                MessageBox.Show("Đổi mật khẩu thành công! Hãy đăng nhập lại.");
+            }
         }
     }
 }
