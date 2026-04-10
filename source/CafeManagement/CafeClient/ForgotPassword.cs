@@ -28,9 +28,16 @@ namespace CafeClient
             try
             {
                 btnReg.Enabled = false;
+
+                //Kiểm tra xem email có tồn tại trong database không
+                //Lệnh kiểm tra email | email cần được kiểm tra 
                 string request = $"CHECK_EMAIL|{emailInput}";
                 string response = await CafeClient.SocketClient.SendRequestAsync(request);
+
+                //Chia phản hồi cho request ở trên ra làm nhiều phần, chỉ quan trọng phần đầu tiên về status
                 string[] res = response.Split('|');
+
+                //res[0] chứa nội dung chính của phản hồi
                 if (res[0] == "EMAIL_EXISTS")
                 {
                     MessageBox.Show("Email hợp lệ. Đang gửi mã OTP...", "Thành công");
@@ -76,12 +83,17 @@ namespace CafeClient
 
         private async void btnVerify_Click(object sender, EventArgs e)
         {
+            //Tạo request để gửi lên database của Supabase
+            // Lệnh xác thực OTP | Email người dùng | Mã OTP
             string request = $"VERIFY_OTP|{txtusername.Text.Trim()}|{txtpassword.Text.Trim()}";
             string response = await SocketClient.SendRequestAsync(request);
 
             if (response == "VERIFY_SUCCESS")
             {
                 MessageBox.Show("Mã chính xác! Bây giờ bạn có thể nhập mật khẩu mới.");
+                
+                // Do 1 nửa trang xác thực OTP không hiện ra trước khi xác nhận OTP
+                //Nên khi ấn nút xác nhận, phần còn lại của UI sẽ hiện ra
                 txtNewPass.Enabled = true;
                 txtConfirmPass.Enabled = true;
                 btnUpdate.Enabled = true;
@@ -104,14 +116,17 @@ namespace CafeClient
 
         private async void btnUpdate_Click(object sender, EventArgs e)
         {
+
             if (string.IsNullOrEmpty(txtNewPass.Text)) return;
+            //kiểm tra mật khẩu nhập lần hai
             if (txtNewPass.Text != txtConfirmPass.Text)
             {
                 MessageBox.Show("Mật khẩu nhập lại không khớp!");
                 return;
             }
 
-            // 3. Send update request
+            // Tạo request update mật khẩu mới được reset
+            //Lệnh update mật khẩu | email người dùng | Mật khẩu mới nhập 
             string request = $"UPDATE_PASSWORD|{txtusername.Text}|{txtNewPass.Text}";
             string response = await SocketClient.SendRequestAsync(request);
 

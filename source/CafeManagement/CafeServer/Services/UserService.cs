@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CafeCommon;
+using Supabase;
 using Supabase.Postgrest;
 
 namespace CafeServer.Services
@@ -11,6 +12,8 @@ namespace CafeServer.Services
     public class UserService
     {
         // Hàm Đăng nhập: Gọi DatabaseService để lấy dữ liệu và dùng SercurityHelper để check pass
+
+
         public async Task<UserAccount> LoginAsync(string username, string password)
         {
             try
@@ -73,5 +76,37 @@ namespace CafeServer.Services
                 return $"REGISTER_FAIL|Lỗi Server: {ex.Message}";
             }
         }
+
+        public static async Task<bool> UpdateUserPasswordAsync(string email, string hashedPass)
+        {
+            //Update password người dùng
+            try
+            {
+                //kết nối đến table UserAccount trên Database
+                await DatabaseService.Client.From<UserAccount>()
+                               .Where(x => x.Email == email) //Chọn hàng chứa email tương ứng
+                               .Set(x => x.MatKhau, hashedPass) //Thay đổi mật khẩu lưu trên database với mật khẩu được hash mới
+                               .Update();
+                return true;
+            }
+            catch (Exception ex) { return false; }
+        }
+
+        public static async Task<bool> IsEmailRegisteredAsync(string email)
+        {
+
+            //Sử dụng Dictionary để tạo filter cho cột email trong table UserAccount
+            //Việc tạo filter để dễ tìm email tương ứng
+            var modelMatch = new Dictionary<string, string> { { "email", email } };
+
+            // Tìm dữ liệu trong table UserAccount
+            var result = await DatabaseService.Client.From<UserAccount>()
+                                     .Match(modelMatch) 
+                                     .Get();
+
+            return result.Models.Count > 0;
+        }
+    
+
     }
 }

@@ -25,34 +25,8 @@ namespace CafeServer
             System.Console.WriteLine("--- Kết nối Supabase thành công! ---");
         }
 
-        public static async Task<bool> IsEmailRegisteredAsync(string email)
-        {
-            var modelMatch = new Dictionary<string, string>
-            {
-                  { "email", email } 
-             };
-            var result = await _supabase.From<UserAccount>()
-                             .Match(modelMatch)
-                             .Get();
+        
 
-            return result.Models.Count > 0;
-        }
-
-        public static async Task<bool> UpdateUserPasswordAsync(string email, string hashedPass)
-        {
-            try
-            {
-                await _supabase.From<UserAccount>()
-                               .Where(x => x.Email == email)
-                               .Set(x => x.MatKhau, hashedPass) 
-                               .Update();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[DB ERROR]: {ex.Message}");
-                return false;
-            }
-        }
+        
     }
 }

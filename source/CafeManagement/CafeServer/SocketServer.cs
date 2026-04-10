@@ -115,18 +115,16 @@ namespace CafeServer
                         return "ERROR|Thiếu email";
                     string email = parts[1];
 
-                    // 1. Check Supabase via DatabaseService
-                    bool exists = await DatabaseService.IsEmailRegisteredAsync(email);
+                    //1. check email có trong database không
+                    bool exists = await UserService.IsEmailRegisteredAsync(email);
 
                     if (exists)
                     {
-                        // 2. Generate a 6-digit OTP
+                        // 2. Tạo mã code OTP 6 chữ số
                         string otpCode = new Random().Next(100000, 999999).ToString();
-
-                        // 3. Store it temporarily (to verify later)
                         OtpStorage[email] = otpCode;
 
-                        // 4. Send the Email
+                        // 3. Gửi mail chứa OTP
                         try
                         {
                             await EmailService.SendOtpAsync(email, otpCode);
@@ -142,26 +140,44 @@ namespace CafeServer
                         return "EMAIL_NOT_FOUND|Email này không tồn tại trong hệ thống";
                     }
 
+            //xác thực otp
                 case "VERIFY_OTP":
+
+                    // lệnh xác thực otp : $"VERIFY_OTP|{txtusername.Text.Trim()}|{txtpassword.Text.Trim()}";
+                    // mỗi dấu | chia lệnh ra 1 part
+                    //Nếu không đủ 3 part sẽ thiếu dữ liệu
+
                     if (parts.Length < 3) return "VERIFY_FAIL";
+
+                    //Trim làm gọn dữ liệu của email và mã otp
                     string emailKey = parts[1].Trim();
                     string userOtp = parts[2].Trim();
-                    if (OtpStorage.TryGetValue(emailKey, out string actualOtp))
+
+                    if (OtpStorage.TryGetValue(emailKey, out string actualOtp))//Lấy mã otp được đưa cho mail tương ứng
                     {
-                        if (actualOtp == userOtp)
+                        if (actualOtp == userOtp) //so sánh mã otp được nhập và mã otp được gửi
                         {
                             return "VERIFY_SUCCESS";
                         }
                     }
                     return "VERIFY_FAIL";
 
+
+                    //quên mật khẩu
                 case "UPDATE_PASSWORD":
+
+                    // lệnh update password : $"UPDATE_PASSWORD|{txtusername.Text}|{txtNewPass.Text}";
+                    // mỗi dấu | chia lệnh ra 1 part
+                    //Nếu không đủ 3 part sẽ thiếu dữ liệu
                     if (parts.Length < 3) return "UPDATE_FAIL|Missing data";
 
+                    //1.Trim làm gọn dữ liệu của Email người dùng + mật khẩu mới
                     string targetEmail = parts[1].Trim();
                     string newPasswordRaw = parts[2].Trim();
+                    //2.Hash password mới được cập nhập
                     string hashedNewPassword = CafeCommon.SercurityHelper.HashPassword(newPasswordRaw);
-                    bool isUpdated = await DatabaseService.UpdateUserPasswordAsync(targetEmail, hashedNewPassword);
+                    //3.Thay password của mail người dùng với password mới 
+                    bool isUpdated = await UserService.UpdateUserPasswordAsync(targetEmail, hashedNewPassword);
                     if (isUpdated)
                     {
                         return "UPDATE_SUCCESS";
