@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -9,33 +10,48 @@ namespace CafeClient
 {
     public static class SocketClient
     {
+        private static TcpClient _client;
+        private static NetworkStream _stream;
         private static string _ip = "127.0.0.1"; // IP của máy chạy Server
         private static int _port = 8888;
+
+        public static async Task<bool> ConnectAsync()
+        {
+            try
+            {
+                if (_client == null || !_client.Connected)
+                {
+                    _client = new TcpClient();
+                    await _client.ConnectAsync(_ip, _port);
+                    _stream = _client.GetStream();
+                }
+                return true;
+            }
+            catch { return false; }
+        }
 
         public static async Task<string> SendRequestAsync(string message)
         {
             try
             {
-                using TcpClient client = new TcpClient();
-                // Kết nối tới Server
-                await client.ConnectAsync(_ip, _port);
+                if (!await ConnectAsync()) return "ERROR|Không thể kết nối Server";
 
-                using NetworkStream stream = client.GetStream();
-
-                // 1. Gửi dữ liệu đi
                 byte[] dataSend = Encoding.UTF8.GetBytes(message);
-                await stream.WriteAsync(dataSend, 0, dataSend.Length);
+                await _stream.WriteAsync(dataSend, 0, dataSend.Length);
 
-                // 2. Nhận phản hồi về
                 byte[] buffer = new byte[1024];
-                int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-
+                int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
                 return Encoding.UTF8.GetString(buffer, 0, bytesRead);
             }
-            catch (Exception ex)
-            {
-                return $"ERROR|{ex.Message}";
-            }
+            catch (Exception ex) { return $"ERROR|{ex.Message}"; }
+        }
+
+        public static void Disconnect()
+        {
+            _stream?.Close();
+            _client?.Close();
+            _client = null;
+            _stream = null;
         }
     }
 }

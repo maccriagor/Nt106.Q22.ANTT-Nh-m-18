@@ -99,16 +99,28 @@ namespace CafeClient
             form.Show();
         }
 
-        private void btnLogout_Click(object sender, EventArgs e)
+        private async void btnLogout_Click(object sender, EventArgs e)
         {
             pnlNav.Height = btnLogout.Height;
             pnlNav.Top = btnLogout.Top;
             btnLogout.BackColor = Color.FromArgb(255, 128, 0);
 
 
-            Login form = new Login();
-            this.Hide();
-            form.Show();
+            var confirm = MessageBox.Show("Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", MessageBoxButtons.YesNo);
+            if (confirm == DialogResult.Yes)
+            {
+                // Gửi req lên Server để chuyển Offline
+                string request = $"LOGOUT|{UserSession.MaNguoiDung}";
+                await SocketClient.SendRequestAsync(request);
+
+
+                UserSession.Clear();
+
+                this.Hide();
+                Login login = new Login();
+                login.Show();
+                this.Close();
+            }
         }
 
         private void btnQlyOrder_Leave(object sender, EventArgs e)

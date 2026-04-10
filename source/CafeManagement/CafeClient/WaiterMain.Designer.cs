@@ -173,7 +173,7 @@
             AdminName.AutoSize = true;
             AdminName.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             AdminName.ForeColor = Color.PeachPuff;
-            AdminName.Location = new Point(54, 94);
+            AdminName.Location = new Point(12, 94);
             AdminName.Name = "AdminName";
             AdminName.Size = new Size(95, 24);
             AdminName.TabIndex = 2;

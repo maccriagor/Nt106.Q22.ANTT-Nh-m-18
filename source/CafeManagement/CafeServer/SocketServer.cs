@@ -1,11 +1,12 @@
-﻿using System;
+﻿using CafeCommon;
+using CafeServer.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using CafeServer.Services;
 
 namespace CafeServer
 {
@@ -41,6 +42,9 @@ namespace CafeServer
             using NetworkStream stream = client.GetStream();
             byte[] buffer = new byte[1024];
 
+            // Biến nhớ ID của người dùng đang kết nối Socket
+            int currentUserId = 0;
+
             try
             {
                 while (client.Connected)
@@ -51,8 +55,19 @@ namespace CafeServer
                     string request = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                     Console.WriteLine($"[CLIENT SAYS]: {request}");
 
-                    // XỬ LÝ AUTH TẠI ĐÂY
                     string response = await ProcessRequest(request);
+
+                    // Nếu lệnh LOGIN thành công --> ghi nhớ ID vào biến currentUserId
+                    if (response.StartsWith("LOGIN_SUCCESS"))
+                    {
+                        string[] resParts = response.Split('|');
+                        currentUserId = int.Parse(resParts[1]); // Lưu MaNguoiDung vào đây
+                    }
+                    // Nếu lệnh LOGOUT thành công --> xóa ID đi
+                    else if (response == "LOGOUT_SUCCESS")
+                    {
+                        currentUserId = 0;
+                    }
 
                     byte[] responseData = Encoding.UTF8.GetBytes(response);
                     await stream.WriteAsync(responseData, 0, responseData.Length);
@@ -60,10 +75,17 @@ namespace CafeServer
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ERROR]: {ex.Message}");
+                Console.WriteLine($"[DISCONNECT] Client {client.Client.RemoteEndPoint} đã ngắt kết nối.");
             }
             finally
             {
+                // khi kết nối đóng
+                if (currentUserId != 0)
+                {
+                    // cập nhật Offline cho ID đã ghi nhớ
+                    await ServiceManager.User.UpdateOnlineStatusAsync(currentUserId, false);
+                    Console.WriteLine($"[STATUS] User ID {currentUserId} đã Offline.");
+                }
                 client.Close();
             }
         }
@@ -104,18 +126,72 @@ namespace CafeServer
                     );
                     return regResult;
 
-                case "FORGOT":
-                    //// Dữ liệu: FORGOT|email
-                    //try
-                    //{
-                    //    string otp = await ServiceManager.SendOtpEmailAsync(parts[1]);
-                    //    return $"OTP_SENT|{otp}"; // Trong thực tế không nên gửi OTP về Client, đây là demo
-                    //}
-                    //catch
-                    //{
-                    //    return "FORGOT_FAIL";
-                    //}
+                case "LOGOUT":
+                    // Dữ liệu: LOGOUT|manguoidung
+                    int logoutId = int.Parse(parts[1]);
+                    await ServiceManager.User.UpdateOnlineStatusAsync(logoutId, false);
+                    return "LOGOUT_SUCCESS";
 
+                case "CHECK_EMAIL":
+                    if (parts.Length < 2)
+                        return "ERROR|Thiếu email";
+                    string email = parts[1];
+
+                    // 1. Check Supabase via DatabaseService
+                    bool exists = await DatabaseService.IsEmailRegisteredAsync(email);
+
+                    if (exists)
+                    {
+                        // 2. Generate a 6-digit OTP
+                        string otpCode = new Random().Next(100000, 999999).ToString();
+
+                        // 3. Store it temporarily (to verify later)
+                        OtpStorage[email] = otpCode;
+
+                        // 4. Send the Email
+                        try
+                        {
+                            await EmailService.SendOtpAsync(email, otpCode);
+                            return "EMAIL_EXISTS|OTP_SENT";
+                        }
+                        catch (Exception ex)
+                        {
+                            return $"ERROR|Could not send email: {ex.Message}";
+                        }
+                    }
+                    else
+                    {
+                        return "EMAIL_NOT_FOUND|Email này không tồn tại trong hệ thống";
+                    }
+
+                case "VERIFY_OTP":
+                    if (parts.Length < 3) return "VERIFY_FAIL";
+                    string emailKey = parts[1].Trim();
+                    string userOtp = parts[2].Trim();
+                    if (OtpStorage.TryGetValue(emailKey, out string actualOtp))
+                    {
+                        if (actualOtp == userOtp)
+                        {
+                            return "VERIFY_SUCCESS";
+                        }
+                    }
+                    return "VERIFY_FAIL";
+
+                case "UPDATE_PASSWORD":
+                    if (parts.Length < 3) return "UPDATE_FAIL|Missing data";
+
+                    string targetEmail = parts[1].Trim();
+                    string newPasswordRaw = parts[2].Trim();
+                    string hashedNewPassword = CafeCommon.SercurityHelper.HashPassword(newPasswordRaw);
+                    bool isUpdated = await DatabaseService.UpdateUserPasswordAsync(targetEmail, hashedNewPassword);
+                    if (isUpdated)
+                    {
+                        return "UPDATE_SUCCESS";
+                    }
+                    else
+                    {
+                        return "UPDATE_FAIL|Database update failed";
+                    }
                 default:
                     return "UNKNOWN_COMMAND";
             }
