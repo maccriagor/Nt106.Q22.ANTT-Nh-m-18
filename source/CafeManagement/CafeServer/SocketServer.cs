@@ -1,11 +1,12 @@
-﻿using System;
+﻿using CafeCommon;
+using CafeServer.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using CafeServer.Services;
 
 namespace CafeServer
 {
@@ -14,6 +15,10 @@ namespace CafeServer
         private TcpListener _listener;
         private int _port = 8888;
         private bool _isRunning;
+
+        //Dọn dẹp OTP khi xong việc --> tránh bị sử dụng lại
+        public static System.Collections.Concurrent.ConcurrentDictionary<string, string> OtpStorage =
+    new System.Collections.Concurrent.ConcurrentDictionary<string, string>();
 
         public void Start()
         {
@@ -41,6 +46,9 @@ namespace CafeServer
             using NetworkStream stream = client.GetStream();
             byte[] buffer = new byte[1024];
 
+            // Biến nhớ ID của người dùng đang kết nối Socket
+            int currentUserId = 0;
+
             try
             {
                 while (client.Connected)
@@ -48,11 +56,23 @@ namespace CafeServer
                     int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
                     if (bytesRead == 0) break;
 
-                    string request = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    string request = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim('\0', ' ', '\r', '\n');
+                    
                     Console.WriteLine($"[CLIENT SAYS]: {request}");
 
-                    // XỬ LÝ AUTH TẠI ĐÂY
                     string response = await ProcessRequest(request);
+
+                    // Nếu lệnh LOGIN thành công --> ghi nhớ ID vào biến currentUserId
+                    if (response.StartsWith("LOGIN_SUCCESS"))
+                    {
+                        string[] resParts = response.Split('|');
+                        currentUserId = int.Parse(resParts[1]); // Lưu MaNguoiDung vào đây
+                    }
+                    // Nếu lệnh LOGOUT thành công --> xóa ID đi
+                    else if (response == "LOGOUT_SUCCESS")
+                    {
+                        currentUserId = 0;
+                    }
 
                     byte[] responseData = Encoding.UTF8.GetBytes(response);
                     await stream.WriteAsync(responseData, 0, responseData.Length);
@@ -60,10 +80,17 @@ namespace CafeServer
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ERROR]: {ex.Message}");
+                Console.WriteLine($"[DISCONNECT] Client {client.Client.RemoteEndPoint} đã ngắt kết nối.");
             }
             finally
             {
+                // khi kết nối đóng
+                if (currentUserId != 0)
+                {
+                    // cập nhật Offline cho ID đã ghi nhớ
+                    await ServiceManager.User.UpdateOnlineStatusAsync(currentUserId, false);
+                    Console.WriteLine($"[STATUS] User ID {currentUserId} đã Offline.");
+                }
                 client.Close();
             }
         }
@@ -104,18 +131,59 @@ namespace CafeServer
                     );
                     return regResult;
 
-                case "FORGOT":
-                    //// Dữ liệu: FORGOT|email
-                    //try
-                    //{
-                    //    string otp = await ServiceManager.SendOtpEmailAsync(parts[1]);
-                    //    return $"OTP_SENT|{otp}"; // Trong thực tế không nên gửi OTP về Client, đây là demo
-                    //}
-                    //catch
-                    //{
-                    //    return "FORGOT_FAIL";
-                    //}
+                case "LOGOUT":
+                    // Dữ liệu: LOGOUT|manguoidung
+                    int logoutId = int.Parse(parts[1]);
+                    await ServiceManager.User.UpdateOnlineStatusAsync(logoutId, false);
+                    return "LOGOUT_SUCCESS";
 
+                case "CHECK_EMAIL":
+                    if (parts.Length < 2) return "ERROR|Thiếu email";
+                    string email = parts[1].Trim();
+
+                    if (await ServiceManager.User.IsEmailRegisteredAsync(email))
+                    {
+                        string otpCode = new Random().Next(100000, 999999).ToString();
+                        OtpStorage[email] = otpCode;
+                        try
+                        {
+                            await EmailService.SendOtpAsync(email, otpCode);
+                            Console.WriteLine($"[OTP]: Mã của {email} là {otpCode}"); // Log để debug cho dễ
+                            return "EMAIL_EXISTS|Mã OTP đã được gửi!";
+                        }
+                        catch (Exception ex)
+                        {
+                            return $"ERROR|Lỗi gửi mail: {ex.Message}";
+                        }
+                    }
+                    return "EMAIL_NOT_FOUND|Email không tồn tại!";
+
+                case "VERIFY_OTP":
+                    if (parts.Length < 3) return "VERIFY_FAIL";
+                    string vEmail = parts[1].Trim();
+                    string vOtp = parts[2].Trim();
+
+                    if (OtpStorage.TryGetValue(vEmail, out string actualOtp) && actualOtp == vOtp)
+                        return "VERIFY_SUCCESS";
+                    return "VERIFY_FAIL";
+
+                case "UPDATE_PASSWORD":
+                    if (parts.Length < 3) return "UPDATE_FAIL|Thiếu dữ liệu";
+
+                    string targetEmail = parts[1].Trim();
+                    string newPasswordRaw = parts[2].Trim();
+
+                    string hashedNewPassword = CafeCommon.SercurityHelper.HashPassword(newPasswordRaw);
+
+                    bool isUpdated = await ServiceManager.User.UpdateUserPasswordAsync(targetEmail, hashedNewPassword);
+
+                    if (isUpdated)
+                    {
+                        // 3. Xóa OTP để bảo mật
+                        OtpStorage.TryRemove(targetEmail, out _);
+                        return "UPDATE_SUCCESS";
+                    }
+                    return "UPDATE_FAIL|Cập nhật Database không thành công";
                 default:
                     return "UNKNOWN_COMMAND";
             }

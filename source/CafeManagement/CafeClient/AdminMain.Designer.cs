@@ -43,7 +43,6 @@
             pictureBox2 = new PictureBox();
             PnlFormLoader = new Panel();
             lblTitle = new Label();
-            button1 = new Button();
             panel3 = new Panel();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -204,7 +203,7 @@
             AdminName.AutoSize = true;
             AdminName.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             AdminName.ForeColor = Color.PeachPuff;
-            AdminName.Location = new Point(54, 94);
+            AdminName.Location = new Point(12, 90);
             AdminName.Name = "AdminName";
             AdminName.Size = new Size(95, 24);
             AdminName.TabIndex = 2;
@@ -241,24 +240,9 @@
             lblTitle.TabIndex = 2;
             lblTitle.Text = "Doanh thu";
             // 
-            // button1
-            // 
-            button1.BackColor = Color.Transparent;
-            button1.FlatAppearance.BorderSize = 0;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Cascadia Mono", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button1.ForeColor = Color.FromArgb(128, 64, 0);
-            button1.Location = new Point(1025, 0);
-            button1.Name = "button1";
-            button1.Size = new Size(40, 34);
-            button1.TabIndex = 7;
-            button1.Text = "x";
-            button1.UseVisualStyleBackColor = false;
-            button1.Click += button1_Click;
-            // 
             // panel3
             // 
-            panel3.Location = new Point(760, 12);
+            panel3.Location = new Point(808, 12);
             panel3.Name = "panel3";
             panel3.Size = new Size(250, 53);
             panel3.TabIndex = 8;
@@ -271,13 +255,12 @@
             BackColor = Color.OldLace;
             ClientSize = new Size(1070, 606);
             Controls.Add(panel3);
-            Controls.Add(button1);
             Controls.Add(PnlFormLoader);
             Controls.Add(lblTitle);
             Controls.Add(panel1);
             Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             ForeColor = Color.White;
-            FormBorderStyle = FormBorderStyle.None;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "AdminMain";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "AdminMain";
@@ -307,7 +290,6 @@
         private Panel pnlNav;
         private Panel PnlFormLoader;
         private Label lblTitle;
-        private Button button1;
         private Panel panel3;
     }
 }

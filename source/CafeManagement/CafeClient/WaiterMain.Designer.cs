@@ -42,7 +42,6 @@
             pictureBox2 = new PictureBox();
             PnlFormLoader = new Panel();
             lblTitle = new Label();
-            btnClose = new Button();
             panel3 = new Panel();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -173,7 +172,7 @@
             AdminName.AutoSize = true;
             AdminName.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             AdminName.ForeColor = Color.PeachPuff;
-            AdminName.Location = new Point(54, 94);
+            AdminName.Location = new Point(12, 94);
             AdminName.Name = "AdminName";
             AdminName.Size = new Size(95, 24);
             AdminName.TabIndex = 2;
@@ -210,24 +209,9 @@
             lblTitle.TabIndex = 5;
             lblTitle.Text = "Order và Bàn ăn";
             // 
-            // btnClose
-            // 
-            btnClose.BackColor = Color.Transparent;
-            btnClose.FlatAppearance.BorderSize = 0;
-            btnClose.FlatStyle = FlatStyle.Flat;
-            btnClose.Font = new Font("Cascadia Mono", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnClose.ForeColor = Color.FromArgb(128, 64, 0);
-            btnClose.Location = new Point(1025, 0);
-            btnClose.Name = "btnClose";
-            btnClose.Size = new Size(40, 34);
-            btnClose.TabIndex = 6;
-            btnClose.Text = "x";
-            btnClose.UseVisualStyleBackColor = false;
-            btnClose.Click += btnClose_Click;
-            // 
             // panel3
             // 
-            panel3.Location = new Point(760, 12);
+            panel3.Location = new Point(808, 12);
             panel3.Name = "panel3";
             panel3.Size = new Size(250, 53);
             panel3.TabIndex = 10;
@@ -239,13 +223,11 @@
             BackColor = Color.OldLace;
             ClientSize = new Size(1070, 606);
             Controls.Add(panel3);
-            Controls.Add(btnClose);
             Controls.Add(panel1);
             Controls.Add(PnlFormLoader);
             Controls.Add(lblTitle);
             Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             ForeColor = Color.White;
-            FormBorderStyle = FormBorderStyle.None;
             Name = "WaiterMain";
             Text = "WaiterMain";
             Load += WaiterMain_Load;
@@ -272,7 +254,6 @@
         private PictureBox pictureBox2;
         private Panel PnlFormLoader;
         private Label lblTitle;
-        private Button btnClose;
         private Panel panel3;
     }
 }

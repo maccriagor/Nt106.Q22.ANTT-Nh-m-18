@@ -45,7 +45,6 @@
             txtfullname = new TextBox();
             label9 = new Label();
             txtEmail = new TextBox();
-            btnClose = new Button();
             label10 = new Label();
             txtSDT = new TextBox();
             cbRole = new ComboBox();
@@ -243,21 +242,6 @@
             txtEmail.Size = new Size(291, 26);
             txtEmail.TabIndex = 13;
             // 
-            // btnClose
-            // 
-            btnClose.BackColor = Color.Transparent;
-            btnClose.FlatAppearance.BorderSize = 0;
-            btnClose.FlatStyle = FlatStyle.Flat;
-            btnClose.Font = new Font("Cascadia Mono", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnClose.ForeColor = Color.FromArgb(128, 64, 0);
-            btnClose.Location = new Point(326, 0);
-            btnClose.Name = "btnClose";
-            btnClose.Size = new Size(40, 34);
-            btnClose.TabIndex = 50;
-            btnClose.Text = "x";
-            btnClose.UseVisualStyleBackColor = false;
-            btnClose.Click += btnClose_Click;
-            // 
             // label10
             // 
             label10.AutoSize = true;
@@ -297,7 +281,6 @@
             BackColor = Color.White;
             ClientSize = new Size(366, 719);
             Controls.Add(cbRole);
-            Controls.Add(btnClose);
             Controls.Add(label6);
             Controls.Add(label5);
             Controls.Add(button1);
@@ -319,7 +302,6 @@
             Controls.Add(label1);
             Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             ForeColor = Color.FromArgb(164, 165, 169);
-            FormBorderStyle = FormBorderStyle.None;
             Name = "Register";
             Text = "Register";
             ResumeLayout(false);
@@ -345,7 +327,6 @@
         private TextBox txtfullname;
         private Label label9;
         private TextBox txtEmail;
-        private Button btnClose;
         private Label label10;
         private TextBox txtSDT;
         private ComboBox cbRole;

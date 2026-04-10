@@ -10,7 +10,7 @@ namespace CafeServer.Services
 {
     public class UserService
     {
-        // Hàm Đăng nhập: Gọi DatabaseService để lấy dữ liệu và dùng SercurityHelper để check pass
+        // Hàm Login
         public async Task<UserAccount> LoginAsync(string username, string password)
         {
             try
@@ -25,6 +25,7 @@ namespace CafeServer.Services
                 // Kiểm tra mật khẩu bằng BCrypt
                 if (account != null && SercurityHelper.VerifyPassword(password, account.MatKhau))
                 {
+                    await UpdateOnlineStatusAsync(account.MaNguoiDung, true); // Chuyển sang Online
                     return account;
                 }
                 return null;
@@ -32,8 +33,7 @@ namespace CafeServer.Services
             catch (Exception) { return null; }
         }
 
-        // Thêm các hàm Register, ForgotPassword... vào đây
-
+        //Hàm Register
         public async Task<string> RegisterAsync(string user, string pass, string email, string phone, string fullName, string role)
         {
             try
@@ -71,6 +71,48 @@ namespace CafeServer.Services
             catch (Exception ex)
             {
                 return $"REGISTER_FAIL|Lỗi Server: {ex.Message}";
+            }
+        }
+
+        // Hàm Cập nhật trạng thái Online
+        public async Task<bool> UpdateOnlineStatusAsync(int userId, bool isOnline)
+        {
+            try
+            {
+                await DatabaseService.Client.From<UserAccount>()
+                    .Where(x => x.MaNguoiDung == userId)
+                    .Set(x => x.TrangThaiOnline, isOnline)
+                    .Update();
+                return true;
+            }
+            catch (Exception) { return false; }
+        }
+
+        //Kiểm tra email đã đki
+        public async Task<bool> IsEmailRegisteredAsync(string email)
+        {
+            var result = await DatabaseService.Client.From<UserAccount>()
+                .Where(x => x.Email == email)
+                .Get();
+
+            return result.Models.Count > 0;
+        }
+
+        //Cập nhật user password
+        public async Task<bool> UpdateUserPasswordAsync(string email, string hashedPass)
+        {
+            try
+            {
+                await DatabaseService.Client.From<UserAccount>()
+                    .Where(x => x.Email == email)
+                    .Set(x => x.MatKhau, hashedPass)
+                    .Update();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DB ERROR]: {ex.Message}");
+                return false;
             }
         }
     }

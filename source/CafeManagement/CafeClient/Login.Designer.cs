@@ -39,7 +39,6 @@
             label3 = new Label();
             label2 = new Label();
             lbForgotPass = new Label();
-            btnClose = new Button();
             SuspendLayout();
             // 
             // label6
@@ -85,6 +84,7 @@
             button1.Size = new Size(289, 35);
             button1.TabIndex = 47;
             button1.Text = "Xóa";
+            button1.TextAlign = ContentAlignment.TopCenter;
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
             // 
@@ -170,28 +170,12 @@
             lbForgotPass.Text = "Quên mật khẩu?";
             lbForgotPass.Click += lbForgotPass_Click;
             // 
-            // btnClose
-            // 
-            btnClose.BackColor = Color.Transparent;
-            btnClose.FlatAppearance.BorderSize = 0;
-            btnClose.FlatStyle = FlatStyle.Flat;
-            btnClose.Font = new Font("Cascadia Mono", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnClose.ForeColor = Color.FromArgb(128, 64, 0);
-            btnClose.Location = new Point(326, 1);
-            btnClose.Name = "btnClose";
-            btnClose.Size = new Size(40, 34);
-            btnClose.TabIndex = 49;
-            btnClose.Text = "x";
-            btnClose.UseVisualStyleBackColor = false;
-            btnClose.Click += btnClose_Click;
-            // 
             // Login
             // 
             AutoScaleDimensions = new SizeF(9F, 21F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             ClientSize = new Size(366, 639);
-            Controls.Add(btnClose);
             Controls.Add(button1);
             Controls.Add(btnLogin);
             Controls.Add(checkBxShowPass);
@@ -205,7 +189,6 @@
             Controls.Add(label1);
             Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             ForeColor = Color.FromArgb(164, 165, 169);
-            FormBorderStyle = FormBorderStyle.None;
             Margin = new Padding(4, 3, 4, 3);
             Name = "Login";
             Text = "Form1";
@@ -226,6 +209,5 @@
         private Label label3;
         private Label label2;
         private Label lbForgotPass;
-        private Button btnClose;
     }
 }

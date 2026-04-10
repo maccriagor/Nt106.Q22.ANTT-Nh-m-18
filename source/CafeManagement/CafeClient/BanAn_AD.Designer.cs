@@ -258,6 +258,7 @@
             // 
             // panel3
             // 
+            panel3.Anchor = AnchorStyles.None;
             panel3.Controls.Add(panel7);
             panel3.Controls.Add(panel6);
             panel3.Controls.Add(panel5);
@@ -269,6 +270,7 @@
             // 
             // panel2
             // 
+            panel2.Anchor = AnchorStyles.None;
             panel2.Controls.Add(tbTimKiem);
             panel2.Controls.Add(btnTimKiem);
             panel2.Location = new Point(534, 12);
@@ -278,6 +280,7 @@
             // 
             // panel1
             // 
+            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             panel1.Controls.Add(btnXem);
             panel1.Controls.Add(btnSua);
             panel1.Controls.Add(btnXoa);
