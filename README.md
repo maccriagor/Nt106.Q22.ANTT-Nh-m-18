@@ -12,7 +12,7 @@
 - Thanh toán, tính tổng tiền và hỗ trợ gửi/in hóa đơn cho khách hàng.
 - Áp mã giảm giá, chương trình khuyến mãi và quản lý thông tin khách hàng thân thiết.
 - Quản lý nhân sự (thêm, sửa, xóa thông tin nhân viên và phân quyền truy cập hệ thống).
-- Chỉnh sửa hồ sơ cá nhân và xem lại lịch sử đặt hàng trên hệ thống.
-- Quản lý kho hàng (theo dõi việc nhập – xuất và kiểm kê nguyên liệu).
+- Chỉnh sửa hồ sơ cá nhân.
+- Quản lý kho hàng (theo dõi việc nhập – xuất và kiểm kê nguyên liệu) (Dự kiến).
 - Báo cáo và thống kê chi tiết về doanh thu, lợi nhuận theo thời gian.
 - Tính năng đánh giá dịch vụ, liên hệ và gửi góp ý trực tiếp từ người dùng.
