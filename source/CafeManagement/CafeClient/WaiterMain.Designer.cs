@@ -59,6 +59,7 @@
             panel1.Controls.Add(btnThanhToan);
             panel1.Controls.Add(btnOrderVaBan);
             panel1.Controls.Add(panel2);
+            panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Size = new Size(209, 606);

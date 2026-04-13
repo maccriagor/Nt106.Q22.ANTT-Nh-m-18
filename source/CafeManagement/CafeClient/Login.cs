@@ -68,21 +68,20 @@ namespace CafeClient
                         if (role == "Admin")
                         {
                             AdminMain form = new AdminMain();
-                            form.ShowDialog();
+                            form.Show();
                         }
                         else if (role == "Waiter")
                         {
                             WaiterMain form = new WaiterMain();
-                            form.ShowDialog();
+                            form.Show();
                         }
                         else if (role == "Kitchen")
                         {
                             KitchenMain form = new KitchenMain();
-                            form.ShowDialog();
+                            form.Show();
                         }
 
 
-                        this.Close();
                     }
                     else
                     {
@@ -134,6 +133,16 @@ namespace CafeClient
             txtusername.Text = "";
             txtpassword.Text = "";
             txtusername.Focus();
+        }
+
+        private void Login_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Login_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

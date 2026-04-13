@@ -191,7 +191,9 @@
             ForeColor = Color.FromArgb(164, 165, 169);
             Margin = new Padding(4, 3, 4, 3);
             Name = "Login";
-            Text = "Form1";
+            Text = "Login";
+            FormClosed += Login_FormClosed;
+            Load += Login_Load;
             ResumeLayout(false);
             PerformLayout();
         }

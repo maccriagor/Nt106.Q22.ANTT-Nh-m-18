@@ -62,6 +62,7 @@
             panel1.Controls.Add(btnMenu);
             panel1.Controls.Add(btnDoanhThu);
             panel1.Controls.Add(panel2);
+            panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Size = new Size(209, 606);
@@ -260,7 +261,6 @@
             Controls.Add(panel1);
             Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             ForeColor = Color.White;
-            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "AdminMain";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "AdminMain";

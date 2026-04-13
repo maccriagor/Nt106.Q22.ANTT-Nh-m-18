@@ -30,6 +30,7 @@
         {
             panel1 = new Panel();
             dgvDoanhThu = new DataGridView();
+            lbTongDoanhThu = new Label();
             label2 = new Label();
             panel2 = new Panel();
             btnXuatBaoCao = new Button();
@@ -38,7 +39,6 @@
             label1 = new Label();
             dtpDenNgay = new DateTimePicker();
             dtpTuNgay = new DateTimePicker();
-            lbTongDoanhThu = new Label();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvDoanhThu).BeginInit();
             panel2.SuspendLayout();
@@ -46,22 +46,35 @@
             // 
             // panel1
             // 
+            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             panel1.Controls.Add(dgvDoanhThu);
             panel1.Controls.Add(lbTongDoanhThu);
             panel1.Controls.Add(label2);
-            panel1.Location = new Point(12, 97);
+            panel1.Location = new Point(12, 109);
             panel1.Name = "panel1";
             panel1.Size = new Size(837, 417);
             panel1.TabIndex = 1;
             // 
             // dgvDoanhThu
             // 
+            dgvDoanhThu.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvDoanhThu.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDoanhThu.Location = new Point(3, 3);
             dgvDoanhThu.Name = "dgvDoanhThu";
             dgvDoanhThu.RowHeadersWidth = 51;
             dgvDoanhThu.Size = new Size(831, 369);
             dgvDoanhThu.TabIndex = 1;
+            // 
+            // lbTongDoanhThu
+            // 
+            lbTongDoanhThu.AutoSize = true;
+            lbTongDoanhThu.Font = new Font("Calibri", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lbTongDoanhThu.ForeColor = Color.Red;
+            lbTongDoanhThu.Location = new Point(177, 380);
+            lbTongDoanhThu.Name = "lbTongDoanhThu";
+            lbTongDoanhThu.Size = new Size(132, 28);
+            lbTongDoanhThu.TabIndex = 1;
+            lbTongDoanhThu.Text = "36.000 VND ";
             // 
             // label2
             // 
@@ -89,6 +102,7 @@
             // 
             // btnXuatBaoCao
             // 
+            btnXuatBaoCao.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             btnXuatBaoCao.BackColor = Color.FromArgb(128, 64, 0);
             btnXuatBaoCao.FlatAppearance.BorderSize = 0;
             btnXuatBaoCao.FlatStyle = FlatStyle.Flat;
@@ -103,6 +117,7 @@
             // 
             // btnXem
             // 
+            btnXem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             btnXem.BackColor = Color.FromArgb(128, 64, 0);
             btnXem.FlatAppearance.BorderSize = 0;
             btnXem.FlatStyle = FlatStyle.Flat;
@@ -150,17 +165,6 @@
             dtpTuNgay.Name = "dtpTuNgay";
             dtpTuNgay.Size = new Size(275, 28);
             dtpTuNgay.TabIndex = 0;
-            // 
-            // lbTongDoanhThu
-            // 
-            lbTongDoanhThu.AutoSize = true;
-            lbTongDoanhThu.Font = new Font("Calibri", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lbTongDoanhThu.ForeColor = Color.Red;
-            lbTongDoanhThu.Location = new Point(177, 380);
-            lbTongDoanhThu.Name = "lbTongDoanhThu";
-            lbTongDoanhThu.Size = new Size(132, 28);
-            lbTongDoanhThu.TabIndex = 1;
-            lbTongDoanhThu.Text = "36.000 VND ";
             // 
             // DoanhThu_AD
             // 
