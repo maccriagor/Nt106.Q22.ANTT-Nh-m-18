@@ -38,7 +38,7 @@
             txtusername = new TextBox();
             txtEmail = new TextBox();
             txtRole = new TextBox();
-            button1 = new Button();
+            btnDoiMK = new Button();
             SuspendLayout();
             // 
             // label1
@@ -111,6 +111,7 @@
             btnUpdateProf.TabIndex = 6;
             btnUpdateProf.Text = "Cập nhật";
             btnUpdateProf.UseVisualStyleBackColor = false;
+            btnUpdateProf.Click += btnUpdateProf_Click;
             // 
             // txtfullname
             // 
@@ -131,6 +132,7 @@
             txtusername.Location = new Point(323, 233);
             txtusername.Multiline = true;
             txtusername.Name = "txtusername";
+            txtusername.ReadOnly = true;
             txtusername.Size = new Size(356, 32);
             txtusername.TabIndex = 7;
             // 
@@ -153,22 +155,24 @@
             txtRole.Location = new Point(323, 322);
             txtRole.Multiline = true;
             txtRole.Name = "txtRole";
+            txtRole.ReadOnly = true;
             txtRole.Size = new Size(356, 32);
             txtRole.TabIndex = 7;
             // 
-            // button1
+            // btnDoiMK
             // 
-            button1.BackColor = Color.White;
-            button1.Cursor = Cursors.Hand;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Calibri", 12F, FontStyle.Bold);
-            button1.ForeColor = Color.FromArgb(128, 64, 0);
-            button1.Location = new Point(512, 370);
-            button1.Name = "button1";
-            button1.Size = new Size(167, 56);
-            button1.TabIndex = 6;
-            button1.Text = "Đổi mật khẩu";
-            button1.UseVisualStyleBackColor = false;
+            btnDoiMK.BackColor = Color.White;
+            btnDoiMK.Cursor = Cursors.Hand;
+            btnDoiMK.FlatStyle = FlatStyle.Flat;
+            btnDoiMK.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            btnDoiMK.ForeColor = Color.FromArgb(128, 64, 0);
+            btnDoiMK.Location = new Point(512, 370);
+            btnDoiMK.Name = "btnDoiMK";
+            btnDoiMK.Size = new Size(167, 56);
+            btnDoiMK.TabIndex = 6;
+            btnDoiMK.Text = "Đổi mật khẩu";
+            btnDoiMK.UseVisualStyleBackColor = false;
+            btnDoiMK.Click += button1_Click;
             // 
             // TaiKhoan
             // 
@@ -180,7 +184,7 @@
             Controls.Add(txtEmail);
             Controls.Add(txtusername);
             Controls.Add(txtfullname);
-            Controls.Add(button1);
+            Controls.Add(btnDoiMK);
             Controls.Add(btnUpdateProf);
             Controls.Add(label5);
             Controls.Add(label4);
@@ -191,6 +195,7 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "TaiKhoan";
             Text = "TaiKhoan";
+            Load += TaiKhoan_Load;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -207,6 +212,6 @@
         private TextBox txtusername;
         private TextBox txtEmail;
         private TextBox txtRole;
-        private Button button1;
+        private Button btnDoiMK;
     }
 }

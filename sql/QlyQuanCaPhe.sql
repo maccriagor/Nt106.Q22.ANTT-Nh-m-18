@@ -1,4 +1,4 @@
-﻿-- 1. Quản lý Tài khoản & Nhân viên (Gộp theo đề xuất của Dũng)
+﻿-- 1. Quản lý Tài khoản & Nhân viên
 CREATE TABLE UserAccount (
     MaNguoiDung SERIAL PRIMARY KEY,
     TenDangNhap VARCHAR(50) NOT NULL UNIQUE,
@@ -41,8 +41,7 @@ CREATE TABLE BanAn (
     SoChoNgoi INT DEFAULT 2,
     TrangThai TEXT DEFAULT 'Trống' CHECK (TrangThai IN ('Trống', 'Có khách', 'Đã đặt')),
     MaNhanVien INT REFERENCES UserAccount(MaNguoiDung), -- Nhân viên phụ trách bàn
-    QRCodeURL TEXT,
-    NgayTaoQR TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    NgayTao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 4. Khách hàng & Khuyến mãi (Bổ sung theo yêu cầu)
@@ -123,6 +122,7 @@ CREATE TABLE ThanhToan (
     SoTienThua NUMERIC(12, 2) DEFAULT 0,
     MaGiaoDichNganHang TEXT, -- Nếu chuyển khoản
     ThoiGianThanhToan TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    QRCodeURL TEXT, -- URL QR thanh toán
     GhiChu TEXT
 );
 
@@ -135,12 +135,3 @@ CREATE TABLE TinNhan (
     ThoiGian TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     DaDoc BOOLEAN DEFAULT FALSE
 );
-
--- Bổ sung cho bảng BanAn
-ALTER TABLE BanAn 
-ADD COLUMN MaBanQR TEXT UNIQUE, -- Mã định danh bảo mật cho QR bàn
-ADD COLUMN QRCodeImageCode TEXT; -- Lưu chuỗi Base64 của ảnh (nếu muốn lưu trực tiếp)
-
--- Bổ sung cho bảng ThanhToan
-ALTER TABLE ThanhToan 
-ADD COLUMN QRCodeData TEXT; -- Chuỗi dữ liệu thanh toán VietQR

@@ -166,5 +166,23 @@ namespace CafeClient
         {
             AdminName.Text = UserSession.HoTen;
         }
+
+        private void btnKhachHang_Click(object sender, EventArgs e)
+        {
+            pnlNav.Height = btnKhachHang.Height;
+            pnlNav.Top = btnKhachHang.Top;
+            btnKhachHang.BackColor = Color.FromArgb(255, 128, 0);
+
+            lblTitle.Text = "Khách hàng";
+            this.PnlFormLoader.Controls.Clear();
+            KhachHang_PV form = new KhachHang_PV() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
+            this.PnlFormLoader.Controls.Add(form);
+            form.Show();
+        }
+
+        private void btnKhachHang_Leave(object sender, EventArgs e)
+        {
+            btnKhachHang.BackColor = Color.FromArgb(128, 64, 0);
+        }
     }
 }

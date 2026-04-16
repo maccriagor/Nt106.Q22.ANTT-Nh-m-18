@@ -107,8 +107,9 @@ namespace CafeClient
         private void lbForgotPass_Click(object sender, EventArgs e)
         {
             ForgotPassword forrmm = new ForgotPassword();
-            forrmm.Show();
             this.Hide();
+            forrmm.ShowDialog();
+            this.Show();
         }
 
         private void btnClose_Click(object sender, EventArgs e)

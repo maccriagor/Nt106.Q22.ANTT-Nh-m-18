@@ -29,10 +29,11 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
-            pnlNav = new Panel();
-            btnLogout = new Button();
             btnTaiKhoan = new Button();
             btnChat = new Button();
+            btnMaGiamGia = new Button();
+            pnlNav = new Panel();
+            btnLogout = new Button();
             btnNhanVien = new Button();
             btnHoaDon = new Button();
             btnBanAn = new Button();
@@ -52,10 +53,11 @@
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(128, 64, 0);
-            panel1.Controls.Add(pnlNav);
-            panel1.Controls.Add(btnLogout);
             panel1.Controls.Add(btnTaiKhoan);
             panel1.Controls.Add(btnChat);
+            panel1.Controls.Add(btnMaGiamGia);
+            panel1.Controls.Add(pnlNav);
+            panel1.Controls.Add(btnLogout);
             panel1.Controls.Add(btnNhanVien);
             panel1.Controls.Add(btnHoaDon);
             panel1.Controls.Add(btnBanAn);
@@ -67,6 +69,48 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(209, 606);
             panel1.TabIndex = 0;
+            // 
+            // btnTaiKhoan
+            // 
+            btnTaiKhoan.Dock = DockStyle.Top;
+            btnTaiKhoan.FlatAppearance.BorderSize = 0;
+            btnTaiKhoan.FlatStyle = FlatStyle.Flat;
+            btnTaiKhoan.Location = new Point(0, 445);
+            btnTaiKhoan.Name = "btnTaiKhoan";
+            btnTaiKhoan.Size = new Size(209, 42);
+            btnTaiKhoan.TabIndex = 3;
+            btnTaiKhoan.Text = "Tài khoản         ⚙️";
+            btnTaiKhoan.UseVisualStyleBackColor = true;
+            btnTaiKhoan.Click += btnTaiKhoan_Click;
+            btnTaiKhoan.Leave += btnTaiKhoan_Leave;
+            // 
+            // btnChat
+            // 
+            btnChat.Dock = DockStyle.Top;
+            btnChat.FlatAppearance.BorderSize = 0;
+            btnChat.FlatStyle = FlatStyle.Flat;
+            btnChat.Location = new Point(0, 403);
+            btnChat.Name = "btnChat";
+            btnChat.Size = new Size(209, 42);
+            btnChat.TabIndex = 3;
+            btnChat.Text = "Chat                 💭";
+            btnChat.UseVisualStyleBackColor = true;
+            btnChat.Click += btnChat_Click;
+            btnChat.Leave += btnChat_Leave;
+            // 
+            // btnMaGiamGia
+            // 
+            btnMaGiamGia.Dock = DockStyle.Top;
+            btnMaGiamGia.FlatAppearance.BorderSize = 0;
+            btnMaGiamGia.FlatStyle = FlatStyle.Flat;
+            btnMaGiamGia.Location = new Point(0, 361);
+            btnMaGiamGia.Name = "btnMaGiamGia";
+            btnMaGiamGia.Size = new Size(209, 42);
+            btnMaGiamGia.TabIndex = 3;
+            btnMaGiamGia.Text = "Mã giảm giá    🎟️";
+            btnMaGiamGia.UseVisualStyleBackColor = true;
+            btnMaGiamGia.Click += btnMaGiamGia_Click;
+            btnMaGiamGia.Leave += btnMaGiamGia_Leave;
             // 
             // pnlNav
             // 
@@ -91,34 +135,6 @@
             btnLogout.Click += btnLogout_Click;
             btnLogout.Leave += btnLogout_Leave;
             // 
-            // btnTaiKhoan
-            // 
-            btnTaiKhoan.Dock = DockStyle.Top;
-            btnTaiKhoan.FlatAppearance.BorderSize = 0;
-            btnTaiKhoan.FlatStyle = FlatStyle.Flat;
-            btnTaiKhoan.Location = new Point(0, 403);
-            btnTaiKhoan.Name = "btnTaiKhoan";
-            btnTaiKhoan.Size = new Size(209, 42);
-            btnTaiKhoan.TabIndex = 3;
-            btnTaiKhoan.Text = "Tài khoản      ⚙️";
-            btnTaiKhoan.UseVisualStyleBackColor = true;
-            btnTaiKhoan.Click += btnTaiKhoan_Click;
-            btnTaiKhoan.Leave += btnTaiKhoan_Leave;
-            // 
-            // btnChat
-            // 
-            btnChat.Dock = DockStyle.Top;
-            btnChat.FlatAppearance.BorderSize = 0;
-            btnChat.FlatStyle = FlatStyle.Flat;
-            btnChat.Location = new Point(0, 361);
-            btnChat.Name = "btnChat";
-            btnChat.Size = new Size(209, 42);
-            btnChat.TabIndex = 3;
-            btnChat.Text = "Chat              💭";
-            btnChat.UseVisualStyleBackColor = true;
-            btnChat.Click += btnChat_Click;
-            btnChat.Leave += btnChat_Leave;
-            // 
             // btnNhanVien
             // 
             btnNhanVien.Dock = DockStyle.Top;
@@ -128,7 +144,7 @@
             btnNhanVien.Name = "btnNhanVien";
             btnNhanVien.Size = new Size(209, 42);
             btnNhanVien.TabIndex = 3;
-            btnNhanVien.Text = "Nhân viên    👨‍🍳";
+            btnNhanVien.Text = "Nhân viên       👨‍🍳";
             btnNhanVien.UseVisualStyleBackColor = true;
             btnNhanVien.Click += btnNhanVien_Click;
             btnNhanVien.Leave += btnNhanVien_Leave;
@@ -142,7 +158,7 @@
             btnHoaDon.Name = "btnHoaDon";
             btnHoaDon.Size = new Size(209, 42);
             btnHoaDon.TabIndex = 3;
-            btnHoaDon.Text = "Hóa đơn      \U0001f9fe";
+            btnHoaDon.Text = "Hóa đơn         \U0001f9fe";
             btnHoaDon.UseVisualStyleBackColor = true;
             btnHoaDon.Click += btnHoaDon_Click;
             btnHoaDon.Leave += btnHoaDon_Leave;
@@ -156,7 +172,7 @@
             btnBanAn.Name = "btnBanAn";
             btnBanAn.Size = new Size(209, 42);
             btnBanAn.TabIndex = 3;
-            btnBanAn.Text = "Bàn ăn         ┬─┬";
+            btnBanAn.Text = "Bàn ăn            ┬─┬";
             btnBanAn.UseVisualStyleBackColor = true;
             btnBanAn.Click += btnBanAn_Click;
             btnBanAn.Leave += btnBanAn_Leave;
@@ -170,7 +186,7 @@
             btnMenu.Name = "btnMenu";
             btnMenu.Size = new Size(209, 42);
             btnMenu.TabIndex = 3;
-            btnMenu.Text = "Menu           \U0001f950";
+            btnMenu.Text = "Menu              \U0001f950";
             btnMenu.UseVisualStyleBackColor = true;
             btnMenu.Click += btnMenu_Click;
             btnMenu.Leave += btnMenu_Leave;
@@ -184,7 +200,7 @@
             btnDoanhThu.Name = "btnDoanhThu";
             btnDoanhThu.Size = new Size(209, 42);
             btnDoanhThu.TabIndex = 3;
-            btnDoanhThu.Text = "Doanh thu   📊";
+            btnDoanhThu.Text = "Doanh thu      📊";
             btnDoanhThu.UseVisualStyleBackColor = true;
             btnDoanhThu.Click += btnDoanhThu_Click;
             btnDoanhThu.Leave += btnDoanhThu_Leave;
@@ -243,7 +259,7 @@
             // 
             // panel3
             // 
-            panel3.Location = new Point(808, 12);
+            panel3.Location = new Point(803, 12);
             panel3.Name = "panel3";
             panel3.Size = new Size(250, 53);
             panel3.TabIndex = 8;
@@ -291,5 +307,6 @@
         private Panel PnlFormLoader;
         private Label lblTitle;
         private Panel panel3;
+        private Button btnMaGiamGia;
     }
 }
