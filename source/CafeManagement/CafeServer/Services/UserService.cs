@@ -115,5 +115,26 @@ namespace CafeServer.Services
                 return false;
             }
         }
+
+        //Chỉnh sửa thông tin tài khoản
+        public async Task<bool> UpdateProfileAsync(int userId, string fullName, string email)
+        {
+            try
+            {
+                // Cập nhật thông tin vào Supabase
+                await DatabaseService.Client.From<UserAccount>()
+                    .Where(x => x.MaNguoiDung == userId)
+                    .Set(x => x.HoTen, fullName)
+                    .Set(x => x.Email, email)
+                    .Update();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR]: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

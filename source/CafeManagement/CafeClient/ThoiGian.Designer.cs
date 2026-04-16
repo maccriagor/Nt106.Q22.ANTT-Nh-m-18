@@ -37,7 +37,7 @@
             // Time
             // 
             Time.AutoSize = true;
-            Time.Location = new Point(100, 5);
+            Time.Location = new Point(60, 5);
             Time.Name = "Time";
             Time.Size = new Size(44, 21);
             Time.TabIndex = 0;
@@ -46,7 +46,7 @@
             // Date
             // 
             Date.AutoSize = true;
-            Date.Location = new Point(102, 26);
+            Date.Location = new Point(62, 26);
             Date.Name = "Date";
             Date.Size = new Size(42, 21);
             Date.TabIndex = 0;

@@ -96,9 +96,8 @@
             if (response == "UPDATE_SUCCESS")
             {
                 MessageBox.Show("Đổi mật khẩu thành công! Hãy quay lại đăng nhập.", "Thành công");
-                Login loginform = new Login();
-                loginform.Show();
-                this.Hide();
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
             else
             {

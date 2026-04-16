@@ -221,6 +221,22 @@ namespace CafeClient
             AdminName.Text = UserSession.HoTen;
         }
 
-        
+        private void btnMaGiamGia_Click(object sender, EventArgs e)
+        {
+            pnlNav.Height = btnMaGiamGia.Height;
+            pnlNav.Top = btnMaGiamGia.Top;
+            btnMaGiamGia.BackColor = Color.FromArgb(255, 128, 0);
+
+            lblTitle.Text = "Mã giảm giá";
+            this.PnlFormLoader.Controls.Clear();
+            MaGiamGia_AD formtaikhoan = new MaGiamGia_AD() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
+            this.PnlFormLoader.Controls.Add(formtaikhoan);
+            formtaikhoan.Show();
+        }
+
+        private void btnMaGiamGia_Leave(object sender, EventArgs e)
+        {
+            btnMaGiamGia.BackColor = Color.FromArgb(128, 64, 0);
+        }
     }
 }

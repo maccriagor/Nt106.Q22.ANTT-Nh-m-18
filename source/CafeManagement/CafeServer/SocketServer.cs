@@ -184,6 +184,17 @@ namespace CafeServer
                         return "UPDATE_SUCCESS";
                     }
                     return "UPDATE_FAIL|Cập nhật Database không thành công";
+
+                case "UPDATE_PROFILE":
+                    // Gói tin: UPDATE_PROFILE|id|fullName|email (không cho chỉnh username và role)
+                    if (parts.Length < 4) return "UPDATE_FAIL|Thiếu thông tin cập nhật!";
+
+                    int uid = int.Parse(parts[1]);
+                    string newName = parts[2];
+                    string newEmail = parts[3];
+
+                    bool isOk = await ServiceManager.User.UpdateProfileAsync(uid, newName, newEmail);
+                    return isOk ? "UPDATE_SUCCESS|Cập nhật thành công!" : "UPDATE_FAIL|Lỗi cập nhật Database!";
                 default:
                     return "UNKNOWN_COMMAND";
             }
