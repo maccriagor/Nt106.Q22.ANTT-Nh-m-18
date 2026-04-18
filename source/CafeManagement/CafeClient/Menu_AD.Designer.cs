@@ -1,6 +1,6 @@
 ﻿namespace CafeClient
 {
-    partial class NhanVien_AD
+    partial class Menu
     {
         /// <summary>
         /// Required designer variable.
@@ -28,132 +28,93 @@
         /// </summary>
         private void InitializeComponent()
         {
-            tbEmail = new TextBox();
+            panel1 = new Panel();
+            dgvFood = new DataGridView();
             panel3 = new Panel();
+            panel8 = new Panel();
+            tbTrangThai = new TextBox();
+            label5 = new Label();
             panel7 = new Panel();
-            dtpNgayVaoLam = new DateTimePicker();
+            nmGiaBan = new NumericUpDown();
             label4 = new Label();
             panel6 = new Panel();
-            tbViTri = new TextBox();
+            tbTenMon = new TextBox();
             label3 = new Label();
-            panel8 = new Panel();
-            tbPass = new TextBox();
-            label5 = new Label();
             panel5 = new Panel();
+            cbMaLoaiMon = new ComboBox();
             label2 = new Label();
             panel4 = new Panel();
-            tbTenNhanVien = new TextBox();
+            tbMaMon = new TextBox();
             label1 = new Label();
-            panel2 = new Panel();
+            panel9 = new Panel();
+            tbTimKiem = new TextBox();
+            btnTimKiem = new Button();
             lblTitle = new Label();
             btnXem = new Button();
-            tbTimKiem = new TextBox();
+            textBox1 = new TextBox();
             btnSua = new Button();
-            btnTimKiem = new Button();
+            button3 = new Button();
             btnXoa = new Button();
             btnThem = new Button();
-            panel1 = new Panel();
-            dgvNhanVien = new DataGridView();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvFood).BeginInit();
             panel3.SuspendLayout();
-            panel7.SuspendLayout();
-            panel6.SuspendLayout();
             panel8.SuspendLayout();
+            panel7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)nmGiaBan).BeginInit();
+            panel6.SuspendLayout();
             panel5.SuspendLayout();
             panel4.SuspendLayout();
-            panel2.SuspendLayout();
-            panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvNhanVien).BeginInit();
+            panel9.SuspendLayout();
             SuspendLayout();
             // 
-            // tbEmail
+            // panel1
             // 
-            tbEmail.Location = new Point(3, 31);
-            tbEmail.Name = "tbEmail";
-            tbEmail.Size = new Size(296, 28);
-            tbEmail.TabIndex = 0;
+            panel1.Controls.Add(dgvFood);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 151);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(546, 455);
+            panel1.TabIndex = 0;
+            // 
+            // dgvFood
+            // 
+            dgvFood.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvFood.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvFood.Location = new Point(12, 6);
+            dgvFood.Name = "dgvFood";
+            dgvFood.RowHeadersWidth = 51;
+            dgvFood.Size = new Size(528, 437);
+            dgvFood.TabIndex = 0;
             // 
             // panel3
             // 
+            panel3.Controls.Add(panel8);
             panel3.Controls.Add(panel7);
             panel3.Controls.Add(panel6);
-            panel3.Controls.Add(panel8);
             panel3.Controls.Add(panel5);
             panel3.Controls.Add(panel4);
             panel3.Dock = DockStyle.Right;
             panel3.Location = new Point(546, 151);
             panel3.Name = "panel3";
             panel3.Size = new Size(315, 455);
-            panel3.TabIndex = 4;
-            // 
-            // panel7
-            // 
-            panel7.Controls.Add(dtpNgayVaoLam);
-            panel7.Controls.Add(label4);
-            panel7.Location = new Point(6, 298);
-            panel7.Name = "panel7";
-            panel7.Size = new Size(309, 62);
-            panel7.TabIndex = 0;
-            // 
-            // dtpNgayVaoLam
-            // 
-            dtpNgayVaoLam.Location = new Point(3, 31);
-            dtpNgayVaoLam.Name = "dtpNgayVaoLam";
-            dtpNgayVaoLam.Size = new Size(296, 28);
-            dtpNgayVaoLam.TabIndex = 1;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Calibri", 12F, FontStyle.Bold);
-            label4.ForeColor = Color.FromArgb(128, 64, 64);
-            label4.Location = new Point(3, 0);
-            label4.Name = "label4";
-            label4.Size = new Size(128, 24);
-            label4.TabIndex = 0;
-            label4.Text = "Ngày vào làm:";
-            // 
-            // panel6
-            // 
-            panel6.Controls.Add(tbViTri);
-            panel6.Controls.Add(label3);
-            panel6.Location = new Point(6, 230);
-            panel6.Name = "panel6";
-            panel6.Size = new Size(309, 62);
-            panel6.TabIndex = 0;
-            // 
-            // tbViTri
-            // 
-            tbViTri.Location = new Point(3, 31);
-            tbViTri.Name = "tbViTri";
-            tbViTri.Size = new Size(296, 28);
-            tbViTri.TabIndex = 0;
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Font = new Font("Calibri", 12F, FontStyle.Bold);
-            label3.ForeColor = Color.FromArgb(128, 64, 64);
-            label3.Location = new Point(3, 0);
-            label3.Name = "label3";
-            label3.Size = new Size(57, 24);
-            label3.TabIndex = 0;
-            label3.Text = "Vị trí:";
+            panel3.TabIndex = 0;
             // 
             // panel8
             // 
-            panel8.Controls.Add(tbPass);
+            panel8.Controls.Add(tbTrangThai);
             panel8.Controls.Add(label5);
-            panel8.Location = new Point(8, 162);
+            panel8.Location = new Point(8, 298);
             panel8.Name = "panel8";
-            panel8.Size = new Size(307, 62);
+            panel8.Size = new Size(328, 62);
             panel8.TabIndex = 0;
             // 
-            // tbPass
+            // tbTrangThai
             // 
-            tbPass.Location = new Point(3, 31);
-            tbPass.Name = "tbPass";
-            tbPass.Size = new Size(296, 28);
-            tbPass.TabIndex = 0;
+            tbTrangThai.Location = new Point(3, 31);
+            tbTrangThai.Name = "tbTrangThai";
+            tbTrangThai.Size = new Size(296, 28);
+            tbTrangThai.TabIndex = 0;
             // 
             // label5
             // 
@@ -162,18 +123,81 @@
             label5.ForeColor = Color.FromArgb(128, 64, 64);
             label5.Location = new Point(3, 0);
             label5.Name = "label5";
-            label5.Size = new Size(97, 24);
+            label5.Size = new Size(100, 24);
             label5.TabIndex = 0;
-            label5.Text = "Mật khẩu:";
+            label5.Text = "Trạng thái:";
+            // 
+            // panel7
+            // 
+            panel7.Controls.Add(nmGiaBan);
+            panel7.Controls.Add(label4);
+            panel7.Location = new Point(8, 230);
+            panel7.Name = "panel7";
+            panel7.Size = new Size(328, 62);
+            panel7.TabIndex = 0;
+            // 
+            // nmGiaBan
+            // 
+            nmGiaBan.Location = new Point(3, 29);
+            nmGiaBan.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
+            nmGiaBan.Name = "nmGiaBan";
+            nmGiaBan.Size = new Size(296, 28);
+            nmGiaBan.TabIndex = 1;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            label4.ForeColor = Color.FromArgb(128, 64, 64);
+            label4.Location = new Point(3, 0);
+            label4.Name = "label4";
+            label4.Size = new Size(81, 24);
+            label4.TabIndex = 0;
+            label4.Text = "Giá bán:";
+            // 
+            // panel6
+            // 
+            panel6.Controls.Add(tbTenMon);
+            panel6.Controls.Add(label3);
+            panel6.Location = new Point(8, 162);
+            panel6.Name = "panel6";
+            panel6.Size = new Size(328, 62);
+            panel6.TabIndex = 0;
+            // 
+            // tbTenMon
+            // 
+            tbTenMon.Location = new Point(3, 31);
+            tbTenMon.Name = "tbTenMon";
+            tbTenMon.Size = new Size(296, 28);
+            tbTenMon.TabIndex = 0;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            label3.ForeColor = Color.FromArgb(128, 64, 64);
+            label3.Location = new Point(3, 0);
+            label3.Name = "label3";
+            label3.Size = new Size(88, 24);
+            label3.TabIndex = 0;
+            label3.Text = "Tên món:";
             // 
             // panel5
             // 
-            panel5.Controls.Add(tbEmail);
+            panel5.Controls.Add(cbMaLoaiMon);
             panel5.Controls.Add(label2);
             panel5.Location = new Point(8, 94);
             panel5.Name = "panel5";
             panel5.Size = new Size(328, 62);
             panel5.TabIndex = 0;
+            // 
+            // cbMaLoaiMon
+            // 
+            cbMaLoaiMon.FormattingEnabled = true;
+            cbMaLoaiMon.Location = new Point(3, 30);
+            cbMaLoaiMon.Name = "cbMaLoaiMon";
+            cbMaLoaiMon.Size = new Size(296, 29);
+            cbMaLoaiMon.TabIndex = 1;
             // 
             // label2
             // 
@@ -182,25 +206,25 @@
             label2.ForeColor = Color.FromArgb(128, 64, 64);
             label2.Location = new Point(3, 0);
             label2.Name = "label2";
-            label2.Size = new Size(62, 24);
+            label2.Size = new Size(122, 24);
             label2.TabIndex = 0;
-            label2.Text = "Email:";
+            label2.Text = "Mã loại món:";
             // 
             // panel4
             // 
-            panel4.Controls.Add(tbTenNhanVien);
+            panel4.Controls.Add(tbMaMon);
             panel4.Controls.Add(label1);
             panel4.Location = new Point(8, 26);
             panel4.Name = "panel4";
             panel4.Size = new Size(328, 62);
             panel4.TabIndex = 0;
             // 
-            // tbTenNhanVien
+            // tbMaMon
             // 
-            tbTenNhanVien.Location = new Point(3, 31);
-            tbTenNhanVien.Name = "tbTenNhanVien";
-            tbTenNhanVien.Size = new Size(296, 28);
-            tbTenNhanVien.TabIndex = 0;
+            tbMaMon.Location = new Point(3, 31);
+            tbMaMon.Name = "tbMaMon";
+            tbMaMon.Size = new Size(296, 28);
+            tbMaMon.TabIndex = 0;
             // 
             // label1
             // 
@@ -209,24 +233,49 @@
             label1.ForeColor = Color.FromArgb(128, 64, 64);
             label1.Location = new Point(3, 0);
             label1.Name = "label1";
-            label1.Size = new Size(133, 24);
+            label1.Size = new Size(86, 24);
             label1.TabIndex = 0;
-            label1.Text = "Tên nhân viên:";
+            label1.Text = "Mã món:";
             // 
-            // panel2
+            // panel9
             // 
-            panel2.Controls.Add(lblTitle);
-            panel2.Controls.Add(btnXem);
-            panel2.Controls.Add(tbTimKiem);
-            panel2.Controls.Add(btnSua);
-            panel2.Controls.Add(btnTimKiem);
-            panel2.Controls.Add(btnXoa);
-            panel2.Controls.Add(btnThem);
-            panel2.Dock = DockStyle.Top;
-            panel2.Location = new Point(0, 0);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(861, 151);
-            panel2.TabIndex = 5;
+            panel9.Controls.Add(tbTimKiem);
+            panel9.Controls.Add(btnTimKiem);
+            panel9.Controls.Add(lblTitle);
+            panel9.Controls.Add(btnXem);
+            panel9.Controls.Add(textBox1);
+            panel9.Controls.Add(btnSua);
+            panel9.Controls.Add(button3);
+            panel9.Controls.Add(btnXoa);
+            panel9.Controls.Add(btnThem);
+            panel9.Dock = DockStyle.Top;
+            panel9.Location = new Point(0, 0);
+            panel9.Name = "panel9";
+            panel9.Size = new Size(861, 151);
+            panel9.TabIndex = 6;
+            // 
+            // tbTimKiem
+            // 
+            tbTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            tbTimKiem.Location = new Point(548, 98);
+            tbTimKiem.Name = "tbTimKiem";
+            tbTimKiem.Size = new Size(201, 28);
+            tbTimKiem.TabIndex = 12;
+            // 
+            // btnTimKiem
+            // 
+            btnTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnTimKiem.BackColor = Color.FromArgb(128, 64, 0);
+            btnTimKiem.FlatAppearance.BorderSize = 0;
+            btnTimKiem.FlatStyle = FlatStyle.Flat;
+            btnTimKiem.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnTimKiem.ForeColor = Color.White;
+            btnTimKiem.Location = new Point(757, 83);
+            btnTimKiem.Name = "btnTimKiem";
+            btnTimKiem.Size = new Size(92, 57);
+            btnTimKiem.TabIndex = 13;
+            btnTimKiem.Text = "🔍 Tìm";
+            btnTimKiem.UseVisualStyleBackColor = false;
             // 
             // lblTitle
             // 
@@ -235,9 +284,9 @@
             lblTitle.ForeColor = Color.Brown;
             lblTitle.Location = new Point(12, 9);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(189, 49);
+            lblTitle.Size = new Size(119, 49);
             lblTitle.TabIndex = 11;
-            lblTitle.Text = "Nhân viên";
+            lblTitle.Text = "Menu";
             // 
             // btnXem
             // 
@@ -253,13 +302,13 @@
             btnXem.Text = "👁️ Xem";
             btnXem.UseVisualStyleBackColor = false;
             // 
-            // tbTimKiem
+            // textBox1
             // 
-            tbTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            tbTimKiem.Location = new Point(547, 98);
-            tbTimKiem.Name = "tbTimKiem";
-            tbTimKiem.Size = new Size(201, 28);
-            tbTimKiem.TabIndex = 0;
+            textBox1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            textBox1.Location = new Point(1208, 149);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(201, 28);
+            textBox1.TabIndex = 0;
             // 
             // btnSua
             // 
@@ -275,20 +324,20 @@
             btnSua.Text = "✏️ Sửa";
             btnSua.UseVisualStyleBackColor = false;
             // 
-            // btnTimKiem
+            // button3
             // 
-            btnTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnTimKiem.BackColor = Color.FromArgb(128, 64, 0);
-            btnTimKiem.FlatAppearance.BorderSize = 0;
-            btnTimKiem.FlatStyle = FlatStyle.Flat;
-            btnTimKiem.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnTimKiem.ForeColor = Color.White;
-            btnTimKiem.Location = new Point(756, 83);
-            btnTimKiem.Name = "btnTimKiem";
-            btnTimKiem.Size = new Size(92, 57);
-            btnTimKiem.TabIndex = 1;
-            btnTimKiem.Text = "🔍 Tìm";
-            btnTimKiem.UseVisualStyleBackColor = false;
+            button3.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            button3.BackColor = Color.FromArgb(128, 64, 0);
+            button3.FlatAppearance.BorderSize = 0;
+            button3.FlatStyle = FlatStyle.Flat;
+            button3.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button3.ForeColor = Color.White;
+            button3.Location = new Point(1417, 134);
+            button3.Name = "button3";
+            button3.Size = new Size(92, 57);
+            button3.TabIndex = 1;
+            button3.Text = "🔍 Tìm";
+            button3.UseVisualStyleBackColor = false;
             // 
             // btnXoa
             // 
@@ -318,26 +367,7 @@
             btnThem.Text = "➕ Thêm";
             btnThem.UseVisualStyleBackColor = false;
             // 
-            // panel1
-            // 
-            panel1.Controls.Add(dgvNhanVien);
-            panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(0, 151);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(546, 455);
-            panel1.TabIndex = 6;
-            // 
-            // dgvNhanVien
-            // 
-            dgvNhanVien.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvNhanVien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvNhanVien.Location = new Point(13, 6);
-            dgvNhanVien.Name = "dgvNhanVien";
-            dgvNhanVien.RowHeadersWidth = 51;
-            dgvNhanVien.Size = new Size(527, 437);
-            dgvNhanVien.TabIndex = 0;
-            // 
-            // NhanVien_AD
+            // Menu
             // 
             AutoScaleDimensions = new SizeF(9F, 21F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -345,59 +375,61 @@
             ClientSize = new Size(861, 606);
             Controls.Add(panel1);
             Controls.Add(panel3);
-            Controls.Add(panel2);
+            Controls.Add(panel9);
             Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            ForeColor = Color.FromArgb(128, 64, 64);
             FormBorderStyle = FormBorderStyle.None;
-            Name = "NhanVien_AD";
-            Text = "NhanVien";
+            Name = "Menu";
+            Text = "Menu";
+            Load += Menu_Load;
+            panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvFood).EndInit();
             panel3.ResumeLayout(false);
-            panel7.ResumeLayout(false);
-            panel7.PerformLayout();
-            panel6.ResumeLayout(false);
-            panel6.PerformLayout();
             panel8.ResumeLayout(false);
             panel8.PerformLayout();
+            panel7.ResumeLayout(false);
+            panel7.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)nmGiaBan).EndInit();
+            panel6.ResumeLayout(false);
+            panel6.PerformLayout();
             panel5.ResumeLayout(false);
             panel5.PerformLayout();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
-            panel2.ResumeLayout(false);
-            panel2.PerformLayout();
-            panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvNhanVien).EndInit();
+            panel9.ResumeLayout(false);
+            panel9.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
 
-
-        private NumericUpDown numericUpDown1;
+        private Panel panel1;
+        private DataGridView dgvFood;
         private Panel panel3;
-        private Panel panel7;
-        private TextBox tbTrangThai;
-        private Label label4;
         private Panel panel6;
+        private TextBox tbTenMon;
         private Label label3;
         private Panel panel5;
         private Label label2;
         private Panel panel4;
-        private TextBox tbTenNhanVien;
+        private TextBox tbMaMon;
         private Label label1;
-        private Panel panel2;
-        private TextBox tbTimKiem;
-        private Button btnTimKiem;
-        private Panel panel1;
+        private Panel panel8;
+        private TextBox tbTrangThai;
+        private Label label5;
+        private Panel panel7;
+        private Label label4;
+        private ComboBox cbMaLoaiMon;
+        private NumericUpDown nmGiaBan;
+        private Panel panel9;
+        private Label lblTitle;
         private Button btnXem;
+        private TextBox textBox1;
         private Button btnSua;
+        private Button button3;
         private Button btnXoa;
         private Button btnThem;
-        private DataGridView dgvNhanVien;
-        private DateTimePicker dtpNgayVaoLam;
-        private TextBox tbViTri;
-        private Panel panel8;
-        private TextBox tbPass;
-        private Label label5;
-        private TextBox tbEmail;
-        private Label lblTitle;
+        private TextBox tbTimKiem;
+        private Button btnTimKiem;
     }
 }

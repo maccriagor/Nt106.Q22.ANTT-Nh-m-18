@@ -39,6 +39,10 @@
             txtEmail = new TextBox();
             txtRole = new TextBox();
             btnDoiMK = new Button();
+            panel1 = new Panel();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            panel1.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
             // label1
@@ -46,7 +50,7 @@
             label1.AutoSize = true;
             label1.Font = new Font("Calibri", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.FromArgb(128, 64, 64);
-            label1.Location = new Point(252, 72);
+            label1.Location = new Point(179, 102);
             label1.Name = "label1";
             label1.Size = new Size(343, 49);
             label1.TabIndex = 0;
@@ -58,7 +62,7 @@
             label2.AutoSize = true;
             label2.Font = new Font("Calibri", 12F, FontStyle.Bold);
             label2.ForeColor = Color.FromArgb(64, 0, 0);
-            label2.Location = new Point(161, 236);
+            label2.Location = new Point(88, 266);
             label2.Name = "label2";
             label2.Size = new Size(133, 24);
             label2.TabIndex = 1;
@@ -69,7 +73,7 @@
             label3.AutoSize = true;
             label3.Font = new Font("Calibri", 12F, FontStyle.Bold);
             label3.ForeColor = Color.FromArgb(64, 0, 0);
-            label3.Location = new Point(161, 192);
+            label3.Location = new Point(88, 222);
             label3.Name = "label3";
             label3.Size = new Size(91, 24);
             label3.TabIndex = 2;
@@ -80,7 +84,7 @@
             label4.AutoSize = true;
             label4.Font = new Font("Calibri", 12F, FontStyle.Bold);
             label4.ForeColor = Color.FromArgb(64, 0, 0);
-            label4.Location = new Point(159, 281);
+            label4.Location = new Point(86, 311);
             label4.Name = "label4";
             label4.Size = new Size(56, 24);
             label4.TabIndex = 3;
@@ -91,7 +95,7 @@
             label5.AutoSize = true;
             label5.Font = new Font("Calibri", 12F, FontStyle.Bold);
             label5.ForeColor = Color.FromArgb(64, 0, 0);
-            label5.Location = new Point(161, 326);
+            label5.Location = new Point(88, 356);
             label5.Name = "label5";
             label5.Size = new Size(78, 24);
             label5.TabIndex = 4;
@@ -105,7 +109,7 @@
             btnUpdateProf.FlatStyle = FlatStyle.Flat;
             btnUpdateProf.Font = new Font("Calibri", 12F, FontStyle.Bold);
             btnUpdateProf.ForeColor = Color.White;
-            btnUpdateProf.Location = new Point(323, 370);
+            btnUpdateProf.Location = new Point(250, 400);
             btnUpdateProf.Name = "btnUpdateProf";
             btnUpdateProf.Size = new Size(167, 56);
             btnUpdateProf.TabIndex = 6;
@@ -118,7 +122,7 @@
             txtfullname.BackColor = Color.White;
             txtfullname.BorderStyle = BorderStyle.None;
             txtfullname.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            txtfullname.Location = new Point(323, 188);
+            txtfullname.Location = new Point(250, 218);
             txtfullname.Multiline = true;
             txtfullname.Name = "txtfullname";
             txtfullname.Size = new Size(356, 32);
@@ -129,7 +133,7 @@
             txtusername.BackColor = Color.White;
             txtusername.BorderStyle = BorderStyle.None;
             txtusername.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            txtusername.Location = new Point(323, 233);
+            txtusername.Location = new Point(250, 263);
             txtusername.Multiline = true;
             txtusername.Name = "txtusername";
             txtusername.ReadOnly = true;
@@ -141,7 +145,7 @@
             txtEmail.BackColor = Color.White;
             txtEmail.BorderStyle = BorderStyle.None;
             txtEmail.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            txtEmail.Location = new Point(323, 278);
+            txtEmail.Location = new Point(250, 308);
             txtEmail.Multiline = true;
             txtEmail.Name = "txtEmail";
             txtEmail.Size = new Size(356, 32);
@@ -152,7 +156,7 @@
             txtRole.BackColor = Color.White;
             txtRole.BorderStyle = BorderStyle.None;
             txtRole.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            txtRole.Location = new Point(323, 322);
+            txtRole.Location = new Point(250, 352);
             txtRole.Multiline = true;
             txtRole.Name = "txtRole";
             txtRole.ReadOnly = true;
@@ -166,7 +170,7 @@
             btnDoiMK.FlatStyle = FlatStyle.Flat;
             btnDoiMK.Font = new Font("Calibri", 12F, FontStyle.Bold);
             btnDoiMK.ForeColor = Color.FromArgb(128, 64, 0);
-            btnDoiMK.Location = new Point(512, 370);
+            btnDoiMK.Location = new Point(439, 400);
             btnDoiMK.Name = "btnDoiMK";
             btnDoiMK.Size = new Size(167, 56);
             btnDoiMK.TabIndex = 6;
@@ -174,30 +178,57 @@
             btnDoiMK.UseVisualStyleBackColor = false;
             btnDoiMK.Click += button1_Click;
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(label1);
+            panel1.Controls.Add(label2);
+            panel1.Controls.Add(label3);
+            panel1.Controls.Add(btnUpdateProf);
+            panel1.Controls.Add(label4);
+            panel1.Controls.Add(txtRole);
+            panel1.Controls.Add(label5);
+            panel1.Controls.Add(txtEmail);
+            panel1.Controls.Add(btnDoiMK);
+            panel1.Controls.Add(txtusername);
+            panel1.Controls.Add(txtfullname);
+            panel1.Location = new Point(79, 3);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(702, 600);
+            panel1.TabIndex = 9;
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.ColumnCount = 3;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 49.9999962F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle());
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50.0000076F));
+            tableLayoutPanel1.Controls.Add(panel1, 1, 1);
+            tableLayoutPanel1.Dock = DockStyle.Fill;
+            tableLayoutPanel1.Location = new Point(0, 0);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 3;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 49.9999962F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50.0000076F));
+            tableLayoutPanel1.Size = new Size(861, 606);
+            tableLayoutPanel1.TabIndex = 10;
+            // 
             // TaiKhoan
             // 
             AutoScaleDimensions = new SizeF(10F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.OldLace;
-            ClientSize = new Size(861, 526);
-            Controls.Add(txtRole);
-            Controls.Add(txtEmail);
-            Controls.Add(txtusername);
-            Controls.Add(txtfullname);
-            Controls.Add(btnDoiMK);
-            Controls.Add(btnUpdateProf);
-            Controls.Add(label5);
-            Controls.Add(label4);
-            Controls.Add(label3);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            ClientSize = new Size(861, 606);
+            Controls.Add(tableLayoutPanel1);
             Font = new Font("Calibri", 12F, FontStyle.Bold);
             FormBorderStyle = FormBorderStyle.None;
             Name = "TaiKhoan";
             Text = "TaiKhoan";
             Load += TaiKhoan_Load;
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            tableLayoutPanel1.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -213,5 +244,7 @@
         private TextBox txtEmail;
         private TextBox txtRole;
         private Button btnDoiMK;
+        private Panel panel1;
+        private TableLayoutPanel tableLayoutPanel1;
     }
 }

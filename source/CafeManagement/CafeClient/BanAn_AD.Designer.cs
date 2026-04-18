@@ -42,14 +42,15 @@
             label1 = new Label();
             tbTimKiem = new TextBox();
             btnTimKiem = new Button();
+            dgvBanAn = new DataGridView();
+            panel3 = new Panel();
+            panel2 = new Panel();
+            lblTitle = new Label();
+            panel1 = new Panel();
             btnXem = new Button();
             btnSua = new Button();
             btnXoa = new Button();
             btnThem = new Button();
-            dgvBanAn = new DataGridView();
-            panel3 = new Panel();
-            panel2 = new Panel();
-            panel1 = new Panel();
             panel7.SuspendLayout();
             panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
@@ -172,24 +173,83 @@
             // 
             // tbTimKiem
             // 
-            tbTimKiem.Location = new Point(6, 28);
+            tbTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            tbTimKiem.Location = new Point(551, 98);
             tbTimKiem.Name = "tbTimKiem";
             tbTimKiem.Size = new Size(201, 28);
             tbTimKiem.TabIndex = 0;
             // 
             // btnTimKiem
             // 
+            btnTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             btnTimKiem.BackColor = Color.FromArgb(128, 64, 0);
             btnTimKiem.FlatAppearance.BorderSize = 0;
             btnTimKiem.FlatStyle = FlatStyle.Flat;
             btnTimKiem.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnTimKiem.ForeColor = Color.White;
-            btnTimKiem.Location = new Point(215, 13);
+            btnTimKiem.Location = new Point(760, 83);
             btnTimKiem.Name = "btnTimKiem";
             btnTimKiem.Size = new Size(92, 57);
             btnTimKiem.TabIndex = 1;
             btnTimKiem.Text = "🔍 Tìm";
             btnTimKiem.UseVisualStyleBackColor = false;
+            // 
+            // dgvBanAn
+            // 
+            dgvBanAn.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvBanAn.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvBanAn.Location = new Point(12, 6);
+            dgvBanAn.Name = "dgvBanAn";
+            dgvBanAn.RowHeadersWidth = 51;
+            dgvBanAn.Size = new Size(528, 433);
+            dgvBanAn.TabIndex = 0;
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(panel7);
+            panel3.Controls.Add(panel6);
+            panel3.Controls.Add(panel5);
+            panel3.Controls.Add(panel4);
+            panel3.Dock = DockStyle.Right;
+            panel3.Location = new Point(546, 155);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(315, 451);
+            panel3.TabIndex = 1;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(btnXem);
+            panel2.Controls.Add(lblTitle);
+            panel2.Controls.Add(btnSua);
+            panel2.Controls.Add(tbTimKiem);
+            panel2.Controls.Add(btnXoa);
+            panel2.Controls.Add(btnTimKiem);
+            panel2.Controls.Add(btnThem);
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(0, 0);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(861, 155);
+            panel2.TabIndex = 2;
+            // 
+            // lblTitle
+            // 
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Calibri", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTitle.ForeColor = Color.Brown;
+            lblTitle.Location = new Point(12, 9);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(135, 49);
+            lblTitle.TabIndex = 10;
+            lblTitle.Text = "Bàn ăn";
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(dgvBanAn);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 155);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(546, 451);
+            panel1.TabIndex = 3;
             // 
             // btnXem
             // 
@@ -198,10 +258,10 @@
             btnXem.FlatStyle = FlatStyle.Flat;
             btnXem.Font = new Font("Calibri", 12F, FontStyle.Bold);
             btnXem.ForeColor = Color.White;
-            btnXem.Location = new Point(384, 9);
+            btnXem.Location = new Point(385, 75);
             btnXem.Name = "btnXem";
             btnXem.Size = new Size(116, 74);
-            btnXem.TabIndex = 1;
+            btnXem.TabIndex = 4;
             btnXem.Text = "👁️ Xem";
             btnXem.UseVisualStyleBackColor = false;
             // 
@@ -212,10 +272,10 @@
             btnSua.FlatStyle = FlatStyle.Flat;
             btnSua.Font = new Font("Calibri", 12F, FontStyle.Bold);
             btnSua.ForeColor = Color.White;
-            btnSua.Location = new Point(259, 9);
+            btnSua.Location = new Point(260, 75);
             btnSua.Name = "btnSua";
             btnSua.Size = new Size(116, 74);
-            btnSua.TabIndex = 1;
+            btnSua.TabIndex = 5;
             btnSua.Text = "✏️ Sửa";
             btnSua.UseVisualStyleBackColor = false;
             // 
@@ -226,10 +286,10 @@
             btnXoa.FlatStyle = FlatStyle.Flat;
             btnXoa.Font = new Font("Calibri", 12F, FontStyle.Bold);
             btnXoa.ForeColor = Color.White;
-            btnXoa.Location = new Point(134, 9);
+            btnXoa.Location = new Point(136, 75);
             btnXoa.Name = "btnXoa";
             btnXoa.Size = new Size(116, 74);
-            btnXoa.TabIndex = 1;
+            btnXoa.TabIndex = 6;
             btnXoa.Text = "❌ Xóa";
             btnXoa.UseVisualStyleBackColor = false;
             // 
@@ -240,66 +300,22 @@
             btnThem.FlatStyle = FlatStyle.Flat;
             btnThem.Font = new Font("Calibri", 12F, FontStyle.Bold);
             btnThem.ForeColor = Color.White;
-            btnThem.Location = new Point(11, 9);
+            btnThem.Location = new Point(12, 75);
             btnThem.Name = "btnThem";
             btnThem.Size = new Size(116, 74);
-            btnThem.TabIndex = 1;
+            btnThem.TabIndex = 7;
             btnThem.Text = "➕ Thêm";
             btnThem.UseVisualStyleBackColor = false;
-            // 
-            // dgvBanAn
-            // 
-            dgvBanAn.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvBanAn.Location = new Point(12, 96);
-            dgvBanAn.Name = "dgvBanAn";
-            dgvBanAn.RowHeadersWidth = 51;
-            dgvBanAn.Size = new Size(488, 395);
-            dgvBanAn.TabIndex = 0;
-            // 
-            // panel3
-            // 
-            panel3.Anchor = AnchorStyles.None;
-            panel3.Controls.Add(panel7);
-            panel3.Controls.Add(panel6);
-            panel3.Controls.Add(panel5);
-            panel3.Controls.Add(panel4);
-            panel3.Location = new Point(534, 107);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(315, 407);
-            panel3.TabIndex = 1;
-            // 
-            // panel2
-            // 
-            panel2.Anchor = AnchorStyles.None;
-            panel2.Controls.Add(tbTimKiem);
-            panel2.Controls.Add(btnTimKiem);
-            panel2.Location = new Point(534, 12);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(315, 83);
-            panel2.TabIndex = 2;
-            // 
-            // panel1
-            // 
-            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            panel1.Controls.Add(btnXem);
-            panel1.Controls.Add(btnSua);
-            panel1.Controls.Add(btnXoa);
-            panel1.Controls.Add(btnThem);
-            panel1.Controls.Add(dgvBanAn);
-            panel1.Location = new Point(12, 12);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(513, 502);
-            panel1.TabIndex = 3;
             // 
             // BanAn_AD
             // 
             AutoScaleDimensions = new SizeF(9F, 21F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.OldLace;
-            ClientSize = new Size(861, 526);
+            ClientSize = new Size(861, 606);
+            Controls.Add(panel1);
             Controls.Add(panel3);
             Controls.Add(panel2);
-            Controls.Add(panel1);
             Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             FormBorderStyle = FormBorderStyle.None;
             Name = "BanAn_AD";
@@ -335,14 +351,15 @@
         private Label label1;
         private TextBox tbTimKiem;
         private Button btnTimKiem;
-        private Button btnXem;
-        private Button btnSua;
-        private Button btnXoa;
-        private Button btnThem;
         private DataGridView dgvBanAn;
         private Panel panel3;
         private Panel panel2;
         private Panel panel1;
         private TextBox tbTenBan;
+        private Label lblTitle;
+        private Button btnXem;
+        private Button btnSua;
+        private Button btnXoa;
+        private Button btnThem;
     }
 }

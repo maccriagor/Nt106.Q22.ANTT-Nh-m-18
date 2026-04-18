@@ -36,7 +36,6 @@ namespace CafeClient
             pnlNav.Left = btnDoanhThu.Left;
             btnDoanhThu.BackColor = Color.FromArgb(128, 64, 0);
 
-            lblTitle.Text = "Doanh thu";
             this.PnlFormLoader.Controls.Clear();
             DoanhThu_AD formDoanhthu = new DoanhThu_AD() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(formDoanhthu);
@@ -55,7 +54,6 @@ namespace CafeClient
             pnlNav.Left = btnDoanhThu.Left;
             btnDoanhThu.BackColor = Color.FromArgb(255, 128, 0);
 
-            lblTitle.Text = "Doanh thu";
             this.PnlFormLoader.Controls.Clear();
             DoanhThu_AD formDoanhthu = new DoanhThu_AD() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(formDoanhthu);
@@ -68,7 +66,6 @@ namespace CafeClient
             pnlNav.Top = btnMenu.Top;
             btnMenu.BackColor = Color.FromArgb(255, 128, 0);
 
-            lblTitle.Text = "Menu";
             this.PnlFormLoader.Controls.Clear();
             Menu formMenu = new Menu() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(formMenu);
@@ -81,7 +78,6 @@ namespace CafeClient
             pnlNav.Top = btnBanAn.Top;
             btnBanAn.BackColor = Color.FromArgb(255, 128, 0);
 
-            lblTitle.Text = "Sơ đồ bàn ăn";
             this.PnlFormLoader.Controls.Clear();
             BanAn_AD formBanAn = new BanAn_AD() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(formBanAn);
@@ -94,7 +90,6 @@ namespace CafeClient
             pnlNav.Top = btnHoaDon.Top;
             btnHoaDon.BackColor = Color.FromArgb(255, 128, 0);
 
-            lblTitle.Text = "Hóa đơn";
             this.PnlFormLoader.Controls.Clear();
             HoaDon_AD formHoaDon = new HoaDon_AD() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(formHoaDon);
@@ -107,7 +102,6 @@ namespace CafeClient
             pnlNav.Top = btnNhanVien.Top;
             btnNhanVien.BackColor = Color.FromArgb(255, 128, 0);
 
-            lblTitle.Text = "Nhân viên";
             this.PnlFormLoader.Controls.Clear();
             NhanVien_AD formNhanVien = new NhanVien_AD() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(formNhanVien);
@@ -120,7 +114,6 @@ namespace CafeClient
             pnlNav.Top = btnChat.Top;
             btnChat.BackColor = Color.FromArgb(255, 128, 0);
 
-            lblTitle.Text = "Chat";
             this.PnlFormLoader.Controls.Clear();
             Chat formChat = new Chat() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(formChat);
@@ -133,7 +126,6 @@ namespace CafeClient
             pnlNav.Top = btnTaiKhoan.Top;
             btnTaiKhoan.BackColor = Color.FromArgb(255, 128, 0);
 
-            lblTitle.Text = "Tài khoản";
             this.PnlFormLoader.Controls.Clear();
             TaiKhoan formtaikhoan = new TaiKhoan() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(formtaikhoan);
@@ -227,7 +219,6 @@ namespace CafeClient
             pnlNav.Top = btnMaGiamGia.Top;
             btnMaGiamGia.BackColor = Color.FromArgb(255, 128, 0);
 
-            lblTitle.Text = "Mã giảm giá";
             this.PnlFormLoader.Controls.Clear();
             MaGiamGia_AD formtaikhoan = new MaGiamGia_AD() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(formtaikhoan);

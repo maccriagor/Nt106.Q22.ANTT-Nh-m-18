@@ -29,14 +29,11 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
-            dataGridView1 = new DataGridView();
             label7 = new Label();
             label6 = new Label();
             nmSoLuong = new NumericUpDown();
             cbLoaiMonAn = new ComboBox();
             label5 = new Label();
-            panel2 = new Panel();
-            dataGridView2 = new DataGridView();
             panel3 = new Panel();
             groupBox1 = new GroupBox();
             label3 = new Label();
@@ -46,44 +43,43 @@
             button1 = new Button();
             cbSoBan = new ComboBox();
             label1 = new Label();
-            btnXoa = new Button();
-            btnThem = new Button();
             flowLayoutPanel_Table = new FlowLayoutPanel();
             label8 = new Label();
+            btnXoa = new Button();
+            btnThem = new Button();
             btnGuiOrder = new Button();
             button3 = new Button();
             cbBanMuonChuyenDen = new ComboBox();
+            panel11 = new Panel();
+            lblTitle = new Label();
+            panel4 = new Panel();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            dataGridView1 = new DataGridView();
+            dataGridView2 = new DataGridView();
             panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nmSoLuong).BeginInit();
-            panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
             panel3.SuspendLayout();
             groupBox1.SuspendLayout();
             flowLayoutPanel_Table.SuspendLayout();
+            panel11.SuspendLayout();
+            panel4.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
             SuspendLayout();
             // 
             // panel1
             // 
-            panel1.Controls.Add(dataGridView1);
             panel1.Controls.Add(label7);
             panel1.Controls.Add(label6);
             panel1.Controls.Add(nmSoLuong);
             panel1.Controls.Add(cbLoaiMonAn);
             panel1.Controls.Add(label5);
-            panel1.Location = new Point(391, 12);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(399, 68);
             panel1.Name = "panel1";
-            panel1.Size = new Size(458, 247);
+            panel1.Size = new Size(462, 71);
             panel1.TabIndex = 0;
-            // 
-            // dataGridView1
-            // 
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(3, 66);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(452, 178);
-            dataGridView1.TabIndex = 4;
             // 
             // label7
             // 
@@ -131,30 +127,15 @@
             label5.TabIndex = 0;
             label5.Text = "Menu món ăn";
             // 
-            // panel2
-            // 
-            panel2.Controls.Add(dataGridView2);
-            panel2.Location = new Point(391, 265);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(458, 189);
-            panel2.TabIndex = 0;
-            // 
-            // dataGridView2
-            // 
-            dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView2.Location = new Point(3, 3);
-            dataGridView2.Name = "dataGridView2";
-            dataGridView2.RowHeadersWidth = 51;
-            dataGridView2.Size = new Size(452, 183);
-            dataGridView2.TabIndex = 4;
-            // 
             // panel3
             // 
             panel3.Controls.Add(groupBox1);
             panel3.Controls.Add(label1);
-            panel3.Location = new Point(9, 12);
+            panel3.Controls.Add(flowLayoutPanel_Table);
+            panel3.Dock = DockStyle.Left;
+            panel3.Location = new Point(0, 68);
             panel3.Name = "panel3";
-            panel3.Size = new Size(376, 130);
+            panel3.Size = new Size(399, 460);
             panel3.TabIndex = 0;
             // 
             // groupBox1
@@ -169,7 +150,7 @@
             groupBox1.ForeColor = Color.FromArgb(128, 64, 0);
             groupBox1.Location = new Point(3, 6);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(372, 121);
+            groupBox1.Size = new Size(393, 121);
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
             groupBox1.Text = "Thông tin bàn ăn";
@@ -248,40 +229,12 @@
             label1.Size = new Size(0, 21);
             label1.TabIndex = 0;
             // 
-            // btnXoa
-            // 
-            btnXoa.BackColor = Color.FromArgb(128, 64, 0);
-            btnXoa.FlatAppearance.BorderSize = 0;
-            btnXoa.FlatStyle = FlatStyle.Flat;
-            btnXoa.Font = new Font("Calibri", 12F, FontStyle.Bold);
-            btnXoa.ForeColor = Color.White;
-            btnXoa.Location = new Point(548, 460);
-            btnXoa.Name = "btnXoa";
-            btnXoa.Size = new Size(144, 54);
-            btnXoa.TabIndex = 2;
-            btnXoa.Text = "❌ Xóa";
-            btnXoa.UseVisualStyleBackColor = false;
-            // 
-            // btnThem
-            // 
-            btnThem.BackColor = Color.FromArgb(128, 64, 0);
-            btnThem.FlatAppearance.BorderSize = 0;
-            btnThem.FlatStyle = FlatStyle.Flat;
-            btnThem.Font = new Font("Calibri", 12F, FontStyle.Bold);
-            btnThem.ForeColor = Color.White;
-            btnThem.Location = new Point(394, 460);
-            btnThem.Name = "btnThem";
-            btnThem.Size = new Size(144, 54);
-            btnThem.TabIndex = 3;
-            btnThem.Text = "➕ Thêm";
-            btnThem.UseVisualStyleBackColor = false;
-            // 
             // flowLayoutPanel_Table
             // 
             flowLayoutPanel_Table.Controls.Add(label8);
-            flowLayoutPanel_Table.Location = new Point(12, 148);
+            flowLayoutPanel_Table.Location = new Point(9, 133);
             flowLayoutPanel_Table.Name = "flowLayoutPanel_Table";
-            flowLayoutPanel_Table.Size = new Size(376, 306);
+            flowLayoutPanel_Table.Size = new Size(387, 327);
             flowLayoutPanel_Table.TabIndex = 0;
             // 
             // label8
@@ -295,14 +248,45 @@
             label8.TabIndex = 1;
             label8.Text = "(Sơ đồ bàn trực quan)";
             // 
+            // btnXoa
+            // 
+            btnXoa.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnXoa.BackColor = Color.FromArgb(128, 64, 0);
+            btnXoa.FlatAppearance.BorderSize = 0;
+            btnXoa.FlatStyle = FlatStyle.Flat;
+            btnXoa.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            btnXoa.ForeColor = Color.White;
+            btnXoa.Location = new Point(551, 10);
+            btnXoa.Name = "btnXoa";
+            btnXoa.Size = new Size(144, 54);
+            btnXoa.TabIndex = 2;
+            btnXoa.Text = "❌ Xóa";
+            btnXoa.UseVisualStyleBackColor = false;
+            // 
+            // btnThem
+            // 
+            btnThem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnThem.BackColor = Color.FromArgb(128, 64, 0);
+            btnThem.FlatAppearance.BorderSize = 0;
+            btnThem.FlatStyle = FlatStyle.Flat;
+            btnThem.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            btnThem.ForeColor = Color.White;
+            btnThem.Location = new Point(397, 10);
+            btnThem.Name = "btnThem";
+            btnThem.Size = new Size(144, 54);
+            btnThem.TabIndex = 3;
+            btnThem.Text = "➕ Thêm";
+            btnThem.UseVisualStyleBackColor = false;
+            // 
             // btnGuiOrder
             // 
+            btnGuiOrder.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             btnGuiOrder.BackColor = Color.FromArgb(128, 64, 0);
             btnGuiOrder.FlatAppearance.BorderSize = 0;
             btnGuiOrder.FlatStyle = FlatStyle.Flat;
             btnGuiOrder.Font = new Font("Calibri", 12F, FontStyle.Bold);
             btnGuiOrder.ForeColor = Color.White;
-            btnGuiOrder.Location = new Point(702, 460);
+            btnGuiOrder.Location = new Point(705, 10);
             btnGuiOrder.Name = "btnGuiOrder";
             btnGuiOrder.Size = new Size(144, 54);
             btnGuiOrder.TabIndex = 2;
@@ -316,7 +300,7 @@
             button3.FlatStyle = FlatStyle.Flat;
             button3.Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             button3.ForeColor = Color.White;
-            button3.Location = new Point(15, 459);
+            button3.Location = new Point(9, 9);
             button3.Name = "button3";
             button3.Size = new Size(142, 29);
             button3.TabIndex = 3;
@@ -326,49 +310,116 @@
             // cbBanMuonChuyenDen
             // 
             cbBanMuonChuyenDen.FormattingEnabled = true;
-            cbBanMuonChuyenDen.Location = new Point(15, 492);
+            cbBanMuonChuyenDen.Location = new Point(9, 42);
             cbBanMuonChuyenDen.Name = "cbBanMuonChuyenDen";
             cbBanMuonChuyenDen.Size = new Size(142, 29);
             cbBanMuonChuyenDen.TabIndex = 0;
+            // 
+            // panel11
+            // 
+            panel11.Controls.Add(lblTitle);
+            panel11.Dock = DockStyle.Top;
+            panel11.Location = new Point(0, 0);
+            panel11.Name = "panel11";
+            panel11.Size = new Size(861, 68);
+            panel11.TabIndex = 11;
+            // 
+            // lblTitle
+            // 
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Calibri", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTitle.ForeColor = Color.Brown;
+            lblTitle.Location = new Point(12, 9);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(335, 49);
+            lblTitle.TabIndex = 11;
+            lblTitle.Text = "Đặt món và bàn ăn";
+            // 
+            // panel4
+            // 
+            panel4.Controls.Add(button3);
+            panel4.Controls.Add(cbBanMuonChuyenDen);
+            panel4.Controls.Add(btnGuiOrder);
+            panel4.Controls.Add(btnThem);
+            panel4.Controls.Add(btnXoa);
+            panel4.Dock = DockStyle.Bottom;
+            panel4.Location = new Point(0, 528);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(861, 78);
+            panel4.TabIndex = 12;
+            // 
+            // tableLayoutPanel1
+            // 
+            tableLayoutPanel1.ColumnCount = 1;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel1.Controls.Add(dataGridView1, 0, 0);
+            tableLayoutPanel1.Controls.Add(dataGridView2, 0, 1);
+            tableLayoutPanel1.Dock = DockStyle.Fill;
+            tableLayoutPanel1.Location = new Point(399, 139);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 2;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel1.Size = new Size(462, 389);
+            tableLayoutPanel1.TabIndex = 13;
+            // 
+            // dataGridView1
+            // 
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Dock = DockStyle.Fill;
+            dataGridView1.Location = new Point(3, 3);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowHeadersWidth = 51;
+            dataGridView1.Size = new Size(456, 188);
+            dataGridView1.TabIndex = 0;
+            // 
+            // dataGridView2
+            // 
+            dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView2.Dock = DockStyle.Fill;
+            dataGridView2.Location = new Point(3, 197);
+            dataGridView2.Name = "dataGridView2";
+            dataGridView2.RowHeadersWidth = 51;
+            dataGridView2.Size = new Size(456, 189);
+            dataGridView2.TabIndex = 0;
             // 
             // Order_Ban
             // 
             AutoScaleDimensions = new SizeF(9F, 21F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.OldLace;
-            ClientSize = new Size(861, 526);
-            Controls.Add(flowLayoutPanel_Table);
-            Controls.Add(btnGuiOrder);
-            Controls.Add(btnXoa);
-            Controls.Add(btnThem);
-            Controls.Add(button3);
-            Controls.Add(cbBanMuonChuyenDen);
-            Controls.Add(panel2);
-            Controls.Add(panel3);
+            ClientSize = new Size(861, 606);
+            Controls.Add(tableLayoutPanel1);
             Controls.Add(panel1);
+            Controls.Add(panel3);
+            Controls.Add(panel4);
+            Controls.Add(panel11);
             Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             FormBorderStyle = FormBorderStyle.None;
             Name = "Order_Ban";
             Text = "Order_Ban";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ((System.ComponentModel.ISupportInitialize)nmSoLuong).EndInit();
-            panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
             panel3.ResumeLayout(false);
             panel3.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             flowLayoutPanel_Table.ResumeLayout(false);
             flowLayoutPanel_Table.PerformLayout();
+            panel11.ResumeLayout(false);
+            panel11.PerformLayout();
+            panel4.ResumeLayout(false);
+            tableLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
         private Panel panel1;
-        private Panel panel2;
         private Panel panel3;
         private Panel panel4;
         private Label label1;
@@ -381,18 +432,21 @@
         private NumericUpDown nmSoLuong;
         private ComboBox cbLoaiMonAn;
         private Label label5;
-        private DataGridView dataGridView1;
         private ListView listView1;
         private Label label7;
         private Button btnXoa;
         private Button btnThem;
         private FlowLayoutPanel flowLayoutPanel_Table;
-        private DataGridView dataGridView2;
         private Button button1;
         private Label label8;
         private Button btnGuiOrder;
         private Button button2;
         private Button button3;
         private ComboBox cbBanMuonChuyenDen;
+        private Panel panel11;
+        private Label lblTitle;
+        private TableLayoutPanel tableLayoutPanel1;
+        private DataGridView dataGridView1;
+        private DataGridView dataGridView2;
     }
 }

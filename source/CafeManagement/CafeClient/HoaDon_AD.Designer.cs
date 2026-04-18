@@ -30,11 +30,12 @@
         {
             textBox1 = new TextBox();
             panel2 = new Panel();
+            lblTitle = new Label();
+            btnXem = new Button();
+            btnSua = new Button();
             tbTimKiem = new TextBox();
             btnTimKiem = new Button();
             panel1 = new Panel();
-            btnXem = new Button();
-            btnSua = new Button();
             dgvHoaDon = new DataGridView();
             tbMaMon = new TextBox();
             label1 = new Label();
@@ -68,43 +69,27 @@
             // 
             // panel2
             // 
+            panel2.Controls.Add(lblTitle);
+            panel2.Controls.Add(btnXem);
+            panel2.Controls.Add(btnSua);
             panel2.Controls.Add(tbTimKiem);
             panel2.Controls.Add(btnTimKiem);
-            panel2.Location = new Point(421, 12);
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
-            panel2.Size = new Size(428, 83);
+            panel2.Size = new Size(861, 147);
             panel2.TabIndex = 5;
             // 
-            // tbTimKiem
+            // lblTitle
             // 
-            tbTimKiem.Location = new Point(1, 28);
-            tbTimKiem.Name = "tbTimKiem";
-            tbTimKiem.Size = new Size(315, 28);
-            tbTimKiem.TabIndex = 0;
-            // 
-            // btnTimKiem
-            // 
-            btnTimKiem.BackColor = Color.FromArgb(128, 64, 0);
-            btnTimKiem.FlatAppearance.BorderSize = 0;
-            btnTimKiem.FlatStyle = FlatStyle.Flat;
-            btnTimKiem.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnTimKiem.ForeColor = Color.White;
-            btnTimKiem.Location = new Point(327, 12);
-            btnTimKiem.Name = "btnTimKiem";
-            btnTimKiem.Size = new Size(92, 57);
-            btnTimKiem.TabIndex = 1;
-            btnTimKiem.Text = "🔍 Tìm";
-            btnTimKiem.UseVisualStyleBackColor = false;
-            // 
-            // panel1
-            // 
-            panel1.Controls.Add(btnXem);
-            panel1.Controls.Add(btnSua);
-            panel1.Controls.Add(dgvHoaDon);
-            panel1.Location = new Point(12, 12);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(513, 502);
-            panel1.TabIndex = 6;
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Calibri", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTitle.ForeColor = Color.Brown;
+            lblTitle.Location = new Point(12, 9);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(167, 49);
+            lblTitle.TabIndex = 10;
+            lblTitle.Text = "Hóa đơn";
             // 
             // btnXem
             // 
@@ -113,7 +98,7 @@
             btnXem.FlatStyle = FlatStyle.Flat;
             btnXem.Font = new Font("Calibri", 12F, FontStyle.Bold);
             btnXem.ForeColor = Color.White;
-            btnXem.Location = new Point(12, 9);
+            btnXem.Location = new Point(12, 73);
             btnXem.Name = "btnXem";
             btnXem.Size = new Size(139, 74);
             btnXem.TabIndex = 1;
@@ -127,20 +112,53 @@
             btnSua.FlatStyle = FlatStyle.Flat;
             btnSua.Font = new Font("Calibri", 12F, FontStyle.Bold);
             btnSua.ForeColor = Color.White;
-            btnSua.Location = new Point(161, 9);
+            btnSua.Location = new Point(164, 73);
             btnSua.Name = "btnSua";
             btnSua.Size = new Size(139, 74);
             btnSua.TabIndex = 1;
             btnSua.Text = "🔁 Làm mới";
             btnSua.UseVisualStyleBackColor = false;
             // 
+            // tbTimKiem
+            // 
+            tbTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            tbTimKiem.Location = new Point(546, 87);
+            tbTimKiem.Name = "tbTimKiem";
+            tbTimKiem.Size = new Size(200, 28);
+            tbTimKiem.TabIndex = 0;
+            // 
+            // btnTimKiem
+            // 
+            btnTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btnTimKiem.BackColor = Color.FromArgb(128, 64, 0);
+            btnTimKiem.FlatAppearance.BorderSize = 0;
+            btnTimKiem.FlatStyle = FlatStyle.Flat;
+            btnTimKiem.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnTimKiem.ForeColor = Color.White;
+            btnTimKiem.Location = new Point(757, 71);
+            btnTimKiem.Name = "btnTimKiem";
+            btnTimKiem.Size = new Size(92, 57);
+            btnTimKiem.TabIndex = 1;
+            btnTimKiem.Text = "🔍 Tìm";
+            btnTimKiem.UseVisualStyleBackColor = false;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(dgvHoaDon);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 147);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(546, 459);
+            panel1.TabIndex = 6;
+            // 
             // dgvHoaDon
             // 
+            dgvHoaDon.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvHoaDon.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvHoaDon.Location = new Point(12, 96);
+            dgvHoaDon.Location = new Point(12, 11);
             dgvHoaDon.Name = "dgvHoaDon";
             dgvHoaDon.RowHeadersWidth = 51;
-            dgvHoaDon.Size = new Size(488, 395);
+            dgvHoaDon.Size = new Size(531, 436);
             dgvHoaDon.TabIndex = 0;
             // 
             // tbMaMon
@@ -252,9 +270,10 @@
             panel3.Controls.Add(panel6);
             panel3.Controls.Add(panel5);
             panel3.Controls.Add(panel4);
-            panel3.Location = new Point(534, 107);
+            panel3.Dock = DockStyle.Right;
+            panel3.Location = new Point(546, 147);
             panel3.Name = "panel3";
-            panel3.Size = new Size(315, 407);
+            panel3.Size = new Size(315, 459);
             panel3.TabIndex = 4;
             // 
             // HoaDon_AD
@@ -262,10 +281,10 @@
             AutoScaleDimensions = new SizeF(9F, 21F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.OldLace;
-            ClientSize = new Size(861, 526);
-            Controls.Add(panel2);
+            ClientSize = new Size(861, 606);
             Controls.Add(panel1);
             Controls.Add(panel3);
+            Controls.Add(panel2);
             Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             FormBorderStyle = FormBorderStyle.None;
             Name = "HoaDon_AD";
@@ -309,5 +328,6 @@
         private Panel panel7;
         private Label label4;
         private Panel panel3;
+        private Label lblTitle;
     }
 }
