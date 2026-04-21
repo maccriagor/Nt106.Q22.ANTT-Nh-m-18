@@ -10,7 +10,10 @@ namespace CafeServer.Services
     {
         public static UserService User = new UserService();
 
-        // Sau này có thêm Food, bạn chỉ cần thêm 1 dòng:
+        public static RevenueService Revenue = new RevenueService();
+
+        public static DiscountService Discount = new DiscountService();
+       
         // public static FoodService Food = new FoodService();
 
         // public static TableService Table = new TableService();

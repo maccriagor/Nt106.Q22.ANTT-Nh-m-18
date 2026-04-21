@@ -37,7 +37,7 @@
             // Time
             // 
             Time.AutoSize = true;
-            Time.Location = new Point(60, 5);
+            Time.Location = new Point(10, 4);
             Time.Name = "Time";
             Time.Size = new Size(44, 21);
             Time.TabIndex = 0;
@@ -46,7 +46,7 @@
             // Date
             // 
             Date.AutoSize = true;
-            Date.Location = new Point(62, 26);
+            Date.Location = new Point(11, 27);
             Date.Name = "Date";
             Date.Size = new Size(42, 21);
             Date.TabIndex = 0;
@@ -61,12 +61,12 @@
             // 
             AutoScaleDimensions = new SizeF(9F, 21F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.OldLace;
+            BackColor = Color.FromArgb(128, 64, 0);
             ClientSize = new Size(250, 53);
             Controls.Add(Date);
             Controls.Add(Time);
             Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            ForeColor = Color.FromArgb(128, 64, 0);
+            ForeColor = Color.White;
             FormBorderStyle = FormBorderStyle.None;
             Name = "ThoiGian";
             Text = "ThoiGian";

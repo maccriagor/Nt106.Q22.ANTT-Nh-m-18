@@ -1,5 +1,6 @@
 ﻿using CafeCommon;
 using CafeServer.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -195,6 +196,39 @@ namespace CafeServer
 
                     bool isOk = await ServiceManager.User.UpdateProfileAsync(uid, newName, newEmail);
                     return isOk ? "UPDATE_SUCCESS|Cập nhật thành công!" : "UPDATE_FAIL|Lỗi cập nhật Database!";
+
+                case "GET_REVENUE":
+                    // Gói tin: GET_REVENUE|2026-04-20|2026-04-21
+                    DateTime from = DateTime.Parse(parts[1]).Date;
+                    DateTime to = DateTime.Parse(parts[2]).Date.AddDays(1).AddTicks(-1); // Chạy đến cuối ngày
+
+                    var reportData = await ServiceManager.Revenue.GetRevenueByTableAsync(from, to);
+
+                    // Serialize danh sách thành JSON string
+                    string jsonResponse = JsonConvert.SerializeObject(reportData);
+                    return "REVENUE_SUCCESS|" + jsonResponse;
+
+                case "GET_DISCOUNTS":
+                    var list = await ServiceManager.Discount.GetAllAsync();
+                    return "SUCCESS|" + JsonConvert.SerializeObject(list);
+
+                case "ADD_DISCOUNT":
+                    var newKM = JsonConvert.DeserializeObject<KhuyenMai>(parts[1]);
+                    bool isAdded = await ServiceManager.Discount.AddAsync(newKM);
+                    return isAdded ? "SUCCESS|Thêm thành công" : "FAIL|Lỗi khi thêm";
+
+                case "DELETE_DISCOUNT":
+                    int idDel = int.Parse(parts[1]);
+                    bool isDeleted = await ServiceManager.Discount.DeleteAsync(idDel);
+                    return isDeleted ? "SUCCESS|Đã xóa" : "FAIL|Không thể xóa";
+
+                case "UPDATE_DISCOUNT":
+                    // Dữ liệu: UPDATE_DISCOUNT|{JSON_KHUYEN_MAI}
+                    var kmUpdate = JsonConvert.DeserializeObject<KhuyenMai>(parts[1]);
+                    bool isUpdated_discount = await ServiceManager.Discount.UpdateAsync(kmUpdate);
+                    return isUpdated_discount ? "SUCCESS|Cập nhật thành công!" : "FAIL|Cập nhật thất bại!";
+
+
                 default:
                     return "UNKNOWN_COMMAND";
             }

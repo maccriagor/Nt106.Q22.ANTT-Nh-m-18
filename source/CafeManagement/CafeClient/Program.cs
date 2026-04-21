@@ -14,7 +14,7 @@
 
 
 
-            Application.Run(new Login()); //---> ae thay đổi form thành form mà ae muốn mở lên đầu tiên
+            Application.Run(new AdminMain()); //---> ae thay đổi form thành form mà ae muốn mở lên đầu tiên
         }
     }
 }

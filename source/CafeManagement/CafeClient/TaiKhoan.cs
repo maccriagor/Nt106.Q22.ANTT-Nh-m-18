@@ -47,6 +47,7 @@ namespace CafeClient
         {
             txtfullname.Text = UserSession.HoTen;
             txtusername.Text = UserSession.TenDangNhap;
+            txtSDT.Text = UserSession.SDT;
             txtEmail.Text = UserSession.Email;
             txtRole.Text = UserSession.VaiTro;
         }
