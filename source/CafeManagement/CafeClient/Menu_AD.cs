@@ -23,7 +23,7 @@ namespace CafeClient
 
         private async void Menu_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         private async Task LoadMenuData()
@@ -218,6 +218,11 @@ namespace CafeClient
                     FillMenuToFields(item);
                 }
             }
+        }
+
+        private void tbTimKiem_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
