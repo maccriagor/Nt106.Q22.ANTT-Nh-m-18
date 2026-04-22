@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(KitchenMain));
             panel1 = new Panel();
+            panel3 = new Panel();
             pnlNav = new Panel();
             btnLogout = new Button();
             btnTaiKhoan = new Button();
@@ -41,8 +42,6 @@
             AdminName = new Label();
             pictureBox2 = new PictureBox();
             PnlFormLoader = new Panel();
-            lblTitle = new Label();
-            panel3 = new Panel();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
@@ -51,6 +50,7 @@
             // panel1
             // 
             panel1.BackColor = Color.FromArgb(128, 64, 0);
+            panel1.Controls.Add(panel3);
             panel1.Controls.Add(pnlNav);
             panel1.Controls.Add(btnLogout);
             panel1.Controls.Add(btnTaiKhoan);
@@ -64,6 +64,15 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(209, 606);
             panel1.TabIndex = 6;
+            // 
+            // panel3
+            // 
+            panel3.Dock = DockStyle.Bottom;
+            panel3.Location = new Point(0, 511);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(209, 53);
+            panel3.TabIndex = 9;
+            panel3.Paint += panel3_Paint;
             // 
             // pnlNav
             // 
@@ -194,29 +203,11 @@
             // PnlFormLoader
             // 
             PnlFormLoader.BackColor = Color.White;
-            PnlFormLoader.Location = new Point(209, 80);
+            PnlFormLoader.Dock = DockStyle.Fill;
+            PnlFormLoader.Location = new Point(209, 0);
             PnlFormLoader.Name = "PnlFormLoader";
-            PnlFormLoader.Size = new Size(861, 526);
+            PnlFormLoader.Size = new Size(861, 606);
             PnlFormLoader.TabIndex = 7;
-            // 
-            // lblTitle
-            // 
-            lblTitle.AutoSize = true;
-            lblTitle.Font = new Font("Calibri", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTitle.ForeColor = Color.Brown;
-            lblTitle.Location = new Point(228, 16);
-            lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(254, 49);
-            lblTitle.TabIndex = 8;
-            lblTitle.Text = "Quản lý Order";
-            // 
-            // panel3
-            // 
-            panel3.Location = new Point(803, 12);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(250, 53);
-            panel3.TabIndex = 9;
-            panel3.Paint += panel3_Paint;
             // 
             // KitchenMain
             // 
@@ -224,10 +215,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.OldLace;
             ClientSize = new Size(1070, 606);
-            Controls.Add(panel3);
-            Controls.Add(panel1);
             Controls.Add(PnlFormLoader);
-            Controls.Add(lblTitle);
+            Controls.Add(panel1);
             Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             ForeColor = Color.White;
             Name = "KitchenMain";
@@ -238,7 +227,6 @@
             panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -255,7 +243,6 @@
         private Label AdminName;
         private PictureBox pictureBox2;
         private Panel PnlFormLoader;
-        private Label lblTitle;
         private Panel panel3;
     }
 }

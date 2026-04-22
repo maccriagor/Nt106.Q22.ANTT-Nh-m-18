@@ -22,7 +22,6 @@ namespace CafeClient
             pnlNav.Left = btnQlyOrder.Left;
             btnQlyOrder.BackColor = Color.FromArgb(128, 64, 0);
 
-            lblTitle.Text = "Quản lý Order";
             this.PnlFormLoader.Controls.Clear();
             QuanLyOrder_BEP form = new QuanLyOrder_BEP() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(form);
@@ -40,7 +39,6 @@ namespace CafeClient
             pnlNav.Top = btnQlyOrder.Top;
             btnQlyOrder.BackColor = Color.FromArgb(128, 64, 0);
 
-            lblTitle.Text = "Quản lý Order";
             this.PnlFormLoader.Controls.Clear();
             QuanLyOrder_BEP form = new QuanLyOrder_BEP() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(form);
@@ -53,7 +51,6 @@ namespace CafeClient
             pnlNav.Top = btnCTOrder.Top;
             btnCTOrder.BackColor = Color.FromArgb(128, 64, 0);
 
-            lblTitle.Text = "Chi tiết Order";
             this.PnlFormLoader.Controls.Clear();
             ChiTietOrder_BEP form = new ChiTietOrder_BEP() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(form);
@@ -66,7 +63,6 @@ namespace CafeClient
             pnlNav.Top = btnThongKe.Top;
             btnThongKe.BackColor = Color.FromArgb(128, 64, 0);
 
-            lblTitle.Text = "Chi tiết Order";
             this.PnlFormLoader.Controls.Clear();
             ThongKe_BEP form = new ThongKe_BEP() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(form);
@@ -79,7 +75,6 @@ namespace CafeClient
             pnlNav.Top = btnChat.Top;
             btnChat.BackColor = Color.FromArgb(255, 128, 0);
 
-            lblTitle.Text = "Chat";
             this.PnlFormLoader.Controls.Clear();
             Chat form = new Chat() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(form);
@@ -92,7 +87,6 @@ namespace CafeClient
             pnlNav.Top = btnTaiKhoan.Top;
             btnTaiKhoan.BackColor = Color.FromArgb(255, 128, 0);
 
-            lblTitle.Text = "Tài khoản";
             this.PnlFormLoader.Controls.Clear();
             TaiKhoan form = new TaiKhoan() { Dock = DockStyle.Fill, TopLevel = false, TopMost = true };
             this.PnlFormLoader.Controls.Add(form);

@@ -1,5 +1,6 @@
 ﻿using CafeCommon;
 using CafeServer.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace CafeServer
         private async void HandleClient(TcpClient client)
         {
             using NetworkStream stream = client.GetStream();
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[8192];
 
             // Biến nhớ ID của người dùng đang kết nối Socket
             int currentUserId = 0;
@@ -60,7 +61,7 @@ namespace CafeServer
                     
                     Console.WriteLine($"[CLIENT SAYS]: {request}");
 
-                    string response = await ProcessRequest(request);
+                    string response = await ProcessRequest(request, currentUserId);
 
                     // Nếu lệnh LOGIN thành công --> ghi nhớ ID vào biến currentUserId
                     if (response.StartsWith("LOGIN_SUCCESS"))
@@ -95,7 +96,7 @@ namespace CafeServer
             }
         }
 
-        private async Task<string> ProcessRequest(string request)
+        private async Task<string> ProcessRequest(string request, int currentUserId)
         {
             // Định dạng gói tin: COMMAND|DATA1|DATA2|...
             string[] parts = request.Split('|');
@@ -195,8 +196,70 @@ namespace CafeServer
 
                     bool isOk = await ServiceManager.User.UpdateProfileAsync(uid, newName, newEmail);
                     return isOk ? "UPDATE_SUCCESS|Cập nhật thành công!" : "UPDATE_FAIL|Lỗi cập nhật Database!";
+
+                case "GET_ALL_EMPLOYEES":
+                    var requester = await ServiceManager.User.GetUserByIdAsync(currentUserId);
+                    if (requester != null && requester.VaiTro == "Admin")
+                    {
+                        var employees = await ServiceManager.User.GetAllEmployeesAsync();
+                        return JsonConvert.SerializeObject(employees);
+                    }
+                    return "ERROR|Quyền truy cập bị từ chối";
+
+                case "DELETE_EMPLOYEE": // Gói tin: DELETE_EMPLOYEE|id
+                    await ServiceManager.User.DeleteEmployeeAsync(int.Parse(parts[1]));
+                    return "SUCCESS";
+
+                case "UPDATE_EMPLOYEE": // Gói tin: UPDATE_EMPLOYEE|id|user|name|email|pass|role
+                    await ServiceManager.User.UpdateEmployeeBasicAsync(int.Parse(parts[1]), parts[2], parts[3], parts[4], parts[5], parts[6]);
+                    return "SUCCESS";
+
+                case "SEARCH_EMPLOYEE":
+                    // Gói tin : SEARCH_EMPLOYEE|tên_cần_tìm
+                    if (parts.Length < 2) return "[]"; // Trả về mảng rỗng nếu thiếu từ khóa
+                    var searchResult = await ServiceManager.User.SearchEmployeesByNameAsync(parts[1]);
+                    return JsonConvert.SerializeObject(searchResult);
+
+
+                case "GET_ALL_MENU":
+                    var allMenu = await ServiceManager.Menu.GetAllMenuAsync();
+                    return JsonConvert.SerializeObject(allMenu);
+
+                case "ADD_MENU":
+                    // Định dạng: ADD_MENU|MaLoaiMon|TenMon|MoTa|Gia|TrangThai
+                    var newItem = new Menu
+                    {
+                        MaLoaiMon = int.Parse(parts[1]),
+                        TenMon = parts[2],
+                        MoTa = parts[3],
+                        Gia = decimal.Parse(parts[4]),
+                        TrangThai = parts[5]
+                    };
+                    return await ServiceManager.Menu.AddMenuAsync(newItem) ? "SUCCESS" : "FAIL";
+
+                case "UPDATE_MENU":
+                    // Định dạng: UPDATE_MENU|MaMon|MaLoaiMon|TenMon|MoTa|Gia|TrangThai
+                    var upItem = new Menu
+                    {
+                        MaMon = int.Parse(parts[1]),
+                        MaLoaiMon = int.Parse(parts[2]),
+                        TenMon = parts[3],
+                        MoTa = parts[4],
+                        Gia = decimal.Parse(parts[5]),
+                        TrangThai = parts[6]
+                    };
+                    return await ServiceManager.Menu.UpdateMenuAsync(upItem) ? "SUCCESS" : "FAIL";
+
+                case "DELETE_MENU":
+                    return await ServiceManager.Menu.DeleteMenuAsync(int.Parse(parts[1])) ? "SUCCESS" : "FAIL";
+
+                case "SEARCH_MENU":
+                    var searchRes = await ServiceManager.Menu.SearchMenuByNameAsync(parts[1]);
+                    return JsonConvert.SerializeObject(searchRes);
+
                 default:
                     return "UNKNOWN_COMMAND";
+
             }
         }
     }

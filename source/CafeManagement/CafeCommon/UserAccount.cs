@@ -37,5 +37,8 @@ namespace CafeCommon
 
         [Column("email")]
         public string Email { get; set; }
+
+        [Column("ngaytao")]
+        public DateTime? NgayTao { get; set; } 
     }
 }
