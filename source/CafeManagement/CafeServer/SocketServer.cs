@@ -235,7 +235,8 @@ namespace CafeServer
                         Gia = decimal.Parse(parts[4]),
                         TrangThai = parts[5]
                     };
-                    return await ServiceManager.Menu.AddMenuAsync(newItem) ? "SUCCESS" : "FAIL";
+                    string result = await ServiceManager.Menu.AddMenuAsync(newItem);
+                    return result;
 
                 case "UPDATE_MENU":
                     // Định dạng: UPDATE_MENU|MaMon|MaLoaiMon|TenMon|MoTa|Gia|TrangThai
