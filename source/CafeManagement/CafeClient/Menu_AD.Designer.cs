@@ -32,6 +32,7 @@
             dgvFood = new DataGridView();
             panel3 = new Panel();
             panel8 = new Panel();
+            cbTrangThai = new ComboBox();
             label5 = new Label();
             panel7 = new Panel();
             nmGiaBan = new NumericUpDown();
@@ -53,12 +54,9 @@
             btnTimKiem = new Button();
             lblTitle = new Label();
             btnXem = new Button();
-            textBox1 = new TextBox();
             btnSua = new Button();
-            button3 = new Button();
             btnXoa = new Button();
             btnThem = new Button();
-            cbTrangThai = new ComboBox();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvFood).BeginInit();
             panel3.SuspendLayout();
@@ -113,6 +111,14 @@
             panel8.Name = "panel8";
             panel8.Size = new Size(307, 62);
             panel8.TabIndex = 0;
+            // 
+            // cbTrangThai
+            // 
+            cbTrangThai.FormattingEnabled = true;
+            cbTrangThai.Location = new Point(3, 27);
+            cbTrangThai.Name = "cbTrangThai";
+            cbTrangThai.Size = new Size(296, 29);
+            cbTrangThai.TabIndex = 1;
             // 
             // label5
             // 
@@ -268,9 +274,7 @@
             panel9.Controls.Add(btnTimKiem);
             panel9.Controls.Add(lblTitle);
             panel9.Controls.Add(btnXem);
-            panel9.Controls.Add(textBox1);
             panel9.Controls.Add(btnSua);
-            panel9.Controls.Add(button3);
             panel9.Controls.Add(btnXoa);
             panel9.Controls.Add(btnThem);
             panel9.Dock = DockStyle.Top;
@@ -327,14 +331,6 @@
             btnXem.Text = "👁️ Xem";
             btnXem.UseVisualStyleBackColor = false;
             // 
-            // textBox1
-            // 
-            textBox1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            textBox1.Location = new Point(1208, 149);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(201, 28);
-            textBox1.TabIndex = 0;
-            // 
             // btnSua
             // 
             btnSua.BackColor = Color.FromArgb(128, 64, 0);
@@ -348,21 +344,6 @@
             btnSua.TabIndex = 1;
             btnSua.Text = "✏️ Sửa";
             btnSua.UseVisualStyleBackColor = false;
-            // 
-            // button3
-            // 
-            button3.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button3.BackColor = Color.FromArgb(128, 64, 0);
-            button3.FlatAppearance.BorderSize = 0;
-            button3.FlatStyle = FlatStyle.Flat;
-            button3.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button3.ForeColor = Color.White;
-            button3.Location = new Point(1417, 134);
-            button3.Name = "button3";
-            button3.Size = new Size(92, 57);
-            button3.TabIndex = 1;
-            button3.Text = "🔍 Tìm";
-            button3.UseVisualStyleBackColor = false;
             // 
             // btnXoa
             // 
@@ -391,14 +372,6 @@
             btnThem.TabIndex = 1;
             btnThem.Text = "➕ Thêm";
             btnThem.UseVisualStyleBackColor = false;
-            // 
-            // cbTrangThai
-            // 
-            cbTrangThai.FormattingEnabled = true;
-            cbTrangThai.Location = new Point(3, 27);
-            cbTrangThai.Name = "cbTrangThai";
-            cbTrangThai.Size = new Size(296, 29);
-            cbTrangThai.TabIndex = 1;
             // 
             // Menu
             // 
@@ -458,9 +431,7 @@
         private Panel panel9;
         private Label lblTitle;
         private Button btnXem;
-        private TextBox textBox1;
         private Button btnSua;
-        private Button button3;
         private Button btnXoa;
         private Button btnThem;
         private TextBox tbTimKiem;

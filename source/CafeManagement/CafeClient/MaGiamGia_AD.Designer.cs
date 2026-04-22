@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             dgvMaGiamGia = new DataGridView();
             tbCode = new TextBox();
             panel1 = new Panel();
@@ -59,13 +59,9 @@
             panel2 = new Panel();
             txtTim = new TextBox();
             btnTim = new Button();
-            tbTimKiem = new TextBox();
-            btnTimKiem = new Button();
             lblTitle = new Label();
             btnXem = new Button();
-            textBox1 = new TextBox();
             btnSua = new Button();
-            button3 = new Button();
             btnXoa = new Button();
             btnThem = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvMaGiamGia).BeginInit();
@@ -83,38 +79,38 @@
             // 
             // dgvMaGiamGia
             // 
-            dataGridViewCellStyle5.BackColor = Color.White;
-            dataGridViewCellStyle5.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle5.ForeColor = Color.Black;
-            dgvMaGiamGia.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.BackColor = Color.White;
+            dataGridViewCellStyle1.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = Color.Black;
+            dgvMaGiamGia.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dgvMaGiamGia.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvMaGiamGia.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvMaGiamGia.BackgroundColor = Color.White;
             dgvMaGiamGia.ColumnHeadersHeight = 35;
             dgvMaGiamGia.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = Color.White;
-            dataGridViewCellStyle6.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle6.ForeColor = Color.Black;
-            dataGridViewCellStyle6.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.False;
-            dgvMaGiamGia.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = Color.White;
+            dataGridViewCellStyle2.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = Color.Black;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgvMaGiamGia.DefaultCellStyle = dataGridViewCellStyle2;
             dgvMaGiamGia.Location = new Point(12, 6);
             dgvMaGiamGia.Name = "dgvMaGiamGia";
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = Color.FromArgb(128, 64, 0);
-            dataGridViewCellStyle7.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle7.ForeColor = Color.White;
-            dataGridViewCellStyle7.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
-            dgvMaGiamGia.RowHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle3.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = Color.White;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dgvMaGiamGia.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dgvMaGiamGia.RowHeadersWidth = 51;
-            dataGridViewCellStyle8.BackColor = Color.White;
-            dataGridViewCellStyle8.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle8.ForeColor = Color.Black;
-            dgvMaGiamGia.RowsDefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle4.BackColor = Color.White;
+            dataGridViewCellStyle4.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = Color.Black;
+            dgvMaGiamGia.RowsDefaultCellStyle = dataGridViewCellStyle4;
             dgvMaGiamGia.Size = new Size(528, 437);
             dgvMaGiamGia.TabIndex = 0;
             dgvMaGiamGia.CellClick += dgvMaGiamGia_CellClick;
@@ -340,13 +336,9 @@
             // 
             panel2.Controls.Add(txtTim);
             panel2.Controls.Add(btnTim);
-            panel2.Controls.Add(tbTimKiem);
-            panel2.Controls.Add(btnTimKiem);
             panel2.Controls.Add(lblTitle);
             panel2.Controls.Add(btnXem);
-            panel2.Controls.Add(textBox1);
             panel2.Controls.Add(btnSua);
-            panel2.Controls.Add(button3);
             panel2.Controls.Add(btnXoa);
             panel2.Controls.Add(btnThem);
             panel2.Dock = DockStyle.Top;
@@ -381,29 +373,6 @@
             btnTim.UseVisualStyleBackColor = false;
             btnTim.Click += btnTim_Click;
             // 
-            // tbTimKiem
-            // 
-            tbTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            tbTimKiem.Location = new Point(1209, 149);
-            tbTimKiem.Name = "tbTimKiem";
-            tbTimKiem.Size = new Size(201, 28);
-            tbTimKiem.TabIndex = 12;
-            // 
-            // btnTimKiem
-            // 
-            btnTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnTimKiem.BackColor = Color.FromArgb(128, 64, 0);
-            btnTimKiem.FlatAppearance.BorderSize = 0;
-            btnTimKiem.FlatStyle = FlatStyle.Flat;
-            btnTimKiem.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnTimKiem.ForeColor = Color.White;
-            btnTimKiem.Location = new Point(1418, 134);
-            btnTimKiem.Name = "btnTimKiem";
-            btnTimKiem.Size = new Size(92, 57);
-            btnTimKiem.TabIndex = 13;
-            btnTimKiem.Text = "🔍 Tìm";
-            btnTimKiem.UseVisualStyleBackColor = false;
-            // 
             // lblTitle
             // 
             lblTitle.AutoSize = true;
@@ -430,14 +399,6 @@
             btnXem.UseVisualStyleBackColor = false;
             btnXem.Click += btnXem_Click;
             // 
-            // textBox1
-            // 
-            textBox1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            textBox1.Location = new Point(1869, 200);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(201, 28);
-            textBox1.TabIndex = 0;
-            // 
             // btnSua
             // 
             btnSua.BackColor = Color.FromArgb(128, 64, 0);
@@ -452,21 +413,6 @@
             btnSua.Text = "✏️ Sửa";
             btnSua.UseVisualStyleBackColor = false;
             btnSua.Click += btnSua_Click;
-            // 
-            // button3
-            // 
-            button3.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button3.BackColor = Color.FromArgb(128, 64, 0);
-            button3.FlatAppearance.BorderSize = 0;
-            button3.FlatStyle = FlatStyle.Flat;
-            button3.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button3.ForeColor = Color.White;
-            button3.Location = new Point(2078, 185);
-            button3.Name = "button3";
-            button3.Size = new Size(92, 57);
-            button3.TabIndex = 1;
-            button3.Text = "🔍 Tìm";
-            button3.UseVisualStyleBackColor = false;
             // 
             // btnXoa
             // 
@@ -556,13 +502,9 @@
         private DateTimePicker dtpNgayKetThuc;
         private Label label6;
         private Panel panel2;
-        private TextBox tbTimKiem;
-        private Button btnTimKiem;
         private Label lblTitle;
         private Button btnXem;
-        private TextBox textBox1;
         private Button btnSua;
-        private Button button3;
         private Button btnXoa;
         private Button btnThem;
         private TextBox txtTim;
