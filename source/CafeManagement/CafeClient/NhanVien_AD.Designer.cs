@@ -41,7 +41,7 @@
             dtpNgayVaoLam = new DateTimePicker();
             label4 = new Label();
             panel6 = new Panel();
-            tbVaiTro = new TextBox();
+            cbVaiTro = new ComboBox();
             label3 = new Label();
             panel8 = new Panel();
             tbPass = new TextBox();
@@ -64,13 +64,13 @@
             btnThem = new Button();
             panel1 = new Panel();
             dgvNhanVien = new DataGridView();
-            userAccountBindingSource = new BindingSource(components);
             MaNguoiDung = new DataGridViewTextBoxColumn();
             TenDangNhap = new DataGridViewTextBoxColumn();
             HoTen = new DataGridViewTextBoxColumn();
             Email = new DataGridViewTextBoxColumn();
             VaiTro = new DataGridViewTextBoxColumn();
             NgayTao = new DataGridViewTextBoxColumn();
+            userAccountBindingSource = new BindingSource(components);
             panel3.SuspendLayout();
             panel7.SuspendLayout();
             panel6.SuspendLayout();
@@ -134,19 +134,22 @@
             // 
             // panel6
             // 
-            panel6.Controls.Add(tbVaiTro);
+            panel6.Controls.Add(cbVaiTro);
             panel6.Controls.Add(label3);
-            panel6.Location = new Point(6, 294);
+            panel6.Location = new Point(8, 294);
             panel6.Name = "panel6";
-            panel6.Size = new Size(309, 62);
+            panel6.Size = new Size(307, 62);
             panel6.TabIndex = 0;
             // 
-            // tbVaiTro
+            // cbVaiTro
             // 
-            tbVaiTro.Location = new Point(3, 31);
-            tbVaiTro.Name = "tbVaiTro";
-            tbVaiTro.Size = new Size(296, 28);
-            tbVaiTro.TabIndex = 0;
+            cbVaiTro.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbVaiTro.FormattingEnabled = true;
+            cbVaiTro.Items.AddRange(new object[] { "Admin", "Waiter", "Kitchen" });
+            cbVaiTro.Location = new Point(-2, 27);
+            cbVaiTro.Name = "cbVaiTro";
+            cbVaiTro.Size = new Size(307, 29);
+            cbVaiTro.TabIndex = 1;
             // 
             // label3
             // 
@@ -383,20 +386,14 @@
             // dgvNhanVien
             // 
             dgvNhanVien.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvNhanVien.AutoGenerateColumns = false;
             dgvNhanVien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvNhanVien.Columns.AddRange(new DataGridViewColumn[] { MaNguoiDung, TenDangNhap, HoTen, Email, VaiTro, NgayTao });
-            dgvNhanVien.DataSource = userAccountBindingSource;
-            dgvNhanVien.Location = new Point(13, 6);
+            dgvNhanVien.Location = new Point(13, 3);
             dgvNhanVien.Name = "dgvNhanVien";
             dgvNhanVien.RowHeadersWidth = 51;
             dgvNhanVien.Size = new Size(527, 437);
             dgvNhanVien.TabIndex = 0;
             dgvNhanVien.CellClick += dgvNhanVien_CellClick;
-            // 
-            // userAccountBindingSource
-            // 
-            userAccountBindingSource.DataSource = typeof(CafeCommon.UserAccount);
             // 
             // MaNguoiDung
             // 
@@ -458,6 +455,10 @@
             NgayTao.Name = "NgayTao";
             NgayTao.Width = 125;
             // 
+            // userAccountBindingSource
+            // 
+            userAccountBindingSource.DataSource = typeof(CafeCommon.UserAccount);
+            // 
             // NhanVien_AD
             // 
             AutoScaleDimensions = new SizeF(9F, 21F);
@@ -517,7 +518,6 @@
         private Button btnThem;
         private DataGridView dgvNhanVien;
         private DateTimePicker dtpNgayVaoLam;
-        private TextBox tbVaiTro;
         private Panel panel8;
         private TextBox tbPass;
         private Label label5;
@@ -527,6 +527,7 @@
         private TextBox txtUserName;
         private Label label6;
         private BindingSource userAccountBindingSource;
+        private ComboBox cbVaiTro;
         private DataGridViewTextBoxColumn MaNguoiDung;
         private DataGridViewTextBoxColumn TenDangNhap;
         private DataGridViewTextBoxColumn HoTen;

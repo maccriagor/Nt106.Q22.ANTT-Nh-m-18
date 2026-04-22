@@ -14,84 +14,100 @@ namespace CafeClient
     public partial class Menu : Form
     {
         private int selectedMenuId = 0;
+        private List<CafeCommon.LoaiMon> categoryList = new List<CafeCommon.LoaiMon>();
 
         public Menu()
         {
             InitializeComponent();
         }
 
-        private void Menu_Load(object sender, EventArgs e)
+        private async void Menu_Load(object sender, EventArgs e)
         {
-
+            
         }
+
         private async Task LoadMenuData()
         {
-            string res = await SocketClient.SendRequestAsync("GET_ALL_MENU");
+            // Tải danh mục về làm "từ điển" (Bắt buộc phải có để tra tên từ mã)
+            string catRes = await SocketClient.SendRequestAsync("GET_ALL_CATEGORY");
+            if (!catRes.StartsWith("ERROR"))
+            {
+                categoryList = JsonConvert.DeserializeObject<List<CafeCommon.LoaiMon>>(catRes);
+            }
 
+            // 2. Tải Menu
+            string res = await SocketClient.SendRequestAsync("GET_ALL_MENU");
             if (!res.StartsWith("ERROR"))
             {
                 var list = JsonConvert.DeserializeObject<List<CafeCommon.Menu>>(res);
 
-                dgvFood.AutoGenerateColumns = false; // Tắt tự tạo cột
+                if (dgvFood.Columns.Contains("colMoTa"))
+                {
+                    dgvFood.Columns["colMoTa"].DataPropertyName = "MoTa"; // Khớp với model
+                }
+
+                if (dgvFood.Columns.Contains("colLoaiMon"))
+                {
+                    var gridCol = (DataGridViewComboBoxColumn)dgvFood.Columns["colLoaiMon"];
+                    gridCol.DataSource = categoryList;
+                    gridCol.DisplayMember = "TenLoai";  // Hiện chữ
+                    gridCol.ValueMember = "MaLoaiMon";   // Khớp với số ID
+                    gridCol.DataPropertyName = "MaLoaiMon"; // Lấy từ MaLoaiMon của class Menu
+                    gridCol.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing; // Hiện như text bình thường
+                }
+
+                dgvFood.AutoGenerateColumns = false;
                 dgvFood.DataSource = list;
 
-                // Tự động hiển thị món đầu tiên
-                if (list != null && list.Count > 0)
-                {
-                    FillMenuToFields(list[0]);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Lỗi: " + res);
+                if (list != null && list.Count > 0) FillMenuToFields(list[0]);
             }
         }
 
-        //  Tạo hàm Helper để dùng chung (Tránh lặp code)
         private void FillMenuToFields(CafeCommon.Menu item)
         {
             tbMaMon.Text = item.MaMon.ToString();
             tbTenMon.Text = item.TenMon ?? "";
             nmGiaBan.Value = Convert.ToDecimal(item.Gia);
             txtMoTa.Text = item.MoTa ?? "";
-            cbMaLoaiMon.Text = item.MaLoaiMon.ToString();
-            cbTrangThai.Text = item.TrangThai ?? "";
 
+            var loai = categoryList.FirstOrDefault(x => x.MaLoaiMon == item.MaLoaiMon);
+            tbTenLoaiMon.Text = loai?.TenLoai ?? "Không xác định";
+
+            cbTrangThai.Text = item.TrangThai ?? "";
             selectedMenuId = item.MaMon;
         }
 
         private async void btnThem_Click(object sender, EventArgs e)
         {
-            // Kiểm tra rỗng ở client cho nhanh
             if (string.IsNullOrWhiteSpace(tbTenMon.Text))
             {
                 MessageBox.Show("Hãy nhập tên món ăn!");
                 return;
             }
 
-            string cmd = $"ADD_MENU|{cbMaLoaiMon.Text}|{tbTenMon.Text}|{txtMoTa.Text}|{nmGiaBan.Value}|{cbTrangThai.Text}";
+            // Dịch ngược từ Tên loại (TextBox) sang Mã loại (ID)
+            var loai = categoryList.FirstOrDefault(x => x.TenLoai.Equals(tbTenLoaiMon.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+
+            if (loai == null)
+            {
+                MessageBox.Show("Tên loại món không hợp lệ hoặc không tồn tại trong hệ thống!");
+                return;
+            }
+
+            //  Gửi mã số (loai.MaLoaiMon) qua Socket
+            string cmd = $"ADD_MENU|{loai.MaLoaiMon}|{tbTenMon.Text}|{txtMoTa.Text}|{nmGiaBan.Value}|{cbTrangThai.Text}";
             string res = await SocketClient.SendRequestAsync(cmd);
 
             if (res == "SUCCESS")
             {
-                MessageBox.Show("Thêm món thành công!", "Thông báo");
+                MessageBox.Show("Thêm món thành công!");
                 await LoadMenuData();
-                // Xóa trắng ô tên món để nhập món tiếp theo
                 tbTenMon.Clear();
-                tbTenMon.Focus();
-            }
-            else if (res.StartsWith("ADD_MENU_FAIL"))
-            {
-                // Lấy thông báo lỗi sau dấu gạch đứng
-                string errorMsg = res.Split('|')[1];
-                MessageBox.Show(errorMsg, "Trùng dữ liệu", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-                tbTenMon.SelectAll();
                 tbTenMon.Focus();
             }
             else
             {
-                MessageBox.Show("Lỗi hệ thống: " + res);
+                MessageBox.Show("Lỗi: " + res);
             }
         }
 
@@ -132,15 +148,23 @@ namespace CafeClient
         {
             if (selectedMenuId == 0)
             {
-                MessageBox.Show("Vui lòng chọn một món từ danh sách để sửa!");
+                MessageBox.Show("Vui lòng chọn món để sửa!");
+                return;
+            }
+
+            // Tìm ID loại món từ tên trong TextBox
+            var loai = categoryList.FirstOrDefault(x => x.TenLoai.Equals(tbTenLoaiMon.Text.Trim(), StringComparison.OrdinalIgnoreCase));
+
+            if (loai == null)
+            {
+                MessageBox.Show("Loại món không hợp lệ!");
                 return;
             }
 
             // Gói tin: UPDATE_MENU|MaMon|MaLoaiMon|TenMon|MoTa|Gia|TrangThai
-            string cmd = $"UPDATE_MENU|{selectedMenuId}|{cbMaLoaiMon.Text}|{tbTenMon.Text}|{txtMoTa.Text}|{nmGiaBan.Value}|{cbTrangThai.Text}";
+            string cmd = $"UPDATE_MENU|{selectedMenuId}|{loai.MaLoaiMon}|{tbTenMon.Text}|{txtMoTa.Text}|{nmGiaBan.Value}|{cbTrangThai.Text}";
 
             string res = await SocketClient.SendRequestAsync(cmd);
-
             if (res == "SUCCESS")
             {
                 MessageBox.Show("Cập nhật món thành công!");

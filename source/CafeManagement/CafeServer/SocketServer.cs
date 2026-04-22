@@ -235,7 +235,8 @@ namespace CafeServer
                         Gia = decimal.Parse(parts[4]),
                         TrangThai = parts[5]
                     };
-                    return await ServiceManager.Menu.AddMenuAsync(newItem) ? "SUCCESS" : "FAIL";
+                    string result = await ServiceManager.Menu.AddMenuAsync(newItem);
+                    return result;
 
                 case "UPDATE_MENU":
                     // Định dạng: UPDATE_MENU|MaMon|MaLoaiMon|TenMon|MoTa|Gia|TrangThai
@@ -256,6 +257,10 @@ namespace CafeServer
                 case "SEARCH_MENU":
                     var searchRes = await ServiceManager.Menu.SearchMenuByNameAsync(parts[1]);
                     return JsonConvert.SerializeObject(searchRes);
+
+                case "GET_ALL_CATEGORY":
+                    var categories = await ServiceManager.Menu.GetAllCategoriesAsync();
+                    return JsonConvert.SerializeObject(categories);
 
                 default:
                     return "UNKNOWN_COMMAND";

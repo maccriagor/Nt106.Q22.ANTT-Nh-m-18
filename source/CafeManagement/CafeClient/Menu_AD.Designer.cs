@@ -31,6 +31,7 @@
             components = new System.ComponentModel.Container();
             panel1 = new Panel();
             dgvFood = new DataGridView();
+            menuBindingSource = new BindingSource(components);
             panel3 = new Panel();
             panel8 = new Panel();
             cbTrangThai = new ComboBox();
@@ -45,7 +46,7 @@
             tbTenMon = new TextBox();
             label3 = new Label();
             panel5 = new Panel();
-            cbMaLoaiMon = new ComboBox();
+            tbTenLoaiMon = new TextBox();
             label2 = new Label();
             panel4 = new Panel();
             tbMaMon = new TextBox();
@@ -60,15 +61,15 @@
             button3 = new Button();
             btnXoa = new Button();
             btnThem = new Button();
-            menuBindingSource = new BindingSource(components);
-            maMonDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            maLoaiMonDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            tenMonDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            giaDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            moTaDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            trangThaiDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            colMaMon = new DataGridViewTextBoxColumn();
+            colLoaiMon = new DataGridViewComboBoxColumn();
+            colTenMon = new DataGridViewTextBoxColumn();
+            colMoTa = new DataGridViewTextBoxColumn();
+            colGia = new DataGridViewTextBoxColumn();
+            colTrangThai = new DataGridViewTextBoxColumn();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvFood).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)menuBindingSource).BeginInit();
             panel3.SuspendLayout();
             panel8.SuspendLayout();
             panel7.SuspendLayout();
@@ -78,7 +79,6 @@
             panel5.SuspendLayout();
             panel4.SuspendLayout();
             panel9.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)menuBindingSource).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -93,16 +93,18 @@
             // dgvFood
             // 
             dgvFood.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvFood.AutoGenerateColumns = false;
             dgvFood.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvFood.Columns.AddRange(new DataGridViewColumn[] { maMonDataGridViewTextBoxColumn, maLoaiMonDataGridViewTextBoxColumn, tenMonDataGridViewTextBoxColumn, giaDataGridViewTextBoxColumn, moTaDataGridViewTextBoxColumn, trangThaiDataGridViewTextBoxColumn });
-            dgvFood.DataSource = menuBindingSource;
+            dgvFood.Columns.AddRange(new DataGridViewColumn[] { colMaMon, colLoaiMon, colTenMon, colMoTa, colGia, colTrangThai });
             dgvFood.Location = new Point(12, 6);
             dgvFood.Name = "dgvFood";
             dgvFood.RowHeadersWidth = 51;
             dgvFood.Size = new Size(528, 437);
             dgvFood.TabIndex = 0;
             dgvFood.CellClick += dgvFood_CellClick;
+            // 
+            // menuBindingSource
+            // 
+            menuBindingSource.DataSource = typeof(CafeCommon.Menu);
             // 
             // panel3
             // 
@@ -230,20 +232,19 @@
             // 
             // panel5
             // 
-            panel5.Controls.Add(cbMaLoaiMon);
+            panel5.Controls.Add(tbTenLoaiMon);
             panel5.Controls.Add(label2);
             panel5.Location = new Point(8, 94);
             panel5.Name = "panel5";
             panel5.Size = new Size(328, 62);
             panel5.TabIndex = 0;
             // 
-            // cbMaLoaiMon
+            // tbTenLoaiMon
             // 
-            cbMaLoaiMon.FormattingEnabled = true;
-            cbMaLoaiMon.Location = new Point(3, 30);
-            cbMaLoaiMon.Name = "cbMaLoaiMon";
-            cbMaLoaiMon.Size = new Size(296, 29);
-            cbMaLoaiMon.TabIndex = 1;
+            tbTenLoaiMon.Location = new Point(3, 27);
+            tbTenLoaiMon.Name = "tbTenLoaiMon";
+            tbTenLoaiMon.Size = new Size(296, 28);
+            tbTenLoaiMon.TabIndex = 1;
             // 
             // label2
             // 
@@ -252,9 +253,9 @@
             label2.ForeColor = Color.FromArgb(128, 64, 64);
             label2.Location = new Point(3, 0);
             label2.Name = "label2";
-            label2.Size = new Size(122, 24);
+            label2.Size = new Size(124, 24);
             label2.TabIndex = 0;
-            label2.Text = "Mã loại món:";
+            label2.Text = "Tên loại món:";
             // 
             // panel4
             // 
@@ -418,57 +419,53 @@
             btnThem.UseVisualStyleBackColor = false;
             btnThem.Click += btnThem_Click;
             // 
-            // menuBindingSource
+            // colMaMon
             // 
-            menuBindingSource.DataSource = typeof(CafeCommon.Menu);
+            colMaMon.DataPropertyName = "MaMon";
+            colMaMon.HeaderText = "Mã món";
+            colMaMon.MinimumWidth = 6;
+            colMaMon.Name = "colMaMon";
+            colMaMon.Width = 125;
             // 
-            // maMonDataGridViewTextBoxColumn
+            // colLoaiMon
             // 
-            maMonDataGridViewTextBoxColumn.DataPropertyName = "MaMon";
-            maMonDataGridViewTextBoxColumn.HeaderText = "MaMon";
-            maMonDataGridViewTextBoxColumn.MinimumWidth = 6;
-            maMonDataGridViewTextBoxColumn.Name = "maMonDataGridViewTextBoxColumn";
-            maMonDataGridViewTextBoxColumn.Width = 125;
+            colLoaiMon.DataPropertyName = "MaLoaiMon";
+            colLoaiMon.HeaderText = "Loại món";
+            colLoaiMon.MinimumWidth = 6;
+            colLoaiMon.Name = "colLoaiMon";
+            colLoaiMon.Width = 125;
             // 
-            // maLoaiMonDataGridViewTextBoxColumn
+            // colTenMon
             // 
-            maLoaiMonDataGridViewTextBoxColumn.DataPropertyName = "MaLoaiMon";
-            maLoaiMonDataGridViewTextBoxColumn.HeaderText = "MaLoaiMon";
-            maLoaiMonDataGridViewTextBoxColumn.MinimumWidth = 6;
-            maLoaiMonDataGridViewTextBoxColumn.Name = "maLoaiMonDataGridViewTextBoxColumn";
-            maLoaiMonDataGridViewTextBoxColumn.Width = 125;
+            colTenMon.DataPropertyName = "TenMon";
+            colTenMon.HeaderText = "Tên món";
+            colTenMon.MinimumWidth = 6;
+            colTenMon.Name = "colTenMon";
+            colTenMon.Width = 125;
             // 
-            // tenMonDataGridViewTextBoxColumn
+            // colMoTa
             // 
-            tenMonDataGridViewTextBoxColumn.DataPropertyName = "TenMon";
-            tenMonDataGridViewTextBoxColumn.HeaderText = "TenMon";
-            tenMonDataGridViewTextBoxColumn.MinimumWidth = 6;
-            tenMonDataGridViewTextBoxColumn.Name = "tenMonDataGridViewTextBoxColumn";
-            tenMonDataGridViewTextBoxColumn.Width = 125;
+            colMoTa.DataPropertyName = "MoTa";
+            colMoTa.HeaderText = "Mô tả";
+            colMoTa.MinimumWidth = 6;
+            colMoTa.Name = "colMoTa";
+            colMoTa.Width = 125;
             // 
-            // giaDataGridViewTextBoxColumn
+            // colGia
             // 
-            giaDataGridViewTextBoxColumn.DataPropertyName = "Gia";
-            giaDataGridViewTextBoxColumn.HeaderText = "Gia";
-            giaDataGridViewTextBoxColumn.MinimumWidth = 6;
-            giaDataGridViewTextBoxColumn.Name = "giaDataGridViewTextBoxColumn";
-            giaDataGridViewTextBoxColumn.Width = 125;
+            colGia.DataPropertyName = "Gia";
+            colGia.HeaderText = "Giá bán";
+            colGia.MinimumWidth = 6;
+            colGia.Name = "colGia";
+            colGia.Width = 125;
             // 
-            // moTaDataGridViewTextBoxColumn
+            // colTrangThai
             // 
-            moTaDataGridViewTextBoxColumn.DataPropertyName = "MoTa";
-            moTaDataGridViewTextBoxColumn.HeaderText = "MoTa";
-            moTaDataGridViewTextBoxColumn.MinimumWidth = 6;
-            moTaDataGridViewTextBoxColumn.Name = "moTaDataGridViewTextBoxColumn";
-            moTaDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // trangThaiDataGridViewTextBoxColumn
-            // 
-            trangThaiDataGridViewTextBoxColumn.DataPropertyName = "TrangThai";
-            trangThaiDataGridViewTextBoxColumn.HeaderText = "TrangThai";
-            trangThaiDataGridViewTextBoxColumn.MinimumWidth = 6;
-            trangThaiDataGridViewTextBoxColumn.Name = "trangThaiDataGridViewTextBoxColumn";
-            trangThaiDataGridViewTextBoxColumn.Width = 125;
+            colTrangThai.DataPropertyName = "TrangThai";
+            colTrangThai.HeaderText = "Trạng thái";
+            colTrangThai.MinimumWidth = 6;
+            colTrangThai.Name = "colTrangThai";
+            colTrangThai.Width = 125;
             // 
             // Menu
             // 
@@ -487,6 +484,7 @@
             Load += Menu_Load;
             panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvFood).EndInit();
+            ((System.ComponentModel.ISupportInitialize)menuBindingSource).EndInit();
             panel3.ResumeLayout(false);
             panel8.ResumeLayout(false);
             panel8.PerformLayout();
@@ -503,7 +501,6 @@
             panel4.PerformLayout();
             panel9.ResumeLayout(false);
             panel9.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)menuBindingSource).EndInit();
             ResumeLayout(false);
         }
 
@@ -524,7 +521,6 @@
         private Label label5;
         private Panel panel7;
         private Label label4;
-        private ComboBox cbMaLoaiMon;
         private NumericUpDown nmGiaBan;
         private Panel panel9;
         private Label lblTitle;
@@ -540,12 +536,13 @@
         private TextBox txtMoTa;
         private Label label6;
         private ComboBox cbTrangThai;
-        private DataGridViewTextBoxColumn maMonDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn maLoaiMonDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn tenMonDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn giaDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn moTaDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn trangThaiDataGridViewTextBoxColumn;
         private BindingSource menuBindingSource;
+        private TextBox tbTenLoaiMon;
+        private DataGridViewTextBoxColumn colMaMon;
+        private DataGridViewComboBoxColumn colLoaiMon;
+        private DataGridViewTextBoxColumn colTenMon;
+        private DataGridViewTextBoxColumn colMoTa;
+        private DataGridViewTextBoxColumn colGia;
+        private DataGridViewTextBoxColumn colTrangThai;
     }
 }
