@@ -192,33 +192,6 @@
             label5.TabIndex = 0;
             label5.Text = "Mật khẩu:";
             // 
-            // panel8
-            // 
-            panel8.Controls.Add(tbPass);
-            panel8.Controls.Add(label5);
-            panel8.Location = new Point(8, 162);
-            panel8.Name = "panel8";
-            panel8.Size = new Size(307, 62);
-            panel8.TabIndex = 0;
-            // 
-            // tbPass
-            // 
-            tbPass.Location = new Point(3, 31);
-            tbPass.Name = "tbPass";
-            tbPass.Size = new Size(296, 28);
-            tbPass.TabIndex = 0;
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Calibri", 12F, FontStyle.Bold);
-            label5.ForeColor = Color.FromArgb(128, 64, 64);
-            label5.Location = new Point(3, 0);
-            label5.Name = "label5";
-            label5.Size = new Size(97, 24);
-            label5.TabIndex = 0;
-            label5.Text = "Mật khẩu:";
-            // 
             // panel5
             // 
             panel5.Controls.Add(tbEmail);

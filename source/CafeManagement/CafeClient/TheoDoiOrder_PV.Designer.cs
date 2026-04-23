@@ -44,15 +44,12 @@
             groupBox2 = new GroupBox();
             dataGridView1 = new DataGridView();
             listView1 = new ListView();
-            panel2.SuspendLayout();
+            panel3.SuspendLayout();
             panel9.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             groupBox1.SuspendLayout();
             groupBox2.SuspendLayout();
-            panel2.SuspendLayout();
-            panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
             SuspendLayout();
             // 
             // panel3
@@ -96,15 +93,17 @@
             btnXoa.Size = new Size(148, 46);
             btnXoa.TabIndex = 3;
             btnXoa.Text = "❌ Xóa";
+            btnXoa.UseVisualStyleBackColor = false;
+            // 
             // cbSoBan
-            // label3
+            // 
             cbSoBan.FormattingEnabled = true;
             cbSoBan.Location = new Point(105, 37);
             cbSoBan.Name = "cbSoBan";
             cbSoBan.Size = new Size(216, 29);
             cbSoBan.TabIndex = 1;
-            label3.Text = "Chọn đơn ở bảng trên";
-            label3.Text = "Chọn đơn ở bảng trên";
+            // 
+            // label4
             // 
             label4.AutoSize = true;
             label4.ForeColor = Color.FromArgb(128, 64, 64);
@@ -112,8 +111,6 @@
             label4.Name = "label4";
             label4.Size = new Size(337, 21);
             label4.TabIndex = 0;
-            label4.Text = "ở dưới sẽ hiện Tên món, SL, ghi chú, trạng thái";
-            label4.Text = "ở dưới sẽ hiện Tên món, SL, ghi chú, trạng thái";
             label4.Text = "ở dưới sẽ hiện Tên món, SL, ghi chú, trạng thái";
             // 
             // cbTrangThai
@@ -214,13 +211,15 @@
             groupBox2.Text = "Chi tiết đơn hàng";
             // 
             // dataGridView1
+            // 
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.Location = new Point(3, 24);
-            dataGridView1.Location = new Point(3, 3);
-            dataGridView1.Location = new Point(3, 3);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowHeadersWidth = 51;
             dataGridView1.Size = new Size(514, 236);
-            dataGridView1.Size = new Size(504, 230);
-            dataGridView1.Size = new Size(504, 230);
+            dataGridView1.TabIndex = 0;
+            // 
             // listView1
             // 
             listView1.Dock = DockStyle.Fill;
@@ -229,8 +228,6 @@
             listView1.Size = new Size(514, 236);
             listView1.TabIndex = 0;
             listView1.UseCompatibleStateImageBehavior = false;
-            // 
-            dataGridView1.TabIndex = 0;
             // 
             // TheoDoiOrder_PV
             // 
@@ -245,15 +242,14 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "TheoDoiOrder_PV";
             Text = "TheoDoiOrder";
+            panel3.ResumeLayout(false);
+            panel3.PerformLayout();
             panel9.ResumeLayout(false);
             panel9.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
-            panel3.ResumeLayout(false);
-            panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
             ResumeLayout(false);
         }
 
@@ -265,14 +261,14 @@
         private ComboBox cbTrangThai;
         private Button btnLamMoi;
         private Button btnXoa;
+        private Label label3;
+        private Label label4;
         private Panel panel9;
         private Label lblTitle;
         private TableLayoutPanel tableLayoutPanel1;
         private GroupBox groupBox1;
         private GroupBox groupBox2;
-        private Label label3;
-        private ListView listView1;
-        private Label label4;
         private DataGridView dataGridView1;
+        private ListView listView1;
     }
 }
