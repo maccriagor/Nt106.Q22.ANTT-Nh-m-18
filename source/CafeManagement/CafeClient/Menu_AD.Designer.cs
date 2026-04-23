@@ -66,7 +66,9 @@
             btnTimKiem = new Button();
             lblTitle = new Label();
             btnXem = new Button();
+            textBox1 = new TextBox();
             btnSua = new Button();
+            button3 = new Button();
             btnXoa = new Button();
             btnThem = new Button();
             panel1.SuspendLayout();
@@ -110,7 +112,7 @@
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = SystemColors.Window;
             dataGridViewCellStyle2.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            dataGridViewCellStyle2.ForeColor = Color.FromArgb(128, 64, 64);
+            dataGridViewCellStyle2.ForeColor = Color.Black;
             dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
@@ -365,7 +367,9 @@
             panel9.Controls.Add(btnTimKiem);
             panel9.Controls.Add(lblTitle);
             panel9.Controls.Add(btnXem);
+            panel9.Controls.Add(textBox1);
             panel9.Controls.Add(btnSua);
+            panel9.Controls.Add(button3);
             panel9.Controls.Add(btnXoa);
             panel9.Controls.Add(btnThem);
             panel9.Dock = DockStyle.Top;
@@ -425,6 +429,14 @@
             btnXem.UseVisualStyleBackColor = false;
             btnXem.Click += btnXem_Click;
             // 
+            // textBox1
+            // 
+            textBox1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            textBox1.Location = new Point(1208, 149);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(201, 28);
+            textBox1.TabIndex = 0;
+            // 
             // btnSua
             // 
             btnSua.BackColor = Color.FromArgb(128, 64, 0);
@@ -439,6 +451,21 @@
             btnSua.Text = "✏️ Sửa";
             btnSua.UseVisualStyleBackColor = false;
             btnSua.Click += btnSua_Click;
+            // 
+            // button3
+            // 
+            button3.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            button3.BackColor = Color.FromArgb(128, 64, 0);
+            button3.FlatAppearance.BorderSize = 0;
+            button3.FlatStyle = FlatStyle.Flat;
+            button3.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            button3.ForeColor = Color.White;
+            button3.Location = new Point(1417, 134);
+            button3.Name = "button3";
+            button3.Size = new Size(92, 57);
+            button3.TabIndex = 1;
+            button3.Text = "🔍 Tìm";
+            button3.UseVisualStyleBackColor = false;
             // 
             // btnXoa
             // 
@@ -528,7 +555,9 @@
         private Panel panel9;
         private Label lblTitle;
         private Button btnXem;
+        private TextBox textBox1;
         private Button btnSua;
+        private Button button3;
         private Button btnXoa;
         private Button btnThem;
         private TextBox tbTimKiem;

@@ -8,19 +8,19 @@ using Supabase.Postgrest.Models;
 
 namespace CafeCommon
 {
-    [Table("loaimon")]
+    [Table("loaimon")] 
     public class LoaiMon : BaseModel
     {
         [PrimaryKey("maloaimon", false)]
         public int MaLoaiMon { get; set; }
 
-        [Column("tenloai")]
+        [Column("tenloai")] 
         public string TenLoai { get; set; }
 
-        [Column("mota")]
+        [Column("mota")] 
         public string MoTa { get; set; }
 
-        [Column("trangthai")]
+        [Column("trangthai")] 
         public bool TrangThai { get; set; }
     }
 }

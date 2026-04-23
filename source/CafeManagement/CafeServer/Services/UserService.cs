@@ -58,7 +58,7 @@ namespace CafeServer.Services
                     MatKhau = hashedPass,
                     Email = email,
                     SDT = phone,
-                    HoTen = fullName,
+                    HoTen = fullName,   
                     VaiTro = role,
                     TrangThaiOnline = false,
                     NgayTao = DateTime.Now

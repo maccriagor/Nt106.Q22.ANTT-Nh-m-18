@@ -58,6 +58,7 @@
             btnXoa = new Button();
             btnThem = new Button();
             panel1 = new Panel();
+            cbTrangThai = new ComboBox();
             panel7.SuspendLayout();
             panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numSoChoNgoi).BeginInit();
@@ -328,6 +329,17 @@
             lblTitle.TabIndex = 10;
             lblTitle.Text = "Bàn ăn";
             // 
+            // lblTitle
+            // 
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Calibri", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTitle.ForeColor = Color.Brown;
+            lblTitle.Location = new Point(12, 9);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(135, 49);
+            lblTitle.TabIndex = 10;
+            lblTitle.Text = "Bàn ăn";
+            // 
             // btnSua
             // 
             btnSua.BackColor = Color.FromArgb(128, 64, 0);
@@ -381,6 +393,14 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(546, 451);
             panel1.TabIndex = 3;
+            // 
+            // cbTrangThai
+            // 
+            cbTrangThai.FormattingEnabled = true;
+            cbTrangThai.Location = new Point(3, 27);
+            cbTrangThai.Name = "cbTrangThai";
+            cbTrangThai.Size = new Size(297, 29);
+            cbTrangThai.TabIndex = 1;
             // 
             // BanAn_AD
             // 
