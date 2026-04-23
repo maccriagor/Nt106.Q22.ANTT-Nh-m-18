@@ -60,7 +60,8 @@ namespace CafeServer.Services
                     SDT = phone,
                     HoTen = fullName,
                     VaiTro = role,
-                    TrangThaiOnline = false
+                    TrangThaiOnline = false,
+                    NgayTao = DateTime.Now
                 };
 
                 // 4. Lưu vào Supabase
@@ -134,6 +135,57 @@ namespace CafeServer.Services
             {
                 Console.WriteLine($"[ERROR]: {ex.Message}");
                 return false;
+            }
+        }
+
+        //Hàm lấy danh sách các nhân viên
+        public async Task<List<UserAccount>> GetAllEmployeesAsync()
+        {
+            var result = await DatabaseService.Client.From<UserAccount>().Get();
+            return result.Models;
+        }
+        //Hàm xóa nhân viên theo id
+        public async Task<bool> DeleteEmployeeAsync(int id)
+        {
+            try
+            {
+                await DatabaseService.Client.From<UserAccount>().Where(x => x.MaNguoiDung == id).Delete();
+                return true;
+            }
+            catch { return false; }
+        }
+        //Hàm update thông tin của nhân viên
+        public async Task<bool> UpdateEmployeeBasicAsync(int id, string user, string name, string email, string pass, string role)
+        {
+            var update = DatabaseService.Client.From<UserAccount>().Where(x => x.MaNguoiDung == id)
+                .Set(x => x.TenDangNhap, user).Set(x => x.HoTen, name).Set(x => x.Email, email).Set(x => x.VaiTro, role);
+            if (!string.IsNullOrEmpty(pass)) update = update.Set(x => x.MatKhau, SercurityHelper.HashPassword(pass));
+            await update.Update();
+            return true;
+        }
+        //Hàm tìm kiếm nhân viên theo tên
+        public async Task<List<UserAccount>> SearchEmployeesByNameAsync(string name)
+        {
+            var result = await DatabaseService.Client.From<UserAccount>()
+                .Filter("hoten", Supabase.Postgrest.Constants.Operator.ILike, $"%{name}%").Get(); //ILike giúp tìm kiếm không phân biệt chữ hoa hay thường
+            return result.Models;
+        }
+        //Hàm lấy tài khoản theo id
+        public async Task<UserAccount> GetUserByIdAsync(int id)
+        {
+            try
+            {
+                // Truy vấn Supabase lấy 1 User dựa trên MaNguoiDung
+                var result = await DatabaseService.Client.From<UserAccount>()
+                    .Where(x => x.MaNguoiDung == id)
+                    .Get();
+
+                return result.Models.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR GetUserById]: {ex.Message}");
+                return null;
             }
         }
     }

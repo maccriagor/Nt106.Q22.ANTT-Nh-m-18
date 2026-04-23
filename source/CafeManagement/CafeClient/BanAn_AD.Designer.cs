@@ -28,11 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             label4 = new Label();
             panel7 = new Panel();
+            cbTrangThai = new ComboBox();
             label3 = new Label();
             panel6 = new Panel();
-            numericUpDown1 = new NumericUpDown();
+            numSoChoNgoi = new NumericUpDown();
             label2 = new Label();
             panel5 = new Panel();
             tbTenBan = new TextBox();
@@ -53,10 +58,9 @@
             btnXoa = new Button();
             btnThem = new Button();
             panel1 = new Panel();
-            cbTrangThai = new ComboBox();
             panel7.SuspendLayout();
             panel6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numSoChoNgoi).BeginInit();
             panel5.SuspendLayout();
             panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvBanAn).BeginInit();
@@ -86,6 +90,15 @@
             panel7.Size = new Size(328, 62);
             panel7.TabIndex = 0;
             // 
+            // cbTrangThai
+            // 
+            cbTrangThai.FormattingEnabled = true;
+            cbTrangThai.Items.AddRange(new object[] { "Trống", "Đã đặt", "Có người" });
+            cbTrangThai.Location = new Point(3, 27);
+            cbTrangThai.Name = "cbTrangThai";
+            cbTrangThai.Size = new Size(297, 29);
+            cbTrangThai.TabIndex = 1;
+            // 
             // label3
             // 
             label3.AutoSize = true;
@@ -99,20 +112,20 @@
             // 
             // panel6
             // 
-            panel6.Controls.Add(numericUpDown1);
+            panel6.Controls.Add(numSoChoNgoi);
             panel6.Controls.Add(label3);
             panel6.Location = new Point(8, 162);
             panel6.Name = "panel6";
             panel6.Size = new Size(328, 62);
             panel6.TabIndex = 0;
             // 
-            // numericUpDown1
+            // numSoChoNgoi
             // 
-            numericUpDown1.Location = new Point(3, 31);
-            numericUpDown1.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
-            numericUpDown1.Name = "numericUpDown1";
-            numericUpDown1.Size = new Size(296, 28);
-            numericUpDown1.TabIndex = 1;
+            numSoChoNgoi.Location = new Point(3, 31);
+            numSoChoNgoi.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
+            numSoChoNgoi.Name = "numSoChoNgoi";
+            numSoChoNgoi.Size = new Size(296, 28);
+            numSoChoNgoi.TabIndex = 1;
             // 
             // label2
             // 
@@ -145,6 +158,7 @@
             // 
             tbMaBan.Location = new Point(3, 31);
             tbMaBan.Name = "tbMaBan";
+            tbMaBan.ReadOnly = true;
             tbMaBan.Size = new Size(296, 28);
             tbMaBan.TabIndex = 0;
             // 
@@ -190,16 +204,48 @@
             btnTimKiem.TabIndex = 1;
             btnTimKiem.Text = "🔍 Tìm";
             btnTimKiem.UseVisualStyleBackColor = false;
+            btnTimKiem.Click += btnTimKiem_Click;
             // 
             // dgvBanAn
             // 
             dgvBanAn.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvBanAn.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvBanAn.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle1.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = Color.White;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvBanAn.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvBanAn.ColumnHeadersHeight = 35;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgvBanAn.DefaultCellStyle = dataGridViewCellStyle2;
             dgvBanAn.Location = new Point(12, 6);
             dgvBanAn.Name = "dgvBanAn";
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle3.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = Color.White;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dgvBanAn.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dgvBanAn.RowHeadersWidth = 51;
+            dataGridViewCellStyle4.BackColor = Color.White;
+            dataGridViewCellStyle4.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = Color.Black;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
+            dgvBanAn.RowsDefaultCellStyle = dataGridViewCellStyle4;
             dgvBanAn.Size = new Size(528, 433);
             dgvBanAn.TabIndex = 0;
+            dgvBanAn.CellClick += dgvBanAn_CellClick;
             // 
             // panel3
             // 
@@ -269,6 +315,7 @@
             btnXem.TabIndex = 4;
             btnXem.Text = "👁️ Xem";
             btnXem.UseVisualStyleBackColor = false;
+            btnXem.Click += btnXem_Click;
             // 
             // lblTitle
             // 
@@ -294,6 +341,7 @@
             btnSua.TabIndex = 5;
             btnSua.Text = "✏️ Sửa";
             btnSua.UseVisualStyleBackColor = false;
+            btnSua.Click += btnSua_Click;
             // 
             // btnXoa
             // 
@@ -308,6 +356,7 @@
             btnXoa.TabIndex = 6;
             btnXoa.Text = "❌ Xóa";
             btnXoa.UseVisualStyleBackColor = false;
+            btnXoa.Click += btnXoa_Click;
             // 
             // btnThem
             // 
@@ -322,6 +371,7 @@
             btnThem.TabIndex = 7;
             btnThem.Text = "➕ Thêm";
             btnThem.UseVisualStyleBackColor = false;
+            btnThem.Click += btnThem_Click;
             // 
             // panel1
             // 
@@ -331,14 +381,6 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(546, 451);
             panel1.TabIndex = 3;
-            // 
-            // cbTrangThai
-            // 
-            cbTrangThai.FormattingEnabled = true;
-            cbTrangThai.Location = new Point(3, 27);
-            cbTrangThai.Name = "cbTrangThai";
-            cbTrangThai.Size = new Size(297, 29);
-            cbTrangThai.TabIndex = 1;
             // 
             // BanAn_AD
             // 
@@ -353,11 +395,12 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "BanAn_AD";
             Text = "BanAn";
+            Load += BanAn_AD_Load;
             panel7.ResumeLayout(false);
             panel7.PerformLayout();
             panel6.ResumeLayout(false);
             panel6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numSoChoNgoi).EndInit();
             panel5.ResumeLayout(false);
             panel5.PerformLayout();
             panel4.ResumeLayout(false);
@@ -377,7 +420,7 @@
         private Panel panel7;
         private Label label3;
         private Panel panel6;
-        private NumericUpDown numericUpDown1;
+        private NumericUpDown numSoChoNgoi;
         private Label label2;
         private Panel panel5;
         private TextBox tbMaBan;

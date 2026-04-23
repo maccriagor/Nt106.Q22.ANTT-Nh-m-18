@@ -17,6 +17,9 @@ namespace CafeServer
         private int _port = 8888;
         private bool _isRunning;
 
+        // Danh sách này lưu các Stream của tất cả Client đang mở App
+        private static List<NetworkStream> _activeStreams = new List<NetworkStream>();
+
         //Dọn dẹp OTP khi xong việc --> tránh bị sử dụng lại
         public static System.Collections.Concurrent.ConcurrentDictionary<string, string> OtpStorage =
     new System.Collections.Concurrent.ConcurrentDictionary<string, string>();
@@ -45,7 +48,11 @@ namespace CafeServer
         private async void HandleClient(TcpClient client)
         {
             using NetworkStream stream = client.GetStream();
-            byte[] buffer = new byte[1024];
+
+            //Khi một Client kết nối, cho họ vào danh sách nhận tin
+            lock (_activeStreams) { _activeStreams.Add(stream); }
+
+            byte[] buffer = new byte[8192];
 
             // Biến nhớ ID của người dùng đang kết nối Socket
             int currentUserId = 0;
@@ -61,7 +68,7 @@ namespace CafeServer
                     
                     Console.WriteLine($"[CLIENT SAYS]: {request}");
 
-                    string response = await ProcessRequest(request);
+                    string response = await ProcessRequest(request, currentUserId);
 
                     // Nếu lệnh LOGIN thành công --> ghi nhớ ID vào biến currentUserId
                     if (response.StartsWith("LOGIN_SUCCESS"))
@@ -85,6 +92,9 @@ namespace CafeServer
             }
             finally
             {
+                //Khi Client thoát, xóa khỏi danh sách
+                lock (_activeStreams) { _activeStreams.Remove(stream); }
+
                 // khi kết nối đóng
                 if (currentUserId != 0)
                 {
@@ -96,7 +106,7 @@ namespace CafeServer
             }
         }
 
-        private async Task<string> ProcessRequest(string request)
+        private async Task<string> ProcessRequest(string request, int currentUserId)
         {
             // Định dạng gói tin: COMMAND|DATA1|DATA2|...
             string[] parts = request.Split('|');
@@ -228,9 +238,118 @@ namespace CafeServer
                     bool isUpdated_discount = await ServiceManager.Discount.UpdateAsync(kmUpdate);
                     return isUpdated_discount ? "SUCCESS|Cập nhật thành công!" : "FAIL|Cập nhật thất bại!";
 
+                case "GET_ALL_EMPLOYEES":
+                    var requester = await ServiceManager.User.GetUserByIdAsync(currentUserId);
+                    if (requester != null && requester.VaiTro == "Admin")
+                    {
+                        var employees = await ServiceManager.User.GetAllEmployeesAsync();
+                        return JsonConvert.SerializeObject(employees);
+                    }
+                    return "ERROR|Quyền truy cập bị từ chối";
 
+                case "DELETE_EMPLOYEE": // Gói tin: DELETE_EMPLOYEE|id
+                    await ServiceManager.User.DeleteEmployeeAsync(int.Parse(parts[1]));
+                    return "SUCCESS";
+
+                case "UPDATE_EMPLOYEE": // Gói tin: UPDATE_EMPLOYEE|id|user|name|email|pass|role
+                    await ServiceManager.User.UpdateEmployeeBasicAsync(int.Parse(parts[1]), parts[2], parts[3], parts[4], parts[5], parts[6]);
+                    return "SUCCESS";
+
+                case "SEARCH_EMPLOYEE":
+                    // Gói tin : SEARCH_EMPLOYEE|tên_cần_tìm
+                    if (parts.Length < 2) return "[]"; // Trả về mảng rỗng nếu thiếu từ khóa
+                    var searchResult = await ServiceManager.User.SearchEmployeesByNameAsync(parts[1]);
+                    return JsonConvert.SerializeObject(searchResult);
+
+
+                case "GET_ALL_MENU":
+                    var allMenu = await ServiceManager.Menu.GetAllMenuAsync();
+                    return JsonConvert.SerializeObject(allMenu);
+
+                case "ADD_MENU":
+                    // Định dạng: ADD_MENU|MaLoaiMon|TenMon|MoTa|Gia|TrangThai
+                    var newItem = new Menu
+                    {
+                        MaLoaiMon = int.Parse(parts[1]),
+                        TenMon = parts[2],
+                        MoTa = parts[3],
+                        Gia = decimal.Parse(parts[4]),
+                        TrangThai = parts[5]
+                    };
+                    string result = await ServiceManager.Menu.AddMenuAsync(newItem);
+                    return result;
+
+                case "UPDATE_MENU":
+                    // Định dạng: UPDATE_MENU|MaMon|MaLoaiMon|TenMon|MoTa|Gia|TrangThai
+                    var upItem = new Menu
+                    {
+                        MaMon = int.Parse(parts[1]),
+                        MaLoaiMon = int.Parse(parts[2]),
+                        TenMon = parts[3],
+                        MoTa = parts[4],
+                        Gia = decimal.Parse(parts[5]),
+                        TrangThai = parts[6]
+                    };
+                    return await ServiceManager.Menu.UpdateMenuAsync(upItem) ? "SUCCESS" : "FAIL";
+
+                case "DELETE_MENU":
+                    return await ServiceManager.Menu.DeleteMenuAsync(int.Parse(parts[1])) ? "SUCCESS" : "FAIL";
+
+                case "SEARCH_MENU":
+                    var searchRes = await ServiceManager.Menu.SearchMenuByNameAsync(parts[1]);
+                    return JsonConvert.SerializeObject(searchRes);
+
+                case "GET_ALL_CATEGORY":
+                    var categories = await ServiceManager.Menu.GetAllCategoriesAsync();
+                    return JsonConvert.SerializeObject(categories);
+
+                case "GET_TABLES":
+                    var tables = await ServiceManager.Table.GetAllAsync();
+                    return "SUCCESS|" + JsonConvert.SerializeObject(tables);
+
+                case "ADD_TABLE":
+                    var newTable = JsonConvert.DeserializeObject<BanAn>(parts[1]);
+                    bool isAdd = await ServiceManager.Table.AddAsync(newTable);
+                    if (isAdd)
+                    {
+                        await Broadcast("RELOAD_TABLE_MAP"); // Báo cho các máy khác load lại sơ đồ
+                        return "SUCCESS|Thêm bàn thành công";
+                    }
+                    return "FAIL|Lỗi khi thêm bàn";
+
+                case "UPDATE_TABLE":
+                    var tableUp = JsonConvert.DeserializeObject<BanAn>(parts[1]);
+                    bool isUp = await ServiceManager.Table.UpdateAsync(tableUp);
+                    if (isUp)
+                    {
+                        await Broadcast("RELOAD_TABLE_MAP");
+                        return "SUCCESS|Cập nhật thành công";
+                    }
+                    return "FAIL|Lỗi khi cập nhật";
+
+                case "DELETE_TABLE":
+                    int idDel_table = int.Parse(parts[1]);
+                    string delRes = await ServiceManager.Table.DeleteAsync(idDel_table);
+                    if (delRes.StartsWith("SUCCESS"))
+                    {
+                        await Broadcast("RELOAD_TABLE_MAP");
+                    }
+                    return delRes;
                 default:
                     return "UNKNOWN_COMMAND";
+            }
+        }
+
+        public static async Task Broadcast(string message)
+        {
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            List<NetworkStream> targets;
+            lock (_activeStreams) { targets = _activeStreams.ToList(); }
+
+            foreach (var s in targets)
+            {
+                try { await s.WriteAsync(data, 0, data.Length); }
+                catch { /* Bỏ qua nếu stream lỗi */ }
             }
         }
     }

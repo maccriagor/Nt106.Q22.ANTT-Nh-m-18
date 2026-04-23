@@ -39,11 +39,28 @@ namespace CafeClient
                 byte[] dataSend = Encoding.UTF8.GetBytes(message);
                 await _stream.WriteAsync(dataSend, 0, dataSend.Length);
 
-                byte[] buffer = new byte[1024];
-                int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
-                return Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                StringBuilder responseBuilder = new StringBuilder();
+                byte[] buffer = new byte[4096]; // Tăng buffer lên 4KB để đọc nhanh hơn
+                int bytesRead;
+
+                do
+                {
+                    bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+                    if (bytesRead > 0)
+                    {
+                        responseBuilder.Append(Encoding.UTF8.GetString(buffer, 0, bytesRead));
+                    }
+
+                    // Nếu dữ liệu vẫn còn trên luồng thì tiếp tục đọc
+                } while (_stream.DataAvailable);
+
+                return responseBuilder.ToString().Trim('\0', ' ', '\r', '\n');
             }
-            catch (Exception ex) { return $"ERROR|{ex.Message}"; }
+            catch (Exception ex)
+            {
+                Disconnect();
+                return $"ERROR|{ex.Message}";
+            }
         }
 
         public static void Disconnect()

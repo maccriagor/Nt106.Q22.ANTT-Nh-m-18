@@ -13,7 +13,11 @@ namespace CafeServer.Services
         public static RevenueService Revenue = new RevenueService();
 
         public static DiscountService Discount = new DiscountService();
-       
+
+        public static MenuService Menu = new MenuService();
+
+        public static TableService Table = new TableService();
+
         // public static FoodService Food = new FoodService();
 
         // public static TableService Table = new TableService();

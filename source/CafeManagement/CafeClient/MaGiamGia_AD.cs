@@ -283,5 +283,27 @@ namespace CafeClient
         {
 
         }
+
+        private void dgvMaGiamGia_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (dgvMaGiamGia.Columns[e.ColumnIndex].Name == "TrangThai" && e.Value != null)
+            {
+                if (e.Value is bool status)
+                {
+                    DataGridViewRow row = dgvMaGiamGia.Rows[e.RowIndex];
+
+                    if (status) 
+                    {
+                        row.DefaultCellStyle.BackColor = Color.LightGreen;
+                        row.DefaultCellStyle.ForeColor = Color.DarkGreen;
+                    }
+                    else
+                    {
+                        row.DefaultCellStyle.BackColor = Color.MistyRose;
+                        row.DefaultCellStyle.ForeColor = Color.Red;
+                    }
+                }
+            }
+        }
     }
 }
