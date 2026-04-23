@@ -30,18 +30,21 @@
         {
             components = new System.ComponentModel.Container();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
             tbEmail = new TextBox();
             panel3 = new Panel();
             panel7 = new Panel();
             dtpNgayVaoLam = new DateTimePicker();
             label4 = new Label();
             panel6 = new Panel();
-            tbVaiTro = new TextBox();
+            cbVaiTro = new ComboBox();
             label3 = new Label();
             panel8 = new Panel();
             tbPass = new TextBox();
@@ -64,13 +67,13 @@
             btnThem = new Button();
             panel1 = new Panel();
             dgvNhanVien = new DataGridView();
-            userAccountBindingSource = new BindingSource(components);
             MaNguoiDung = new DataGridViewTextBoxColumn();
             TenDangNhap = new DataGridViewTextBoxColumn();
             HoTen = new DataGridViewTextBoxColumn();
             Email = new DataGridViewTextBoxColumn();
             VaiTro = new DataGridViewTextBoxColumn();
             NgayTao = new DataGridViewTextBoxColumn();
+            userAccountBindingSource = new BindingSource(components);
             panel3.SuspendLayout();
             panel7.SuspendLayout();
             panel6.SuspendLayout();
@@ -134,19 +137,22 @@
             // 
             // panel6
             // 
-            panel6.Controls.Add(tbVaiTro);
+            panel6.Controls.Add(cbVaiTro);
             panel6.Controls.Add(label3);
-            panel6.Location = new Point(6, 294);
+            panel6.Location = new Point(8, 294);
             panel6.Name = "panel6";
-            panel6.Size = new Size(309, 62);
+            panel6.Size = new Size(307, 62);
             panel6.TabIndex = 0;
             // 
-            // tbVaiTro
+            // cbVaiTro
             // 
-            tbVaiTro.Location = new Point(3, 31);
-            tbVaiTro.Name = "tbVaiTro";
-            tbVaiTro.Size = new Size(296, 28);
-            tbVaiTro.TabIndex = 0;
+            cbVaiTro.DropDownStyle = ComboBoxStyle.DropDownList;
+            cbVaiTro.FormattingEnabled = true;
+            cbVaiTro.Items.AddRange(new object[] { "Admin", "Waiter", "Kitchen" });
+            cbVaiTro.Location = new Point(-2, 27);
+            cbVaiTro.Name = "cbVaiTro";
+            cbVaiTro.Size = new Size(307, 29);
+            cbVaiTro.TabIndex = 1;
             // 
             // label3
             // 
@@ -383,80 +389,95 @@
             // dgvNhanVien
             // 
             dgvNhanVien.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvNhanVien.AutoGenerateColumns = false;
-            dgvNhanVien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvNhanVien.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle1.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvNhanVien.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvNhanVien.ColumnHeadersHeight = 35;
+            dgvNhanVien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             dgvNhanVien.Columns.AddRange(new DataGridViewColumn[] { MaNguoiDung, TenDangNhap, HoTen, Email, VaiTro, NgayTao });
-            dgvNhanVien.DataSource = userAccountBindingSource;
-            dgvNhanVien.Location = new Point(13, 6);
+            dataGridViewCellStyle8.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = SystemColors.Window;
+            dataGridViewCellStyle8.Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle8.ForeColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle8.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = DataGridViewTriState.False;
+            dgvNhanVien.DefaultCellStyle = dataGridViewCellStyle8;
+            dgvNhanVien.Location = new Point(13, 3);
             dgvNhanVien.Name = "dgvNhanVien";
             dgvNhanVien.RowHeadersWidth = 51;
+            dataGridViewCellStyle9.BackColor = Color.White;
+            dataGridViewCellStyle9.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle9.ForeColor = Color.Black;
+            dataGridViewCellStyle9.SelectionBackColor = SystemColors.Highlight;
+            dgvNhanVien.RowsDefaultCellStyle = dataGridViewCellStyle9;
             dgvNhanVien.Size = new Size(527, 437);
             dgvNhanVien.TabIndex = 0;
             dgvNhanVien.CellClick += dgvNhanVien_CellClick;
             // 
-            // userAccountBindingSource
-            // 
-            userAccountBindingSource.DataSource = typeof(CafeCommon.UserAccount);
-            // 
             // MaNguoiDung
             // 
             MaNguoiDung.DataPropertyName = "MaNguoiDung";
-            dataGridViewCellStyle1.ForeColor = Color.Black;
-            MaNguoiDung.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.ForeColor = Color.Black;
+            MaNguoiDung.DefaultCellStyle = dataGridViewCellStyle2;
             MaNguoiDung.HeaderText = "MaNguoiDung";
             MaNguoiDung.MinimumWidth = 6;
             MaNguoiDung.Name = "MaNguoiDung";
-            MaNguoiDung.Width = 125;
             // 
             // TenDangNhap
             // 
             TenDangNhap.DataPropertyName = "TenDangNhap";
-            dataGridViewCellStyle2.ForeColor = Color.Black;
-            TenDangNhap.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle3.ForeColor = Color.Black;
+            TenDangNhap.DefaultCellStyle = dataGridViewCellStyle3;
             TenDangNhap.HeaderText = "TenDangNhap";
             TenDangNhap.MinimumWidth = 6;
             TenDangNhap.Name = "TenDangNhap";
-            TenDangNhap.Width = 125;
             // 
             // HoTen
             // 
             HoTen.DataPropertyName = "HoTen";
-            dataGridViewCellStyle3.ForeColor = Color.Black;
-            HoTen.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle4.ForeColor = Color.Black;
+            HoTen.DefaultCellStyle = dataGridViewCellStyle4;
             HoTen.HeaderText = "TenNhanVien";
             HoTen.MinimumWidth = 6;
             HoTen.Name = "HoTen";
-            HoTen.Width = 125;
             // 
             // Email
             // 
             Email.DataPropertyName = "Email";
-            dataGridViewCellStyle4.ForeColor = Color.Black;
-            Email.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle5.ForeColor = Color.Black;
+            Email.DefaultCellStyle = dataGridViewCellStyle5;
             Email.HeaderText = "Email";
             Email.MinimumWidth = 6;
             Email.Name = "Email";
-            Email.Width = 125;
             // 
             // VaiTro
             // 
             VaiTro.DataPropertyName = "VaiTro";
-            dataGridViewCellStyle5.ForeColor = Color.Black;
-            VaiTro.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle6.ForeColor = Color.Black;
+            VaiTro.DefaultCellStyle = dataGridViewCellStyle6;
             VaiTro.HeaderText = "VaiTro";
             VaiTro.MinimumWidth = 6;
             VaiTro.Name = "VaiTro";
-            VaiTro.Width = 125;
             // 
             // NgayTao
             // 
             NgayTao.DataPropertyName = "NgayTao";
-            dataGridViewCellStyle6.ForeColor = Color.Black;
-            NgayTao.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle7.ForeColor = Color.Black;
+            NgayTao.DefaultCellStyle = dataGridViewCellStyle7;
             NgayTao.HeaderText = "NgayTao";
             NgayTao.MinimumWidth = 6;
             NgayTao.Name = "NgayTao";
-            NgayTao.Width = 125;
+            // 
+            // userAccountBindingSource
+            // 
+            userAccountBindingSource.DataSource = typeof(CafeCommon.UserAccount);
             // 
             // NhanVien_AD
             // 
@@ -517,7 +538,6 @@
         private Button btnThem;
         private DataGridView dgvNhanVien;
         private DateTimePicker dtpNgayVaoLam;
-        private TextBox tbVaiTro;
         private Panel panel8;
         private TextBox tbPass;
         private Label label5;
@@ -527,6 +547,7 @@
         private TextBox txtUserName;
         private Label label6;
         private BindingSource userAccountBindingSource;
+        private ComboBox cbVaiTro;
         private DataGridViewTextBoxColumn MaNguoiDung;
         private DataGridViewTextBoxColumn TenDangNhap;
         private DataGridViewTextBoxColumn HoTen;

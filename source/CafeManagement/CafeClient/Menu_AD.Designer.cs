@@ -29,8 +29,19 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             panel1 = new Panel();
             dgvFood = new DataGridView();
+            colMaMon = new DataGridViewTextBoxColumn();
+            colLoaiMon = new DataGridViewComboBoxColumn();
+            colTenMon = new DataGridViewTextBoxColumn();
+            colMoTa = new DataGridViewTextBoxColumn();
+            colGia = new DataGridViewTextBoxColumn();
+            colTrangThai = new DataGridViewTextBoxColumn();
+            menuBindingSource = new BindingSource(components);
             panel3 = new Panel();
             panel8 = new Panel();
             cbTrangThai = new ComboBox();
@@ -45,7 +56,7 @@
             tbTenMon = new TextBox();
             label3 = new Label();
             panel5 = new Panel();
-            cbMaLoaiMon = new ComboBox();
+            tbTenLoaiMon = new TextBox();
             label2 = new Label();
             panel4 = new Panel();
             tbMaMon = new TextBox();
@@ -60,15 +71,9 @@
             button3 = new Button();
             btnXoa = new Button();
             btnThem = new Button();
-            menuBindingSource = new BindingSource(components);
-            maMonDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            maLoaiMonDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            tenMonDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            giaDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            moTaDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
-            trangThaiDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvFood).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)menuBindingSource).BeginInit();
             panel3.SuspendLayout();
             panel8.SuspendLayout();
             panel7.SuspendLayout();
@@ -78,7 +83,6 @@
             panel5.SuspendLayout();
             panel4.SuspendLayout();
             panel9.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)menuBindingSource).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -93,16 +97,91 @@
             // dgvFood
             // 
             dgvFood.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvFood.AutoGenerateColumns = false;
-            dgvFood.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvFood.Columns.AddRange(new DataGridViewColumn[] { maMonDataGridViewTextBoxColumn, maLoaiMonDataGridViewTextBoxColumn, tenMonDataGridViewTextBoxColumn, giaDataGridViewTextBoxColumn, moTaDataGridViewTextBoxColumn, trangThaiDataGridViewTextBoxColumn });
-            dgvFood.DataSource = menuBindingSource;
+            dgvFood.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle1.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.Window;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvFood.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvFood.ColumnHeadersHeight = 35;
+            dgvFood.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvFood.Columns.AddRange(new DataGridViewColumn[] { colMaMon, colLoaiMon, colTenMon, colMoTa, colGia, colTrangThai });
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = Color.Black;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgvFood.DefaultCellStyle = dataGridViewCellStyle2;
             dgvFood.Location = new Point(12, 6);
             dgvFood.Name = "dgvFood";
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle3.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dgvFood.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dgvFood.RowHeadersWidth = 51;
+            dataGridViewCellStyle4.BackColor = Color.White;
+            dataGridViewCellStyle4.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = Color.Black;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
+            dgvFood.RowsDefaultCellStyle = dataGridViewCellStyle4;
             dgvFood.Size = new Size(528, 437);
             dgvFood.TabIndex = 0;
             dgvFood.CellClick += dgvFood_CellClick;
+            // 
+            // colMaMon
+            // 
+            colMaMon.DataPropertyName = "MaMon";
+            colMaMon.HeaderText = "Mã món";
+            colMaMon.MinimumWidth = 6;
+            colMaMon.Name = "colMaMon";
+            // 
+            // colLoaiMon
+            // 
+            colLoaiMon.DataPropertyName = "MaLoaiMon";
+            colLoaiMon.HeaderText = "Loại món";
+            colLoaiMon.MinimumWidth = 6;
+            colLoaiMon.Name = "colLoaiMon";
+            // 
+            // colTenMon
+            // 
+            colTenMon.DataPropertyName = "TenMon";
+            colTenMon.HeaderText = "Tên món";
+            colTenMon.MinimumWidth = 6;
+            colTenMon.Name = "colTenMon";
+            // 
+            // colMoTa
+            // 
+            colMoTa.DataPropertyName = "MoTa";
+            colMoTa.HeaderText = "Mô tả";
+            colMoTa.MinimumWidth = 6;
+            colMoTa.Name = "colMoTa";
+            // 
+            // colGia
+            // 
+            colGia.DataPropertyName = "Gia";
+            colGia.HeaderText = "Giá bán";
+            colGia.MinimumWidth = 6;
+            colGia.Name = "colGia";
+            // 
+            // colTrangThai
+            // 
+            colTrangThai.DataPropertyName = "TrangThai";
+            colTrangThai.HeaderText = "Trạng thái";
+            colTrangThai.MinimumWidth = 6;
+            colTrangThai.Name = "colTrangThai";
+            // 
+            // menuBindingSource
+            // 
+            menuBindingSource.DataSource = typeof(CafeCommon.Menu);
             // 
             // panel3
             // 
@@ -157,7 +236,7 @@
             // 
             // nmGiaBan
             // 
-            nmGiaBan.Location = new Point(3, 29);
+            nmGiaBan.Location = new Point(3, 31);
             nmGiaBan.Maximum = new decimal(new int[] { 1000000000, 0, 0, 0 });
             nmGiaBan.Name = "nmGiaBan";
             nmGiaBan.Size = new Size(296, 28);
@@ -185,7 +264,7 @@
             // 
             // txtMoTa
             // 
-            txtMoTa.Location = new Point(3, 31);
+            txtMoTa.Location = new Point(0, 27);
             txtMoTa.Name = "txtMoTa";
             txtMoTa.Size = new Size(296, 28);
             txtMoTa.TabIndex = 0;
@@ -212,7 +291,7 @@
             // 
             // tbTenMon
             // 
-            tbTenMon.Location = new Point(3, 31);
+            tbTenMon.Location = new Point(3, 27);
             tbTenMon.Name = "tbTenMon";
             tbTenMon.Size = new Size(296, 28);
             tbTenMon.TabIndex = 0;
@@ -230,20 +309,19 @@
             // 
             // panel5
             // 
-            panel5.Controls.Add(cbMaLoaiMon);
+            panel5.Controls.Add(tbTenLoaiMon);
             panel5.Controls.Add(label2);
             panel5.Location = new Point(8, 94);
             panel5.Name = "panel5";
             panel5.Size = new Size(328, 62);
             panel5.TabIndex = 0;
             // 
-            // cbMaLoaiMon
+            // tbTenLoaiMon
             // 
-            cbMaLoaiMon.FormattingEnabled = true;
-            cbMaLoaiMon.Location = new Point(3, 30);
-            cbMaLoaiMon.Name = "cbMaLoaiMon";
-            cbMaLoaiMon.Size = new Size(296, 29);
-            cbMaLoaiMon.TabIndex = 1;
+            tbTenLoaiMon.Location = new Point(3, 27);
+            tbTenLoaiMon.Name = "tbTenLoaiMon";
+            tbTenLoaiMon.Size = new Size(296, 28);
+            tbTenLoaiMon.TabIndex = 1;
             // 
             // label2
             // 
@@ -252,9 +330,9 @@
             label2.ForeColor = Color.FromArgb(128, 64, 64);
             label2.Location = new Point(3, 0);
             label2.Name = "label2";
-            label2.Size = new Size(122, 24);
+            label2.Size = new Size(124, 24);
             label2.TabIndex = 0;
-            label2.Text = "Mã loại món:";
+            label2.Text = "Tên loại món:";
             // 
             // panel4
             // 
@@ -303,10 +381,11 @@
             // tbTimKiem
             // 
             tbTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            tbTimKiem.Location = new Point(548, 98);
+            tbTimKiem.Location = new Point(550, 99);
             tbTimKiem.Name = "tbTimKiem";
             tbTimKiem.Size = new Size(201, 28);
             tbTimKiem.TabIndex = 12;
+            tbTimKiem.TextChanged += tbTimKiem_TextChanged;
             // 
             // btnTimKiem
             // 
@@ -418,58 +497,6 @@
             btnThem.UseVisualStyleBackColor = false;
             btnThem.Click += btnThem_Click;
             // 
-            // menuBindingSource
-            // 
-            menuBindingSource.DataSource = typeof(CafeCommon.Menu);
-            // 
-            // maMonDataGridViewTextBoxColumn
-            // 
-            maMonDataGridViewTextBoxColumn.DataPropertyName = "MaMon";
-            maMonDataGridViewTextBoxColumn.HeaderText = "MaMon";
-            maMonDataGridViewTextBoxColumn.MinimumWidth = 6;
-            maMonDataGridViewTextBoxColumn.Name = "maMonDataGridViewTextBoxColumn";
-            maMonDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // maLoaiMonDataGridViewTextBoxColumn
-            // 
-            maLoaiMonDataGridViewTextBoxColumn.DataPropertyName = "MaLoaiMon";
-            maLoaiMonDataGridViewTextBoxColumn.HeaderText = "MaLoaiMon";
-            maLoaiMonDataGridViewTextBoxColumn.MinimumWidth = 6;
-            maLoaiMonDataGridViewTextBoxColumn.Name = "maLoaiMonDataGridViewTextBoxColumn";
-            maLoaiMonDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // tenMonDataGridViewTextBoxColumn
-            // 
-            tenMonDataGridViewTextBoxColumn.DataPropertyName = "TenMon";
-            tenMonDataGridViewTextBoxColumn.HeaderText = "TenMon";
-            tenMonDataGridViewTextBoxColumn.MinimumWidth = 6;
-            tenMonDataGridViewTextBoxColumn.Name = "tenMonDataGridViewTextBoxColumn";
-            tenMonDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // giaDataGridViewTextBoxColumn
-            // 
-            giaDataGridViewTextBoxColumn.DataPropertyName = "Gia";
-            giaDataGridViewTextBoxColumn.HeaderText = "Gia";
-            giaDataGridViewTextBoxColumn.MinimumWidth = 6;
-            giaDataGridViewTextBoxColumn.Name = "giaDataGridViewTextBoxColumn";
-            giaDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // moTaDataGridViewTextBoxColumn
-            // 
-            moTaDataGridViewTextBoxColumn.DataPropertyName = "MoTa";
-            moTaDataGridViewTextBoxColumn.HeaderText = "MoTa";
-            moTaDataGridViewTextBoxColumn.MinimumWidth = 6;
-            moTaDataGridViewTextBoxColumn.Name = "moTaDataGridViewTextBoxColumn";
-            moTaDataGridViewTextBoxColumn.Width = 125;
-            // 
-            // trangThaiDataGridViewTextBoxColumn
-            // 
-            trangThaiDataGridViewTextBoxColumn.DataPropertyName = "TrangThai";
-            trangThaiDataGridViewTextBoxColumn.HeaderText = "TrangThai";
-            trangThaiDataGridViewTextBoxColumn.MinimumWidth = 6;
-            trangThaiDataGridViewTextBoxColumn.Name = "trangThaiDataGridViewTextBoxColumn";
-            trangThaiDataGridViewTextBoxColumn.Width = 125;
-            // 
             // Menu
             // 
             AutoScaleDimensions = new SizeF(9F, 21F);
@@ -487,6 +514,7 @@
             Load += Menu_Load;
             panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvFood).EndInit();
+            ((System.ComponentModel.ISupportInitialize)menuBindingSource).EndInit();
             panel3.ResumeLayout(false);
             panel8.ResumeLayout(false);
             panel8.PerformLayout();
@@ -503,7 +531,6 @@
             panel4.PerformLayout();
             panel9.ResumeLayout(false);
             panel9.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)menuBindingSource).EndInit();
             ResumeLayout(false);
         }
 
@@ -524,7 +551,6 @@
         private Label label5;
         private Panel panel7;
         private Label label4;
-        private ComboBox cbMaLoaiMon;
         private NumericUpDown nmGiaBan;
         private Panel panel9;
         private Label lblTitle;
@@ -540,12 +566,13 @@
         private TextBox txtMoTa;
         private Label label6;
         private ComboBox cbTrangThai;
-        private DataGridViewTextBoxColumn maMonDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn maLoaiMonDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn tenMonDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn giaDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn moTaDataGridViewTextBoxColumn;
-        private DataGridViewTextBoxColumn trangThaiDataGridViewTextBoxColumn;
         private BindingSource menuBindingSource;
+        private TextBox tbTenLoaiMon;
+        private DataGridViewTextBoxColumn colMaMon;
+        private DataGridViewComboBoxColumn colLoaiMon;
+        private DataGridViewTextBoxColumn colTenMon;
+        private DataGridViewTextBoxColumn colMoTa;
+        private DataGridViewTextBoxColumn colGia;
+        private DataGridViewTextBoxColumn colTrangThai;
     }
 }

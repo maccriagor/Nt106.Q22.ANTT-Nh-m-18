@@ -258,6 +258,10 @@ namespace CafeServer
                     var searchRes = await ServiceManager.Menu.SearchMenuByNameAsync(parts[1]);
                     return JsonConvert.SerializeObject(searchRes);
 
+                case "GET_ALL_CATEGORY":
+                    var categories = await ServiceManager.Menu.GetAllCategoriesAsync();
+                    return JsonConvert.SerializeObject(categories);
+
                 default:
                     return "UNKNOWN_COMMAND";
 

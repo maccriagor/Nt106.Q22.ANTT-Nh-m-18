@@ -1,5 +1,6 @@
 ﻿using CafeCommon;
 using Newtonsoft.Json;
+using Supabase.Gotrue;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -42,7 +43,7 @@ namespace CafeClient
                     txtUserName.Text = firstEmp.TenDangNhap ?? "";
                     tbTenNhanVien.Text = firstEmp.HoTen ?? "";
                     tbEmail.Text = firstEmp.Email ?? "";
-                    tbVaiTro.Text = firstEmp.VaiTro ?? "";
+                    cbVaiTro.Text = firstEmp.VaiTro ?? "";
                     tbPass.Text = "";
 
                     if (firstEmp.NgayTao.HasValue && firstEmp.NgayTao.Value.Year > 1753)
@@ -111,7 +112,7 @@ namespace CafeClient
             }
 
             // Gửi lệnh REGISTER
-            string cmd = $"REGISTER|{txtUserName.Text}|{tbPass.Text}|{tbEmail.Text}||{tbTenNhanVien.Text}|{tbVaiTro.Text}";
+            string cmd = $"REGISTER|{txtUserName.Text}|{tbPass.Text}|{tbEmail.Text}||{tbTenNhanVien.Text}|{cbVaiTro.Text}";
             string res = await SocketClient.SendRequestAsync(cmd);
 
             // 2. Xử lý phản hồi
@@ -147,8 +148,22 @@ namespace CafeClient
                 MessageBox.Show("Vui lòng chọn một nhân viên từ danh sách để xóa!");
                 return;
             }
+
+            if (selectedUserId == UserSession.MaNguoiDung)
+            {
+                // Kiểm tra xem chữ trong ô Vai trò có khác với Vai trò gốc trong Session không
+                if (cbVaiTro.Text.Trim() != UserSession.VaiTro)
+                {
+                    MessageBox.Show("Bạn không thể tự giáng chức hoặc thay đổi quyền hạn của chính mình!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                    // Đưa vai trò về lại đúng ban đầu để tránh gửi lên server
+                    cbVaiTro.Text = UserSession.VaiTro;
+                    return;
+                }
+            }
+
             // Gói tin: UPDATE_EMPLOYEE|id|user|name|email|pass|role
-            string cmd = $"UPDATE_EMPLOYEE|{selectedUserId}|{txtUserName.Text}|{tbTenNhanVien.Text}|{tbEmail.Text}|{tbPass.Text}|{tbVaiTro.Text}";
+            string cmd = $"UPDATE_EMPLOYEE|{selectedUserId}|{txtUserName.Text}|{tbTenNhanVien.Text}|{tbEmail.Text}|{tbPass.Text}|{cbVaiTro.Text}";
             string res = await SocketClient.SendRequestAsync(cmd);
 
             if (res == "SUCCESS")
@@ -160,25 +175,29 @@ namespace CafeClient
 
         private async void btnXoa_Click(object sender, EventArgs e)
         {
-            // Kiểm tra xem đã chọn nhân viên nào chưa
             if (selectedUserId == 0)
             {
                 MessageBox.Show("Vui lòng chọn một nhân viên từ danh sách để xóa!");
                 return;
             }
 
-            // Xác nhận xóa
+            // Không cho phép tự xóa chính mình
+            if (selectedUserId == UserSession.MaNguoiDung)
+            {
+                MessageBox.Show("Bạn không thể tự xóa chính mình!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+
             var confirmResult = MessageBox.Show("Bạn có chắc chắn muốn xóa nhân viên này?", "Xác nhận xóa", MessageBoxButtons.YesNo);
             if (confirmResult == DialogResult.Yes)
             {
-                // Gửi lệnh xóa qua Socket
                 string res = await SocketClient.SendRequestAsync($"DELETE_EMPLOYEE|{selectedUserId}");
 
                 if (res == "SUCCESS")
                 {
                     MessageBox.Show("Xóa nhân viên thành công!");
-                    selectedUserId = 0; // Reset ID về 0 sau khi xóa
-                    await LoadEmployees(); // Tải lại danh sách để cập nhật UI
+                    selectedUserId = 0;
+                    await LoadEmployees();
                 }
                 else
                 {
@@ -197,7 +216,7 @@ namespace CafeClient
                 txtUserName.Text = row.Cells["TenDangNhap"].Value?.ToString() ?? "";
                 tbTenNhanVien.Text = row.Cells["HoTen"].Value?.ToString() ?? "";
                 tbEmail.Text = row.Cells["Email"].Value?.ToString() ?? "";
-                tbVaiTro.Text = row.Cells["VaiTro"].Value?.ToString() ?? "";
+                cbVaiTro.Text = row.Cells["VaiTro"].Value?.ToString() ?? "";
 
 
                 if (row.Cells["NgayTao"].Value != null &&

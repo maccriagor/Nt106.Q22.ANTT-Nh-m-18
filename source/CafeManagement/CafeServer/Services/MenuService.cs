@@ -74,5 +74,11 @@ namespace CafeServer.Services
                 .Get();
             return result.Models;
         }
+
+        public async Task<List<LoaiMon>> GetAllCategoriesAsync()
+        {
+            var result = await DatabaseService.Client.From<LoaiMon>().Get();
+            return result.Models;
+        }
     }
 }
