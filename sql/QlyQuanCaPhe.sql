@@ -1,107 +1,137 @@
-﻿-- 1. Tài khoản hệ thống
-CREATE TABLE Account (
-    AccID SERIAL PRIMARY KEY,
-    Username VARCHAR(50) NOT NULL UNIQUE,
-    UserPassword TEXT NOT NULL, 
-    Email VARCHAR(100) NOT NULL UNIQUE,
-    PhoneNumber VARCHAR(15),
-    Role VARCHAR(20) NOT NULL CHECK (Role IN ('Admin', 'Waiter', 'Kitchen', 'Customer')),
-    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+﻿-- 1. Quản lý Tài khoản & Nhân viên
+CREATE TABLE UserAccount (
+    MaNguoiDung SERIAL PRIMARY KEY,
+    TenDangNhap VARCHAR(50) NOT NULL UNIQUE,
+    MatKhau TEXT NOT NULL, 
+    VaiTro VARCHAR(20) NOT NULL CHECK (VaiTro IN ('Admin', 'Waiter', 'Kitchen')),
+    HoTen TEXT NOT NULL,
+    SDT VARCHAR(15),
+    Email VARCHAR(100) UNIQUE,
+    TrangThai BOOLEAN DEFAULT TRUE, -- TRUE: Hoạt động, FALSE: Bị khóa
+    NgayTao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    -- Phục vụ Token & Login
+    Token TEXT,
+    ThoiGianHetHanToken TIMESTAMP,
+    TrangThaiOnline BOOLEAN DEFAULT FALSE,
+    ThoiGianDangNhap TIMESTAMP,
+    ThoiGianDangXuat TIMESTAMP
 );
 
--- 2. Nhân viên & Khách hàng
-CREATE TABLE Employees (
-    EmpID SERIAL PRIMARY KEY,
-    AccID INT NOT NULL REFERENCES Account(AccID) ON DELETE CASCADE,
-    FullName TEXT NOT NULL,
-    Position TEXT NOT NULL,
-    PhoneNumber VARCHAR(15)
+-- 2. Quản lý Thực đơn
+CREATE TABLE LoaiMon (
+    MaLoaiMon SERIAL PRIMARY KEY,
+    TenLoai TEXT NOT NULL,
+    MoTa TEXT,
+    TrangThai BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE Customers (
-    CustID SERIAL PRIMARY KEY,
-    AccID INT REFERENCES Account(AccID) ON DELETE SET NULL,
-    FullName TEXT NOT NULL,
-    PhoneNumber VARCHAR(15) UNIQUE,
-    Points FLOAT DEFAULT 0 CHECK (Points >= 0)
+CREATE TABLE Menu (
+    MaMon SERIAL PRIMARY KEY,
+    TenMon TEXT NOT NULL,
+    Gia NUMERIC(12, 2) NOT NULL CHECK (Gia >= 0),
+    MoTa TEXT,
+    TrangThai TEXT DEFAULT 'Còn hàng',
+    MaLoaiMon INT REFERENCES LoaiMon(MaLoaiMon) ON DELETE SET NULL
 );
 
--- 3. Thực đơn & Bàn
-CREATE TABLE Category (
-    CatID SERIAL PRIMARY KEY,
-    CatName TEXT NOT NULL
+-- 3. Quản lý Bàn ăn
+CREATE TABLE BanAn (
+    MaBanAn SERIAL PRIMARY KEY,
+    TenBan TEXT NOT NULL,
+    SoChoNgoi INT DEFAULT 2,
+    TrangThai TEXT DEFAULT 'Trống' CHECK (TrangThai IN ('Trống', 'Có khách', 'Đã đặt')),
+    MaNhanVien INT REFERENCES UserAccount(MaNguoiDung), -- Nhân viên phụ trách bàn
+    NgayTao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE Products (
-    ProdID SERIAL PRIMARY KEY,
-    CatID INT NOT NULL REFERENCES Category(CatID),
-    ProdName TEXT NOT NULL,
-    Price NUMERIC NOT NULL CHECK (Price >= 0),
-    ProductStatus TEXT DEFAULT 'Còn hàng'
+-- 4. Khách hàng & Khuyến mãi (Bổ sung theo yêu cầu)
+CREATE TABLE KhachHang (
+    MaKH SERIAL PRIMARY KEY,
+    TenKH TEXT,
+    SDT VARCHAR(15) NOT NULL UNIQUE,
+    DiemTichLuy FLOAT DEFAULT 0 CHECK (DiemTichLuy >= 0),
+    NgayDangKy TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE TableFood (
-    TableID SERIAL PRIMARY KEY,
-    TableName TEXT NOT NULL,
-    TableStatus TEXT DEFAULT 'Trống' CHECK (TableStatus IN ('Trống', 'Có khách', 'Đã đặt'))
+CREATE TABLE KhuyenMai (
+    MaKM SERIAL PRIMARY KEY,
+    CodeKM VARCHAR(50) NOT NULL UNIQUE,
+    MoTa TEXT,
+    LoaiKM VARCHAR(20) CHECK (LoaiKM IN ('Phần trăm', 'Số tiền')),
+    GiaTriGiam NUMERIC(12, 2) NOT NULL,
+    GiamToiDa NUMERIC(12, 2), -- Dùng khi giảm theo %
+    NgayBatDau TIMESTAMP NOT NULL,
+    NgayHetHan TIMESTAMP NOT NULL,
+    SoLuongDung INT DEFAULT 0,
+    GioiHanDung INT,
+    TrangThai BOOLEAN DEFAULT TRUE,
+    CONSTRAINT CHK_HSD CHECK (NgayHetHan > NgayBatDau)
 );
 
--- 4. Đơn hàng & Chi tiết
-CREATE TABLE Orders (
-    OrderID SERIAL PRIMARY KEY,
-    TableID INT NOT NULL REFERENCES TableFood(TableID),
-    EmpID INT NOT NULL REFERENCES Employees(EmpID),
-    OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    OrderStatus INT DEFAULT 0 CHECK (OrderStatus IN (0, 1, 2, 3))
+-- 5. Đơn hàng & Chế biến (Dành cho Phục vụ và Bếp)
+CREATE TABLE DonHang (
+    MaDonHang SERIAL PRIMARY KEY,
+    MaBanAn INT NOT NULL REFERENCES BanAn(MaBanAn),
+    MaNVOrder INT NOT NULL REFERENCES UserAccount(MaNguoiDung),
+    NgayOrder TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    TrangThai INT DEFAULT 0, -- 0: Mới, 1: Đang chế biến, 2: Hoàn thành, 3: Đã hủy
+    TenKH TEXT, -- Khách vãng lai không cần lưu MaKH
+    SDTKH VARCHAR(15),
+    GhiChu TEXT,
+    LoaiDonHang VARCHAR(20) DEFAULT 'Tại chỗ'
 );
 
-CREATE TABLE OrderInfo (
-    OrderItemID SERIAL PRIMARY KEY,
-    OrderID INT NOT NULL REFERENCES Orders(OrderID) ON DELETE CASCADE,
-    ProdID INT NOT NULL REFERENCES Products(ProdID),
-    Quantity INT NOT NULL CHECK (Quantity > 0),
-    Notes TEXT,
-    ItemStatus INT DEFAULT 0 CHECK (ItemStatus IN (0, 1))
+CREATE TABLE CTDonHang (
+    MaCT SERIAL PRIMARY KEY,
+    MaDonHang INT NOT NULL REFERENCES DonHang(MaDonHang) ON DELETE CASCADE,
+    MaMon INT NOT NULL REFERENCES Menu(MaMon),
+    SoLuong INT NOT NULL CHECK (SoLuong > 0),
+    DonGia NUMERIC(12, 2) NOT NULL,
+    GhiChuKhach TEXT,
+    GhiChuBep TEXT,
+    MaNhanVienCheBien INT REFERENCES UserAccount(MaNguoiDung),
+    UuTien BOOLEAN DEFAULT FALSE,
+    ThoiGianBatDau TIMESTAMP,
+    ThoiGianHoanThanh TIMESTAMP,
+    ThoiGianDuKien INT, -- Số phút dự kiến
+    TrangThaiItem INT DEFAULT 0 -- 0: Chờ, 1: Đang làm, 2: Xong
 );
 
--- 5. Khuyến mãi & Hóa đơn
-CREATE TABLE VoucherList (
-    VoucherID SERIAL PRIMARY KEY,
-    VoucherCode VARCHAR(50) NOT NULL UNIQUE,
-    SalePercentage FLOAT CHECK (SalePercentage BETWEEN 0 AND 100),
-    MaxSaleAmount NUMERIC CHECK (MaxSaleAmount >= 0),
-    StartDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    ExpDate TIMESTAMP NOT NULL,
-    IsActive BOOLEAN DEFAULT TRUE,
-    CONSTRAINT CHK_VoucherDate CHECK (ExpDate > StartDate)
+-- 6. Hóa đơn & Thanh toán (Kế toán & Giảm giá)
+CREATE TABLE HoaDon (
+    MaHD SERIAL PRIMARY KEY,
+    MaDonHang INT UNIQUE NOT NULL REFERENCES DonHang(MaDonHang),
+    MaBanAn INT REFERENCES BanAn(MaBanAn),
+    MaNV INT NOT NULL REFERENCES UserAccount(MaNguoiDung),
+    MaKH INT REFERENCES KhachHang(MaKH), -- Để tích điểm
+    MaKM INT REFERENCES KhuyenMai(MaKM), -- Để áp mã giảm giá
+    NgayTao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    TongTien NUMERIC(12, 2) NOT NULL, -- Tiền trước giảm giá
+    SoTienGiam NUMERIC(12, 2) DEFAULT 0,
+    ThanhTien NUMERIC(12, 2) NOT NULL, -- Tiền thực tế khách phải trả
+    TrangThai VARCHAR(20) DEFAULT 'Chưa thanh toán',
+    PhuongThucThanhToan TEXT,
+    GhiChu TEXT
 );
 
-CREATE TABLE Bills (
-    BillID SERIAL PRIMARY KEY,
-    OrderID INT NOT NULL UNIQUE REFERENCES Orders(OrderID),
-    VoucherID INT REFERENCES VoucherList(VoucherID),
-    CustID INT REFERENCES Customers(CustID),
-    PayDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    TotalPrice NUMERIC NOT NULL,
-    FinalPrice NUMERIC NOT NULL,
-    CashReceived NUMERIC NOT NULL,
-    ChangePrice NUMERIC GENERATED ALWAYS AS (CashReceived - FinalPrice) STORED,
-    CONSTRAINT CHK_Payment CHECK (CashReceived >= FinalPrice)
+CREATE TABLE ThanhToan (
+    MaGiaoDich SERIAL PRIMARY KEY,
+    MaHD INT NOT NULL REFERENCES HoaDon(MaHD),
+    MaNhanVien INT NOT NULL REFERENCES UserAccount(MaNguoiDung),
+    SoTienNhan NUMERIC(12, 2) NOT NULL,
+    SoTienThua NUMERIC(12, 2) DEFAULT 0,
+    MaGiaoDichNganHang TEXT, -- Nếu chuyển khoản
+    ThoiGianThanhToan TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    QRCodeURL TEXT, -- URL QR thanh toán
+    GhiChu TEXT
 );
 
--- 6. Kho & Tin nhắn
-CREATE TABLE Ingredients (
-    IngID SERIAL PRIMARY KEY,
-    IngName TEXT NOT NULL,
-    Quantity FLOAT NOT NULL CHECK (Quantity >= 0),
-    Unit VARCHAR(20) NOT NULL CHECK (Unit IN ('gram', 'lít', 'ml', 'cái', 'hộp', 'kg'))
-);
-
-CREATE TABLE Messages (
-    MsgID SERIAL PRIMARY KEY,
-    SenderID INT NOT NULL REFERENCES Account(AccID),
-    ReceiverID INT REFERENCES Account(AccID),
-    Content TEXT NOT NULL,
-    SendTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    IsRead BOOLEAN DEFAULT FALSE
+-- 7. Tin nhắn nội bộ
+CREATE TABLE TinNhan (
+    MaTinNhan SERIAL PRIMARY KEY,
+    MaNguoiGui INT NOT NULL REFERENCES UserAccount(MaNguoiDung),
+    MaNguoiNhan INT REFERENCES UserAccount(MaNguoiDung),
+    NoiDung TEXT NOT NULL,
+    ThoiGian TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    DaDoc BOOLEAN DEFAULT FALSE
 );
