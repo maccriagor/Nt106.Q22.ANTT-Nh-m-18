@@ -303,6 +303,63 @@
             panel2.Size = new Size(861, 155);
             panel2.TabIndex = 2;
             // 
+            // dgvBanAn
+            // 
+            dgvBanAn.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvBanAn.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvBanAn.Location = new Point(12, 6);
+            dgvBanAn.Name = "dgvBanAn";
+            dgvBanAn.RowHeadersWidth = 51;
+            dgvBanAn.Size = new Size(528, 433);
+            dgvBanAn.TabIndex = 0;
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(panel7);
+            panel3.Controls.Add(panel6);
+            panel3.Controls.Add(panel5);
+            panel3.Controls.Add(panel4);
+            panel3.Dock = DockStyle.Right;
+            panel3.Location = new Point(546, 155);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(315, 451);
+            panel3.TabIndex = 1;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(btnXem);
+            panel2.Controls.Add(lblTitle);
+            panel2.Controls.Add(btnSua);
+            panel2.Controls.Add(tbTimKiem);
+            panel2.Controls.Add(btnXoa);
+            panel2.Controls.Add(btnTimKiem);
+            panel2.Controls.Add(btnThem);
+            panel2.Dock = DockStyle.Top;
+            panel2.Location = new Point(0, 0);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(861, 155);
+            panel2.TabIndex = 2;
+            // 
+            // lblTitle
+            // 
+            lblTitle.AutoSize = true;
+            lblTitle.Font = new Font("Calibri", 24F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTitle.ForeColor = Color.Brown;
+            lblTitle.Location = new Point(12, 9);
+            lblTitle.Name = "lblTitle";
+            lblTitle.Size = new Size(135, 49);
+            lblTitle.TabIndex = 10;
+            lblTitle.Text = "Bàn ăn";
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(dgvBanAn);
+            panel1.Dock = DockStyle.Fill;
+            panel1.Location = new Point(0, 155);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(546, 451);
+            panel1.TabIndex = 3;
+            // 
             // btnXem
             // 
             btnXem.BackColor = Color.FromArgb(128, 64, 0);
