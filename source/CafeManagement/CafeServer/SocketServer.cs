@@ -338,6 +338,138 @@ namespace CafeServer
                 default:
                     return "UNKNOWN_COMMAND";
 
+                case "SAVE_BILL":
+                    {
+                        try
+                        {
+                            // Client sends: SAVE_BILL | MaHD | MaNV | MaBanAn | NgayXuat
+                            // Index mapping:  [0]    | [1]  | [2]  |   [3]   |   [4]
+
+                            var b = new HoaDon
+                            {
+                                MaHD = int.Parse(parts[1]),
+                                MaNV = int.Parse(parts[2]),
+                                MaBanAn = string.IsNullOrEmpty(parts[3]) ? (int?)null : int.Parse(parts[3]),
+                                NgayTao = DateTime.Parse(parts[4]),
+
+                                // Explicitly set these to avoid the "Default 0" error
+                                MaDonHang = 2, // Use a real ID from your 'donhang' table
+                                TrangThai = "Hoàn thành",
+                                TongTien = 0,
+                                ThanhTien = 0
+                            };
+
+                            await DatabaseService.Client.From<HoaDon>().Upsert(b);
+                            return "SAVE_SUCCESS";
+                        }
+                        catch (Exception ex) { return $"ERROR|{ex.Message}"; }
+                    }
+
+                case "DELETE_BILL":
+                    {
+                        try
+                        {
+                            int id = int.Parse(parts[1]);
+                            await DatabaseService.Client.From<HoaDon>()
+                                .Filter("mahd", Supabase.Postgrest.Constants.Operator.Equals, id)
+                                .Delete();
+                            return "DELETE_SUCCESS";
+                        }
+                        catch (Exception ex) { return $"ERROR|{ex.Message}"; }
+                    }
+
+                case "GET_ALL_BILLS":
+                    {
+                        try
+                        {
+                            // Fetch all rows from the hoadon table
+                            var billresult = await DatabaseService.Client
+                                .From<HoaDon>()
+                                .Get();
+
+                            // Serialize the list of models to JSON string
+                            return JsonConvert.SerializeObject(billresult.Models);
+                        }
+                        catch (Exception ex)
+                        {
+                            return $"ERROR|{ex.Message}";
+                        }
+                    }
+
+
+
+                case "CHECK_EXISTS":
+                    {
+                        try
+                        {
+                            string tableName = parts[1];
+                            int idValue = int.Parse(parts[3]);
+
+                            if (tableName == "nhanvien")
+                            {
+                                // IMPORTANT: The filter string must match the column name in Supabase
+                                var res = await DatabaseService.Client.From<nhanvien>()
+                                    .Filter("manguoidung", Supabase.Postgrest.Constants.Operator.Equals, idValue)
+                                    .Get();
+                                return res.Models.Count > 0 ? "EXISTS_TRUE" : "EXISTS_FALSE";
+                            }
+                            else if (tableName == "banan")
+                            {
+                                var res = await DatabaseService.Client.From<banan>()
+                                    .Filter("mabanan", Supabase.Postgrest.Constants.Operator.Equals, idValue)
+                                    .Get();
+                                return res.Models.Count > 0 ? "EXISTS_TRUE" : "EXISTS_FALSE";
+                            }
+
+                            return "EXISTS_FALSE";
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"CheckExists Error: {ex.Message}");
+                            return "EXISTS_FALSE";
+                        }
+                    }
+
+                case "SEARCH_BILL_BY_ID":
+                    {
+                        try
+                        {
+                            string searchId = parts[1];
+
+                            // Fetch only the bill that matches the ID
+                            var billresult = await DatabaseService.Client.From<HoaDon>()
+                                .Filter("mahd", Supabase.Postgrest.Constants.Operator.Equals, searchId)
+                                .Get();
+
+                            // Return the models as a JSON array
+                            // If not found, result.Models will be an empty list, returning "[]"
+                            return JsonConvert.SerializeObject(billresult.Models);
+                        }
+                        catch (Exception ex)
+                        {
+                            return $"ERROR|Search failed: {ex.Message}";
+                        }
+                    }
+                case "GET_ALL_NV":
+                    {
+                        try
+                        {
+                            // Use <nhanvien> to ensure our Column/Table attributes are applied
+                            var res = await DatabaseService.Client.From<nhanvien>().Get();
+                            return JsonConvert.SerializeObject(res.Models);
+                        }
+                        catch { return "[]"; }
+                    }
+
+                case "GET_ALL_BAN":
+                    {
+                        try
+                        {
+                            var res = await DatabaseService.Client.From<banan>().Get();
+                            return JsonConvert.SerializeObject(res.Models);
+                        }
+                        catch { return "[]"; }
+                    }
             }
         }
 

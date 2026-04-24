@@ -28,30 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
-            txtNgayXuatHD = new TextBox();
             panel2 = new Panel();
+            btnXoa = new Button();
             lblTitle = new Label();
             btnXem = new Button();
             btnLamMoi = new Button();
-            tbTimKiem = new TextBox();
+            txtTimKiem = new TextBox();
             btnTimKiem = new Button();
             panel1 = new Panel();
-            dgvHoaDon = new DataGridView();
-            tbMaHoaDon = new TextBox();
+            flpHoaDon = new FlowLayoutPanel();
+            txtMaHD = new TextBox();
             label1 = new Label();
             panel4 = new Panel();
             panel5 = new Panel();
+            cbMaNV = new ComboBox();
             label2 = new Label();
             panel6 = new Panel();
+            cbMaBanAn = new ComboBox();
             label3 = new Label();
             panel7 = new Panel();
+            dtpNgayXuat = new DateTimePicker();
             label4 = new Label();
             panel3 = new Panel();
-            txtMaBanAn = new TextBox();
-            txtMaNhanVien = new TextBox();
+            btnSua = new Button();
+            btnThem = new Button();
             panel2.SuspendLayout();
             panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvHoaDon).BeginInit();
             panel4.SuspendLayout();
             panel5.SuspendLayout();
             panel6.SuspendLayout();
@@ -59,25 +61,34 @@
             panel3.SuspendLayout();
             SuspendLayout();
             // 
-            // txtNgayXuatHD
-            // 
-            txtNgayXuatHD.Location = new Point(3, 31);
-            txtNgayXuatHD.Name = "txtNgayXuatHD";
-            txtNgayXuatHD.Size = new Size(296, 28);
-            txtNgayXuatHD.TabIndex = 0;
-            // 
             // panel2
             // 
+            panel2.Controls.Add(btnXoa);
             panel2.Controls.Add(lblTitle);
             panel2.Controls.Add(btnXem);
             panel2.Controls.Add(btnLamMoi);
-            panel2.Controls.Add(tbTimKiem);
+            panel2.Controls.Add(txtTimKiem);
             panel2.Controls.Add(btnTimKiem);
             panel2.Dock = DockStyle.Top;
             panel2.Location = new Point(0, 0);
             panel2.Name = "panel2";
             panel2.Size = new Size(861, 147);
             panel2.TabIndex = 5;
+            // 
+            // btnXoa
+            // 
+            btnXoa.BackColor = Color.FromArgb(128, 64, 0);
+            btnXoa.FlatAppearance.BorderSize = 0;
+            btnXoa.FlatStyle = FlatStyle.Flat;
+            btnXoa.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            btnXoa.ForeColor = Color.White;
+            btnXoa.Location = new Point(319, 73);
+            btnXoa.Name = "btnXoa";
+            btnXoa.Size = new Size(139, 74);
+            btnXoa.TabIndex = 3;
+            btnXoa.Text = "❌ Xóa";
+            btnXoa.UseVisualStyleBackColor = false;
+            btnXoa.Click += btnXoa_Click;
             // 
             // lblTitle
             // 
@@ -103,6 +114,7 @@
             btnXem.TabIndex = 1;
             btnXem.Text = "👁️ Xem";
             btnXem.UseVisualStyleBackColor = false;
+            btnXem.Click += btnXem_Click;
             // 
             // btnLamMoi
             // 
@@ -117,14 +129,15 @@
             btnLamMoi.TabIndex = 1;
             btnLamMoi.Text = "🔁 Làm mới";
             btnLamMoi.UseVisualStyleBackColor = false;
+            btnLamMoi.Click += btnLamMoi_Click;
             // 
-            // tbTimKiem
+            // txtTimKiem
             // 
-            tbTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            tbTimKiem.Location = new Point(546, 87);
-            tbTimKiem.Name = "tbTimKiem";
-            tbTimKiem.Size = new Size(200, 28);
-            tbTimKiem.TabIndex = 0;
+            txtTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            txtTimKiem.Location = new Point(546, 87);
+            txtTimKiem.Name = "txtTimKiem";
+            txtTimKiem.Size = new Size(200, 28);
+            txtTimKiem.TabIndex = 0;
             // 
             // btnTimKiem
             // 
@@ -134,38 +147,41 @@
             btnTimKiem.FlatStyle = FlatStyle.Flat;
             btnTimKiem.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnTimKiem.ForeColor = Color.White;
-            btnTimKiem.Location = new Point(757, 71);
+            btnTimKiem.Location = new Point(761, 71);
             btnTimKiem.Name = "btnTimKiem";
             btnTimKiem.Size = new Size(92, 57);
             btnTimKiem.TabIndex = 1;
             btnTimKiem.Text = "🔍 Tìm";
             btnTimKiem.UseVisualStyleBackColor = false;
+            btnTimKiem.Click += btnTimKiem_Click;
             // 
             // panel1
             // 
-            panel1.Controls.Add(dgvHoaDon);
+            panel1.Controls.Add(flpHoaDon);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 147);
             panel1.Name = "panel1";
             panel1.Size = new Size(546, 459);
             panel1.TabIndex = 6;
             // 
-            // dgvHoaDon
+            // flpHoaDon
             // 
-            dgvHoaDon.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvHoaDon.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvHoaDon.Location = new Point(12, 11);
-            dgvHoaDon.Name = "dgvHoaDon";
-            dgvHoaDon.RowHeadersWidth = 51;
-            dgvHoaDon.Size = new Size(531, 436);
-            dgvHoaDon.TabIndex = 0;
+            flpHoaDon.AutoScroll = true;
+            flpHoaDon.BackColor = Color.LightGray;
+            flpHoaDon.FlowDirection = FlowDirection.TopDown;
+            flpHoaDon.Location = new Point(12, 6);
+            flpHoaDon.Name = "flpHoaDon";
+            flpHoaDon.Padding = new Padding(5);
+            flpHoaDon.Size = new Size(518, 441);
+            flpHoaDon.TabIndex = 0;
+            flpHoaDon.WrapContents = false;
             // 
-            // tbMaHoaDon
+            // txtMaHD
             // 
-            tbMaHoaDon.Location = new Point(3, 31);
-            tbMaHoaDon.Name = "tbMaHoaDon";
-            tbMaHoaDon.Size = new Size(296, 28);
-            tbMaHoaDon.TabIndex = 0;
+            txtMaHD.Location = new Point(3, 31);
+            txtMaHD.Name = "txtMaHD";
+            txtMaHD.Size = new Size(296, 28);
+            txtMaHD.TabIndex = 0;
             // 
             // label1
             // 
@@ -180,7 +196,7 @@
             // 
             // panel4
             // 
-            panel4.Controls.Add(tbMaHoaDon);
+            panel4.Controls.Add(txtMaHD);
             panel4.Controls.Add(label1);
             panel4.Location = new Point(8, 26);
             panel4.Name = "panel4";
@@ -189,12 +205,20 @@
             // 
             // panel5
             // 
-            panel5.Controls.Add(txtMaNhanVien);
+            panel5.Controls.Add(cbMaNV);
             panel5.Controls.Add(label2);
             panel5.Location = new Point(8, 94);
             panel5.Name = "panel5";
             panel5.Size = new Size(328, 62);
             panel5.TabIndex = 0;
+            // 
+            // cbMaNV
+            // 
+            cbMaNV.FormattingEnabled = true;
+            cbMaNV.Location = new Point(3, 27);
+            cbMaNV.Name = "cbMaNV";
+            cbMaNV.Size = new Size(296, 29);
+            cbMaNV.TabIndex = 1;
             // 
             // label2
             // 
@@ -209,12 +233,20 @@
             // 
             // panel6
             // 
-            panel6.Controls.Add(txtMaBanAn);
+            panel6.Controls.Add(cbMaBanAn);
             panel6.Controls.Add(label3);
             panel6.Location = new Point(8, 162);
             panel6.Name = "panel6";
             panel6.Size = new Size(328, 62);
             panel6.TabIndex = 0;
+            // 
+            // cbMaBanAn
+            // 
+            cbMaBanAn.FormattingEnabled = true;
+            cbMaBanAn.Location = new Point(3, 27);
+            cbMaBanAn.Name = "cbMaBanAn";
+            cbMaBanAn.Size = new Size(296, 29);
+            cbMaBanAn.TabIndex = 2;
             // 
             // label3
             // 
@@ -229,12 +261,19 @@
             // 
             // panel7
             // 
-            panel7.Controls.Add(txtNgayXuatHD);
+            panel7.Controls.Add(dtpNgayXuat);
             panel7.Controls.Add(label4);
             panel7.Location = new Point(8, 230);
             panel7.Name = "panel7";
             panel7.Size = new Size(328, 62);
             panel7.TabIndex = 0;
+            // 
+            // dtpNgayXuat
+            // 
+            dtpNgayXuat.Location = new Point(3, 27);
+            dtpNgayXuat.Name = "dtpNgayXuat";
+            dtpNgayXuat.Size = new Size(292, 28);
+            dtpNgayXuat.TabIndex = 1;
             // 
             // label4
             // 
@@ -249,6 +288,8 @@
             // 
             // panel3
             // 
+            panel3.Controls.Add(btnSua);
+            panel3.Controls.Add(btnThem);
             panel3.Controls.Add(panel7);
             panel3.Controls.Add(panel6);
             panel3.Controls.Add(panel5);
@@ -259,19 +300,35 @@
             panel3.Size = new Size(315, 459);
             panel3.TabIndex = 4;
             // 
-            // txtMaBanAn
+            // btnSua
             // 
-            txtMaBanAn.Location = new Point(3, 27);
-            txtMaBanAn.Name = "txtMaBanAn";
-            txtMaBanAn.Size = new Size(296, 28);
-            txtMaBanAn.TabIndex = 0;
+            btnSua.BackColor = Color.FromArgb(128, 64, 0);
+            btnSua.FlatAppearance.BorderSize = 0;
+            btnSua.FlatStyle = FlatStyle.Flat;
+            btnSua.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            btnSua.ForeColor = Color.White;
+            btnSua.Location = new Point(172, 332);
+            btnSua.Name = "btnSua";
+            btnSua.Size = new Size(116, 74);
+            btnSua.TabIndex = 3;
+            btnSua.Text = "✏️ Sửa";
+            btnSua.UseVisualStyleBackColor = false;
+            btnSua.Click += btnSua_Click;
             // 
-            // txtMaNhanVien
+            // btnThem
             // 
-            txtMaNhanVien.Location = new Point(3, 27);
-            txtMaNhanVien.Name = "txtMaNhanVien";
-            txtMaNhanVien.Size = new Size(296, 28);
-            txtMaNhanVien.TabIndex = 0;
+            btnThem.BackColor = Color.FromArgb(128, 64, 0);
+            btnThem.FlatAppearance.BorderSize = 0;
+            btnThem.FlatStyle = FlatStyle.Flat;
+            btnThem.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            btnThem.ForeColor = Color.White;
+            btnThem.Location = new Point(11, 332);
+            btnThem.Name = "btnThem";
+            btnThem.Size = new Size(116, 74);
+            btnThem.TabIndex = 2;
+            btnThem.Text = "➕ Thêm";
+            btnThem.UseVisualStyleBackColor = false;
+            btnThem.Click += btnThem_Click;
             // 
             // HoaDon_AD
             // 
@@ -289,7 +346,6 @@
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvHoaDon).EndInit();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
             panel5.ResumeLayout(false);
@@ -303,16 +359,13 @@
         }
 
         #endregion
-
-        private TextBox txtNgayXuatHD;
         private Panel panel2;
-        private TextBox tbTimKiem;
+        private TextBox txtTimKiem;
         private Button btnTimKiem;
         private Panel panel1;
         private Button btnXem;
         private Button btnLamMoi;
-        private DataGridView dgvHoaDon;
-        private TextBox tbMaHoaDon;
+        private TextBox txtMaHD;
         private Label label1;
         private Panel panel4;
         private Panel panel5;
@@ -323,7 +376,12 @@
         private Label label4;
         private Panel panel3;
         private Label lblTitle;
-        private TextBox txtMaNhanVien;
-        private TextBox txtMaBanAn;
+        private Button btnThem;
+        private Button btnXoa;
+        private ComboBox cbMaNV;
+        private ComboBox cbMaBanAn;
+        private DateTimePicker dtpNgayXuat;
+        private Button btnSua;
+        private FlowLayoutPanel flpHoaDon;
     }
 }

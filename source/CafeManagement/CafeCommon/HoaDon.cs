@@ -15,7 +15,7 @@ namespace CafeCommon
         public int MaHD { get; set; }
 
         [Column("madonhang")]
-        public int MaDonHang { get; set; }
+        public int? MaDonHang { get; set; }
 
         [Column("mabanan")]
         public int? MaBanAn { get; set; }
