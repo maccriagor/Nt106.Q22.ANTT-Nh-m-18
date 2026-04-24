@@ -1,4 +1,6 @@
-﻿namespace CafeClient
+﻿using Supabase.Gotrue.Mfa;
+
+namespace CafeClient
 {
     public partial class ForgotPassword : Form
     {

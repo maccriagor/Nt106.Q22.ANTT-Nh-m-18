@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CafeCommon;
+using Supabase;
 using Supabase.Postgrest;
 
 namespace CafeServer.Services

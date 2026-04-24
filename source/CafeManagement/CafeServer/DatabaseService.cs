@@ -24,5 +24,9 @@ namespace CafeServer
 
             System.Console.WriteLine("--- Kết nối Supabase thành công! ---");
         }
+
+        
+
+        
     }
 }
