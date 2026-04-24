@@ -174,7 +174,7 @@
             lbTrangThaiBan.TabIndex = 3;
             lbTrangThaiBan.Text = "thay đổi lb này \r\nvd: Đã đặt\r\n";
             // 
-            // label2
+            // label5
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
