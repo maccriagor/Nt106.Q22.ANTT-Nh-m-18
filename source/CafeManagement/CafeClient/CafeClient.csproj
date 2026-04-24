@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CafeCommon\CafeCommon.csproj" />
+    <ProjectReference Include="..\CafeServer\CafeServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

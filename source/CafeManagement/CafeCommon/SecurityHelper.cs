@@ -9,7 +9,6 @@ namespace CafeCommon
         {
             using (SHA256 sha256Hash = SHA256.Create())
             {
-                // Convert the string to a byte array and compute the hash
                 byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawPassword));
 
                 // Convert byte array to a readable hex string
