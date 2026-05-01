@@ -18,6 +18,9 @@ namespace CafeServer.Services
 
         public static TableService Table = new TableService();
 
+        private static BillService _bill;
+        public static BillService Bill => _bill ??= new BillService();
+
         // public static FoodService Food = new FoodService();
 
         // public static TableService Table = new TableService();

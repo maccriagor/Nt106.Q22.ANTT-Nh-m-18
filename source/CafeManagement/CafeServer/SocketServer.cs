@@ -308,24 +308,43 @@ namespace CafeServer
                     return "SUCCESS|" + JsonConvert.SerializeObject(tables);
 
                 case "ADD_TABLE":
-                    var newTable = JsonConvert.DeserializeObject<BanAn>(parts[1]);
-                    bool isAdd = await ServiceManager.Table.AddAsync(newTable);
-                    if (isAdd)
                     {
-                        await Broadcast("RELOAD_TABLE_MAP"); // Báo cho các máy khác load lại sơ đồ
-                        return "SUCCESS|Thêm bàn thành công";
+                        try
+                        {
+                            var newTable = JsonConvert.DeserializeObject<BanAn>(parts[1]);
+                            
+                            
+                            bool isAdd = await ServiceManager.Table.AddAsync(newTable);
+                            if (isAdd)
+                            {
+                                await Broadcast("RELOAD_TABLE_MAP");
+                                return "SUCCESS|Thêm bàn thành công";
+                            }
+                            return "FAIL|Lỗi khi thêm bàn vào cơ sở dữ liệu";
+                        }
+                        catch (Exception ex)
+                        {
+                            return $"FAIL|Server Error: {ex.Message}";
+                        }
                     }
-                    return "FAIL|Lỗi khi thêm bàn";
 
                 case "UPDATE_TABLE":
-                    var tableUp = JsonConvert.DeserializeObject<BanAn>(parts[1]);
-                    bool isUp = await ServiceManager.Table.UpdateAsync(tableUp);
-                    if (isUp)
+                    try
                     {
-                        await Broadcast("RELOAD_TABLE_MAP");
-                        return "SUCCESS|Cập nhật thành công";
+                        var tableUp = JsonConvert.DeserializeObject<BanAn>(parts[1]);
+                        bool isUp = await ServiceManager.Table.UpdateAsync(tableUp);
+                        if (isUp)
+                        {
+                            await Broadcast("RELOAD_TABLE_MAP");
+                            // Standardize this format!
+                            return "SUCCESS|Cập nhật thành công";
+                        }
+                        return "ERROR|Lỗi khi cập nhật trên Database";
                     }
-                    return "FAIL|Lỗi khi cập nhật";
+                    catch (Exception ex)
+                    {
+                        return $"ERROR|{ex.Message}";
+                    }
 
                 case "DELETE_TABLE":
                     int idDel_table = int.Parse(parts[1]);
@@ -333,6 +352,7 @@ namespace CafeServer
                     if (delRes.StartsWith("SUCCESS"))
                     {
                         await Broadcast("RELOAD_TABLE_MAP");
+                        return "SUCCESS|Table deleted";
                     }
                     return delRes;
                 default:
@@ -382,13 +402,10 @@ namespace CafeServer
                     {
                         try
                         {
-                            // Fetch all rows from the hoadon table
-                            var billresult = await DatabaseService.Client
-                                .From<HoaDon>()
-                                .Get();
+                            var billresult = await DatabaseService.Client.From<HoaDon>().Get();
 
-                            // Serialize the list of models to JSON string
-                            return JsonConvert.SerializeObject(billresult.Models);
+                            // Add the "SUCCESS|" prefix so the Client knows how to split the string
+                            return "SUCCESS|" + JsonConvert.SerializeObject(billresult.Models);
                         }
                         catch (Exception ex)
                         {
@@ -403,25 +420,13 @@ namespace CafeServer
                         try
                         {
                             string tableName = parts[1];
+                            string columnName = parts[2]; // Passed from client
                             int idValue = int.Parse(parts[3]);
 
-                            if (tableName == "nhanvien")
-                            {
-                                // IMPORTANT: The filter string must match the column name in Supabase
-                                var res = await DatabaseService.Client.From<nhanvien>()
-                                    .Filter("manguoidung", Supabase.Postgrest.Constants.Operator.Equals, idValue)
-                                    .Get();
-                                return res.Models.Count > 0 ? "EXISTS_TRUE" : "EXISTS_FALSE";
-                            }
-                            else if (tableName == "banan")
-                            {
-                                var res = await DatabaseService.Client.From<banan>()
-                                    .Filter("mabanan", Supabase.Postgrest.Constants.Operator.Equals, idValue)
-                                    .Get();
-                                return res.Models.Count > 0 ? "EXISTS_TRUE" : "EXISTS_FALSE";
-                            }
+                            // Use the ServiceManager to call your new service
+                            bool exists = await ServiceManager.Bill.CheckIdExists(tableName, columnName, idValue);
 
-                            return "EXISTS_FALSE";
+                            return exists ? "EXISTS_TRUE" : "EXISTS_FALSE";
                         }
                         catch (Exception ex)
                         {
@@ -435,40 +440,38 @@ namespace CafeServer
                         try
                         {
                             string searchId = parts[1];
-
-                            // Fetch only the bill that matches the ID
                             var billresult = await DatabaseService.Client.From<HoaDon>()
                                 .Filter("mahd", Supabase.Postgrest.Constants.Operator.Equals, searchId)
                                 .Get();
 
-                            // Return the models as a JSON array
-                            // If not found, result.Models will be an empty list, returning "[]"
+                            // Return SUCCESS prefix for consistency, or just the JSON if your client expects it
                             return JsonConvert.SerializeObject(billresult.Models);
                         }
                         catch (Exception ex)
                         {
-                            return $"ERROR|Search failed: {ex.Message}";
+                            return $"ERROR|{ex.Message}";
                         }
                     }
+
                 case "GET_ALL_NV":
                     {
                         try
                         {
-                            // Use <nhanvien> to ensure our Column/Table attributes are applied
-                            var res = await DatabaseService.Client.From<nhanvien>().Get();
-                            return JsonConvert.SerializeObject(res.Models);
+                            // Use the service to fetch the data
+                            var res = await DatabaseService.Client.From<BillService.nhanvien>().Get();
+                            return "SUCCESS|" + JsonConvert.SerializeObject(res.Models);
                         }
-                        catch { return "[]"; }
+                        catch { return "ERROR|Could not fetch employees"; }
                     }
 
                 case "GET_ALL_BAN":
                     {
                         try
                         {
-                            var res = await DatabaseService.Client.From<banan>().Get();
-                            return JsonConvert.SerializeObject(res.Models);
+                            var res = await DatabaseService.Client.From<BillService.banan>().Get();
+                            return "SUCCESS|" + JsonConvert.SerializeObject(res.Models);
                         }
-                        catch { return "[]"; }
+                        catch { return "ERROR|Could not fetch tables"; }
                     }
             }
         }

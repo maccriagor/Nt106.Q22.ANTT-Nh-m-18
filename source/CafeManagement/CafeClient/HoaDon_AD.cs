@@ -1,5 +1,7 @@
 ﻿using CafeCommon;
 using Newtonsoft.Json;
+using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,114 +19,109 @@ namespace CafeClient
         public HoaDon_AD()
         {
             InitializeComponent();
-            LoadComboBoxData();
+            this.Load += async (s, e) => {
+                await LoadComboBoxData();
+                await UpdateBillList(); 
+            };
         }
-        private void UpdateBillList(string response)
-        {
-            if (string.IsNullOrEmpty(response) || response.StartsWith("ERROR"))
-            {
-                // If there's an error or no data, just clear the list
-                flpHoaDon.Controls.Clear();
-                return;
-            }
 
+        private async Task LoadComboBoxData()
+        {
             try
             {
-                List<HoaDon> bills = JsonConvert.DeserializeObject<List<HoaDon>>(response);
-                DisplayBills(bills);
+                // 1. Load Employees (NhanVien)
+                string resNV = await SocketClient.SendRequestAsync("GET_ALL_NV");
+                if (resNV.StartsWith("SUCCESS"))
+                {
+                    string json = resNV.Split('|')[1];
+                    var listNV = JsonConvert.DeserializeObject<List<nhanvien>>(json);
+
+                    cbMaNV.DataSource = listNV;
+                    cbMaNV.DisplayMember = "manv"; // Matches the C# property name
+                    cbMaNV.ValueMember = "manv";
+                }
+
+                // 2. Load Tables (BanAn)
+                string resBan = await SocketClient.SendRequestAsync("GET_ALL_BAN");
+                if (resBan.StartsWith("SUCCESS"))
+                {
+                    string json = resBan.Split('|')[1];
+                    var listBan = JsonConvert.DeserializeObject<List<banan>>(json);
+
+                    cbMaBanAn.DataSource = listBan;
+                    cbMaBanAn.DisplayMember = "mabanan";
+                    cbMaBanAn.ValueMember = "mabanan";
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi hiển thị dữ liệu: " + ex.Message);
+                MessageBox.Show("Lỗi tải dữ liệu ComboBox: " + ex.Message);
             }
         }
-        private async void LoadComboBoxData()
+
+
+        private async Task UpdateBillList() 
         {
-            // 1. Load Employees
-            string nvRes = await SocketClient.SendRequestAsync("GET_ALL_NV");
-            if (!nvRes.StartsWith("ERROR"))
-            {
-                var listNV = JsonConvert.DeserializeObject<List<nhanvien>>(nvRes);
-                cbMaNV.DataSource = listNV;
-                cbMaNV.DisplayMember = "manv"; // Show the ID in the dropdown
-                cbMaNV.ValueMember = "manv";
-            }
+            string response = await SocketClient.SendRequestAsync("GET_ALL_BILLS");
 
-            // 2. Load Tables
-            string banRes = await SocketClient.SendRequestAsync("GET_ALL_BAN");
-            if (!banRes.StartsWith("ERROR"))
+            if (response.StartsWith("SUCCESS"))
             {
-                var listBan = JsonConvert.DeserializeObject<List<banan>>(banRes);
-                cbMaBanAn.DataSource = listBan;
-                cbMaBanAn.DisplayMember = "mabanan";
-                cbMaBanAn.ValueMember = "mabanan";
-            }
-        }
-        private void DisplayBills(List<HoaDon> bills)
-        {
-            flpHoaDon.Controls.Clear();
-            foreach (var bill in bills)
-            {
-                ThongTinHoaDon card = new ThongTinHoaDon(bill);
+                // Split by the pipe character and take the second part (the JSON)
+                string json = response.Split('|')[1];
+                List<HoaDon> bills = JsonConvert.DeserializeObject<List<HoaDon>>(json);
 
-                card.OnCardClicked += (s, e) =>
-                {
-                    txtMaHD.Text = bill.MaHD.ToString();
-                    cbMaNV.Text = bill.MaNV.ToString();
-                    cbMaBanAn.Text = bill.MaBanAn?.ToString();
-                    dtpNgayXuat.Value = bill.NgayTao;
-                };
-
-             
-                flpHoaDon.Controls.Add(card);
+                dgvHoaDon.DataSource = null;
+                dgvHoaDon.DataSource = bills;
             }
         }
 
+       
 
-        private async void btnXoa_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(txtMaHD.Text)) return;
-
-            if (MessageBox.Show("Xác nhận xóa hóa đơn này?", "Xác nhận", MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                string res = await SocketClient.SendRequestAsync($"DELETE_BILL|{txtMaHD.Text}");
-                if (res == "DELETE_SUCCESS") btnLamMoi_Click(null, null);
-            }
-        }
-
-
-
-        private async void btnLamMoi_Click(object sender, EventArgs e)
+        private async void btnXem_Click(object sender, EventArgs e)
         {
             txtMaHD.Clear();
             cbMaNV.Text = "";
             cbMaBanAn.Text = "";
             dtpNgayXuat.Value = DateTime.Now;
             string response = await SocketClient.SendRequestAsync("GET_ALL_BILLS");
-            UpdateBillList(response);
+            await UpdateBillList();
         }
 
-        private void btnXem_Click(object sender, EventArgs e)
+        private void dgvHoaDon_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            btnLamMoi_Click(sender, e);
+            if (e.RowIndex >= 0)
+            {
+                var bill = (HoaDon)dgvHoaDon.Rows[e.RowIndex].DataBoundItem;
+                txtMaHD.Text = bill.MaHD.ToString();
+                cbMaNV.Text = bill.MaNV.ToString();
+                cbMaBanAn.Text = bill.MaBanAn?.ToString();
+                dtpNgayXuat.Value = bill.NgayTao;
+            }
         }
 
         private async void btnTimKiem_Click(object sender, EventArgs e)
         {
-            string searchId = txtTimKiem.Text.Trim(); // Replace with your actual search textbox name
-            if (string.IsNullOrEmpty(searchId)) return;
+            string searchId = txtTimKiem.Text.Trim();
+            if (string.IsNullOrEmpty(searchId))
+            {
+                await UpdateBillList(); // Show everything if search is empty
+                return;
+            }
 
-            // Command: SEARCH_BILL_BY_ID|123
             string response = await SocketClient.SendRequestAsync($"SEARCH_BILL_BY_ID|{searchId}");
 
-            if (response.StartsWith("ERROR"))
+            // Check if we got valid JSON data (not an error and not empty)
+            if (!response.StartsWith("ERROR") && response != "[]")
             {
-                MessageBox.Show("Không tìm thấy hóa đơn!");
+                // Bind the specific search result to the grid
+                List<HoaDon> searchResults = JsonConvert.DeserializeObject<List<HoaDon>>(response);
+                dgvHoaDon.DataSource = null;
+                dgvHoaDon.DataSource = searchResults;
             }
             else
             {
-                // UpdateBillList handles the JSON and calls DisplayBills
-                UpdateBillList(response);
+                MessageBox.Show("Không tìm thấy hóa đơn có mã này!");
+                dgvHoaDon.DataSource = null; // Clear the grid if nothing found
             }
         }
 
@@ -159,7 +156,7 @@ namespace CafeClient
                 if (response == "SAVE_SUCCESS")
                 {
                     MessageBox.Show("Thêm hóa đơn thành công!");
-                    btnLamMoi_Click(null, null);
+                    btnXem_Click(null, null);
                 }
                 else
                 {
@@ -184,4 +181,34 @@ namespace CafeClient
             btnThem_Click(sender, e);
         }
     }
+    public static class PrimaryKeyCheck
+    {
+        public static async Task<bool> Exists(string tableName, string columnName, int id)
+        {
+            try
+            {
+                string request = $"CHECK_EXISTS|{tableName}|{columnName}|{id}";
+                string response = await SocketClient.SendRequestAsync(request);
+                return response == "EXISTS_TRUE";
+            }
+            catch { return false; }
+        }
+    }
+
+    // Tiny models for the foreign key checks
+    [Table("useraccount")]
+    public class nhanvien : BaseModel
+    {
+        [PrimaryKey("manguoidung", false)]
+        [Column("manguoidung")]
+        public int manv { get; set; }
+    }
+
+    [Table("banan")]
+    public class banan : BaseModel
+    {
+        [PrimaryKey("mabanan")]
+        public int mabanan { get; set; }
+    }
+
 }

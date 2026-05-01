@@ -1,5 +1,7 @@
 ﻿using CafeCommon;
 using Newtonsoft.Json;
+using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +20,7 @@ namespace CafeClient
         public BanAn_AD()
         {
             InitializeComponent();
+            cbTrangThai.SelectedIndex = 0;
         }
 
         private async void BanAn_AD_Load(object sender, EventArgs e)
@@ -32,8 +35,12 @@ namespace CafeClient
             {
                 string json = response.Split('|')[1];
                 fullTableList = JsonConvert.DeserializeObject<List<BanAn>>(json);
+
+                // UI Thread safety: Force the grid to forget the old data
                 dgvBanAn.DataSource = null;
+                dgvBanAn.Rows.Clear(); // Add this to ensure the "shell" is empty
                 dgvBanAn.DataSource = fullTableList;
+                dgvBanAn.Refresh();
             }
         }
 
@@ -66,16 +73,19 @@ namespace CafeClient
 
         private async void btnThem_Click(object sender, EventArgs e)
         {
+            tbMaBan.Tag = null;
             if (!ValidateInput()) return;
 
             try
             {
                 var ban = new BanAn
                 {
+                    // We do NOT set MaBanAn here; it defaults to 0
                     TenBan = tbTenBan.Text.Trim(),
                     SoChoNgoi = (int)numSoChoNgoi.Value,
-                    TrangThai = "Trống", // Bàn mới tạo luôn ở trạng thái Trống
-                    NgayTao = DateTime.Now
+                    TrangThai = "Trống",
+                    NgayTao = DateTime.Now,
+                    MaNV = null
                 };
 
                 string request = "ADD_TABLE|" + JsonConvert.SerializeObject(ban);
@@ -89,53 +99,40 @@ namespace CafeClient
                 }
                 else
                 {
-                    MessageBox.Show("Lỗi: " + res.Split('|')[1], "Thất bại");
+                    // This is where your error was showing; standardizing the split helps
+                    string errorMsg = res.Contains("|") ? res.Split('|')[1] : res;
+                    MessageBox.Show("Lỗi: " + errorMsg, "Thất bại");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi hệ thống khi thêm: " + ex.Message);
+                MessageBox.Show("Lỗi hệ thống: " + ex.Message);
             }
         }
 
         private async void btnXoa_Click(object sender, EventArgs e)
         {
-            if (tbMaBan.Tag == null)
-            {
-                MessageBox.Show("Vui lòng chọn bàn cần xóa!", "Thông báo");
-                return;
-            }
+            // 1. Check if a row is actually selected in the Grid
+            if (dgvBanAn.CurrentRow == null) return;
 
-            // Ràng buộc tại Client: Cảnh báo nếu bàn không trống (Server cũng sẽ check lại)
-            if (cbTrangThai.Text != "Trống")
-            {
-                MessageBox.Show("Chỉ được phép xóa bàn đang ở trạng thái 'Trống'!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            // CHANGE: Use 'BanAn' (capital B and A) to match your CafeCommon class
+            var selectedTable = (BanAn)dgvBanAn.CurrentRow.DataBoundItem;
 
-            var confirm = MessageBox.Show("Bạn có chắc chắn muốn xóa bàn này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+          
+
+                var confirm = MessageBox.Show($"Bạn có chắc muốn xóa bàn {selectedTable.MaBanAn}?", "Xác nhận", MessageBoxButtons.YesNo);
             if (confirm == DialogResult.Yes)
             {
-                try
-                {
-                    int id = (int)tbMaBan.Tag;
-                    string res = await SocketClient.SendRequestAsync($"DELETE_TABLE|{id}");
+                // Use the ID from the object
+                string res = await SocketClient.SendRequestAsync($"DELETE_TABLE|{selectedTable.MaBanAn}");
 
-                    if (res.StartsWith("SUCCESS"))
-                    {
-                        MessageBox.Show("Xóa bàn thành công!", "Thông báo");
-                        await LoadTables();
-                        ClearFields();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Xóa thất bại: " + res.Split('|')[1], "Lỗi");
-                    }
-                }
-                catch (Exception ex)
+                if (res.StartsWith("SUCCESS"))
                 {
-                    MessageBox.Show("Lỗi hệ thống khi xóa: " + ex.Message);
+                    MessageBox.Show("Xóa bàn thành công!");
+                    await LoadTables();
+                    ClearFields();
                 }
+                else { /* handle error */ }
             }
         }
 
@@ -209,7 +206,9 @@ namespace CafeClient
                 numSoChoNgoi.Value = Convert.ToInt32(row.Cells["SoChoNgoi"].Value);
                 cbTrangThai.Text = row.Cells["TrangThai"].Value.ToString();
                 dtpNgayTao.Value = Convert.ToDateTime(row.Cells["NgayTao"].Value);
+                tbMaBan.Tag = int.Parse(tbMaBan.Text);
             }
         }
     }
+    
 }

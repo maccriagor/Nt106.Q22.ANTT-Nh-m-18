@@ -28,15 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             panel2 = new Panel();
-            btnXoa = new Button();
             lblTitle = new Label();
             btnXem = new Button();
-            btnLamMoi = new Button();
             txtTimKiem = new TextBox();
             btnTimKiem = new Button();
             panel1 = new Panel();
-            flpHoaDon = new FlowLayoutPanel();
+            dgvHoaDon = new DataGridView();
             txtMaHD = new TextBox();
             label1 = new Label();
             panel4 = new Panel();
@@ -54,6 +56,7 @@
             btnThem = new Button();
             panel2.SuspendLayout();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvHoaDon).BeginInit();
             panel4.SuspendLayout();
             panel5.SuspendLayout();
             panel6.SuspendLayout();
@@ -63,10 +66,8 @@
             // 
             // panel2
             // 
-            panel2.Controls.Add(btnXoa);
             panel2.Controls.Add(lblTitle);
             panel2.Controls.Add(btnXem);
-            panel2.Controls.Add(btnLamMoi);
             panel2.Controls.Add(txtTimKiem);
             panel2.Controls.Add(btnTimKiem);
             panel2.Dock = DockStyle.Top;
@@ -74,21 +75,6 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(861, 147);
             panel2.TabIndex = 5;
-            // 
-            // btnXoa
-            // 
-            btnXoa.BackColor = Color.FromArgb(128, 64, 0);
-            btnXoa.FlatAppearance.BorderSize = 0;
-            btnXoa.FlatStyle = FlatStyle.Flat;
-            btnXoa.Font = new Font("Calibri", 12F, FontStyle.Bold);
-            btnXoa.ForeColor = Color.White;
-            btnXoa.Location = new Point(319, 73);
-            btnXoa.Name = "btnXoa";
-            btnXoa.Size = new Size(139, 74);
-            btnXoa.TabIndex = 3;
-            btnXoa.Text = "❌ Xóa";
-            btnXoa.UseVisualStyleBackColor = false;
-            btnXoa.Click += btnXoa_Click;
             // 
             // lblTitle
             // 
@@ -116,21 +102,6 @@
             btnXem.UseVisualStyleBackColor = false;
             btnXem.Click += btnXem_Click;
             // 
-            // btnLamMoi
-            // 
-            btnLamMoi.BackColor = Color.FromArgb(128, 64, 0);
-            btnLamMoi.FlatAppearance.BorderSize = 0;
-            btnLamMoi.FlatStyle = FlatStyle.Flat;
-            btnLamMoi.Font = new Font("Calibri", 12F, FontStyle.Bold);
-            btnLamMoi.ForeColor = Color.White;
-            btnLamMoi.Location = new Point(164, 73);
-            btnLamMoi.Name = "btnLamMoi";
-            btnLamMoi.Size = new Size(139, 74);
-            btnLamMoi.TabIndex = 1;
-            btnLamMoi.Text = "🔁 Làm mới";
-            btnLamMoi.UseVisualStyleBackColor = false;
-            btnLamMoi.Click += btnLamMoi_Click;
-            // 
             // txtTimKiem
             // 
             txtTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
@@ -157,24 +128,53 @@
             // 
             // panel1
             // 
-            panel1.Controls.Add(flpHoaDon);
+            panel1.Controls.Add(dgvHoaDon);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 147);
             panel1.Name = "panel1";
             panel1.Size = new Size(546, 459);
             panel1.TabIndex = 6;
             // 
-            // flpHoaDon
+            // dgvHoaDon
             // 
-            flpHoaDon.AutoScroll = true;
-            flpHoaDon.BackColor = Color.LightGray;
-            flpHoaDon.FlowDirection = FlowDirection.TopDown;
-            flpHoaDon.Location = new Point(12, 6);
-            flpHoaDon.Name = "flpHoaDon";
-            flpHoaDon.Padding = new Padding(5);
-            flpHoaDon.Size = new Size(518, 441);
-            flpHoaDon.TabIndex = 0;
-            flpHoaDon.WrapContents = false;
+            dgvHoaDon.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvHoaDon.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle1.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = Color.White;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvHoaDon.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvHoaDon.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgvHoaDon.DefaultCellStyle = dataGridViewCellStyle2;
+            dgvHoaDon.Location = new Point(9, 13);
+            dgvHoaDon.Name = "dgvHoaDon";
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle3.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = Color.White;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dgvHoaDon.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dgvHoaDon.RowHeadersWidth = 51;
+            dataGridViewCellStyle4.BackColor = Color.White;
+            dataGridViewCellStyle4.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = Color.Black;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
+            dgvHoaDon.RowsDefaultCellStyle = dataGridViewCellStyle4;
+            dgvHoaDon.Size = new Size(528, 433);
+            dgvHoaDon.TabIndex = 1;
+            dgvHoaDon.CellClick += dgvHoaDon_CellClick;
             // 
             // txtMaHD
             // 
@@ -346,6 +346,7 @@
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvHoaDon).EndInit();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
             panel5.ResumeLayout(false);
@@ -364,7 +365,6 @@
         private Button btnTimKiem;
         private Panel panel1;
         private Button btnXem;
-        private Button btnLamMoi;
         private TextBox txtMaHD;
         private Label label1;
         private Panel panel4;
@@ -377,11 +377,10 @@
         private Panel panel3;
         private Label lblTitle;
         private Button btnThem;
-        private Button btnXoa;
         private ComboBox cbMaNV;
         private ComboBox cbMaBanAn;
         private DateTimePicker dtpNgayXuat;
         private Button btnSua;
-        private FlowLayoutPanel flpHoaDon;
+        private DataGridView dgvHoaDon;
     }
 }
