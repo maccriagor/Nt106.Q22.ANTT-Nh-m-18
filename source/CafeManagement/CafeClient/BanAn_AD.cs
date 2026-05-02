@@ -22,7 +22,7 @@ namespace CafeClient
 
         private async void BanAn_AD_Load(object sender, EventArgs e)
         {
-            await LoadTables();
+            
         }
 
         private async Task LoadTables()
@@ -32,8 +32,17 @@ namespace CafeClient
             {
                 string json = response.Split('|')[1];
                 fullTableList = JsonConvert.DeserializeObject<List<BanAn>>(json);
+
                 dgvBanAn.DataSource = null;
                 dgvBanAn.DataSource = fullTableList;
+
+                // ẨN CÁC CỘT THỪA CỦA BASEMODEL
+                string[] hiddenCols = { "BaseUrl", "RequestClient", "TableName", "PrimaryKey", "RequestClientOptions" };
+                foreach (var colName in hiddenCols)
+                {
+                    if (dgvBanAn.Columns.Contains(colName))
+                        dgvBanAn.Columns[colName].Visible = false;
+                }
             }
         }
 
@@ -57,10 +66,10 @@ namespace CafeClient
         private void ClearFields()
         {
             tbMaBan.Clear();
-            tbMaBan.Tag = null; // Quan trọng để nhận biết trạng thái đang chọn
+            tbMaBan.Tag = null;
             tbTenBan.Clear();
-            numSoChoNgoi.Value = 2; // Giá trị mặc định phổ biến
-            cbTrangThai.SelectedIndex = -1;
+            numSoChoNgoi.Value = 1;
+            cbTrangThai.SelectedIndex = -1; // Reset combobox
             dtpNgayTao.Value = DateTime.Now;
         }
 
@@ -72,29 +81,31 @@ namespace CafeClient
             {
                 var ban = new BanAn
                 {
+                    // Không gán MaBanAn vì Database tự tăng
                     TenBan = tbTenBan.Text.Trim(),
                     SoChoNgoi = (int)numSoChoNgoi.Value,
-                    TrangThai = "Trống", // Bàn mới tạo luôn ở trạng thái Trống
-                    NgayTao = DateTime.Now
+                    TrangThai = "Trống", // Mặc định luôn là Trống khi thêm mới
+                    MaNhanVien = null,     
+                    NgayTao = dtpNgayTao.Value // Lấy theo ngày người dùng chọn ở DateTimePicker
                 };
 
                 string request = "ADD_TABLE|" + JsonConvert.SerializeObject(ban);
                 string res = await SocketClient.SendRequestAsync(request);
 
-                if (res.StartsWith("SUCCESS"))
+                if (res.Contains("SUCCESS"))
                 {
-                    MessageBox.Show("Thêm bàn mới thành công!", "Thành công");
+                    MessageBox.Show(res.Split('|')[1], "Thành công"); // Lấy nội dung từ Server gửi về
                     ClearFields();
                     await LoadTables();
                 }
                 else
                 {
-                    MessageBox.Show("Lỗi: " + res.Split('|')[1], "Thất bại");
+                    MessageBox.Show("Lỗi: " + (res.Contains("|") ? res.Split('|')[1] : res), "Thất bại");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi hệ thống khi thêm: " + ex.Message);
+                MessageBox.Show("Lỗi hệ thống: " + ex.Message);
             }
         }
 
@@ -121,15 +132,15 @@ namespace CafeClient
                     int id = (int)tbMaBan.Tag;
                     string res = await SocketClient.SendRequestAsync($"DELETE_TABLE|{id}");
 
-                    if (res.StartsWith("SUCCESS"))
+                    if (res.Contains("SUCCESS"))
                     {
-                        MessageBox.Show("Xóa bàn thành công!", "Thông báo");
-                        await LoadTables();
+                        MessageBox.Show(res.Split('|')[1], "Thành công"); // Lấy nội dung từ Server gửi về
                         ClearFields();
+                        await LoadTables();
                     }
                     else
                     {
-                        MessageBox.Show("Xóa thất bại: " + res.Split('|')[1], "Lỗi");
+                        MessageBox.Show("Lỗi: " + (res.Contains("|") ? res.Split('|')[1] : res), "Thất bại");
                     }
                 }
                 catch (Exception ex)
@@ -143,7 +154,7 @@ namespace CafeClient
         {
             if (tbMaBan.Tag == null)
             {
-                MessageBox.Show("Vui lòng chọn một bàn từ danh sách để sửa!", "Thông báo");
+                MessageBox.Show("Vui lòng chọn bàn từ danh sách!");
                 return;
             }
 
@@ -156,26 +167,26 @@ namespace CafeClient
                     MaBanAn = (int)tbMaBan.Tag,
                     TenBan = tbTenBan.Text.Trim(),
                     SoChoNgoi = (int)numSoChoNgoi.Value
-                    // Lưu ý: Không gửi trạng thái để tránh Admin can thiệp vận hành
+                    // TUYỆT ĐỐI không gán TrangThai ở đây để tránh thay đổi trạng thái vận hành
                 };
 
                 string request = "UPDATE_TABLE|" + JsonConvert.SerializeObject(ban);
                 string res = await SocketClient.SendRequestAsync(request);
 
-                if (res.StartsWith("SUCCESS"))
+                if (res.Contains("SUCCESS"))
                 {
-                    MessageBox.Show("Cập nhật thông tin bàn thành công!", "Thành công");
-                    await LoadTables();
+                    MessageBox.Show(res.Split('|')[1], "Thành công"); // Lấy nội dung từ Server gửi về
                     ClearFields();
+                    await LoadTables();
                 }
                 else
                 {
-                    MessageBox.Show("Lỗi: " + res.Split('|')[1]);
+                    MessageBox.Show("Lỗi: " + (res.Contains("|") ? res.Split('|')[1] : res), "Thất bại");
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi kết nối khi sửa: " + ex.Message);
+                MessageBox.Show("Lỗi kết nối: " + ex.Message);
             }
         }
 
@@ -188,15 +199,21 @@ namespace CafeClient
         private void btnTimKiem_Click(object sender, EventArgs e)
         {
             string key = tbTimKiem.Text.ToLower().Trim();
-            string statusFilter = cbTrangThai.Text; // Trống, Có khách, Đã đặt
+            string statusFilter = cbTrangThai.Text;
 
+            // Logic tìm kiếm linh hoạt: Nếu không chọn trạng thái thì tìm theo tên
             var filtered = fullTableList.Where(x =>
                 (x.TenBan.ToLower().Contains(key)) &&
-                (statusFilter == "Tất cả" || string.IsNullOrEmpty(statusFilter) || x.TrangThai == statusFilter)
+                (statusFilter == "" || statusFilter == "Tất cả" || x.TrangThai == statusFilter)
             ).ToList();
 
             dgvBanAn.DataSource = null;
             dgvBanAn.DataSource = filtered;
+
+            // Đừng quên ẩn cột lại sau khi gán DataSource mới
+            string[] hiddenCols = { "BaseUrl", "RequestClient", "TableName", "PrimaryKey", "RequestClientOptions" };
+            foreach (var colName in hiddenCols)
+                if (dgvBanAn.Columns.Contains(colName)) dgvBanAn.Columns[colName].Visible = false;
         }
 
         private void dgvBanAn_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -204,11 +221,17 @@ namespace CafeClient
             if (e.RowIndex >= 0)
             {
                 var row = dgvBanAn.Rows[e.RowIndex];
+
+                // Gán MaBanAn vào cả Text (để xem) và Tag (để xử lý code)
                 tbMaBan.Text = row.Cells["MaBanAn"].Value.ToString();
-                tbTenBan.Text = row.Cells["TenBan"].Value.ToString();
+                tbMaBan.Tag = row.Cells["MaBanAn"].Value;
+
+                tbTenBan.Text = row.Cells["TenBan"].Value?.ToString();
                 numSoChoNgoi.Value = Convert.ToInt32(row.Cells["SoChoNgoi"].Value);
-                cbTrangThai.Text = row.Cells["TrangThai"].Value.ToString();
-                dtpNgayTao.Value = Convert.ToDateTime(row.Cells["NgayTao"].Value);
+                cbTrangThai.Text = row.Cells["TrangThai"].Value?.ToString();
+
+                if (row.Cells["NgayTao"].Value != null)
+                    dtpNgayTao.Value = Convert.ToDateTime(row.Cells["NgayTao"].Value);
             }
         }
     }

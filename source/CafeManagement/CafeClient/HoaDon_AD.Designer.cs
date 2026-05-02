@@ -28,6 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             txtNgayXuatHD = new TextBox();
             panel2 = new Panel();
             lblTitle = new Label();
@@ -37,18 +41,18 @@
             btnTimKiem = new Button();
             panel1 = new Panel();
             dgvHoaDon = new DataGridView();
-            tbMaHoaDon = new TextBox();
+            txtMaHoaDon = new TextBox();
             label1 = new Label();
             panel4 = new Panel();
             panel5 = new Panel();
+            txtMaNhanVien = new TextBox();
             label2 = new Label();
             panel6 = new Panel();
+            txtMaBanAn = new TextBox();
             label3 = new Label();
             panel7 = new Panel();
             label4 = new Label();
             panel3 = new Panel();
-            txtMaBanAn = new TextBox();
-            txtMaNhanVien = new TextBox();
             panel2.SuspendLayout();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvHoaDon).BeginInit();
@@ -103,6 +107,7 @@
             btnXem.TabIndex = 1;
             btnXem.Text = "👁️ Xem";
             btnXem.UseVisualStyleBackColor = false;
+            btnXem.Click += btnXem_Click;
             // 
             // btnLamMoi
             // 
@@ -117,6 +122,7 @@
             btnLamMoi.TabIndex = 1;
             btnLamMoi.Text = "🔁 Làm mới";
             btnLamMoi.UseVisualStyleBackColor = false;
+            btnLamMoi.Click += btnLamMoi_Click;
             // 
             // tbTimKiem
             // 
@@ -140,6 +146,7 @@
             btnTimKiem.TabIndex = 1;
             btnTimKiem.Text = "🔍 Tìm";
             btnTimKiem.UseVisualStyleBackColor = false;
+            btnTimKiem.Click += btnTimKiem_Click;
             // 
             // panel1
             // 
@@ -153,19 +160,51 @@
             // dgvHoaDon
             // 
             dgvHoaDon.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvHoaDon.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvHoaDon.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle1.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = Color.White;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvHoaDon.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvHoaDon.ColumnHeadersHeight = 35;
+            dgvHoaDon.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            dgvHoaDon.DefaultCellStyle = dataGridViewCellStyle2;
             dgvHoaDon.Location = new Point(12, 11);
             dgvHoaDon.Name = "dgvHoaDon";
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle3.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = Color.White;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.True;
+            dgvHoaDon.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             dgvHoaDon.RowHeadersWidth = 51;
+            dataGridViewCellStyle4.BackColor = SystemColors.Control;
+            dataGridViewCellStyle4.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = Color.Black;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
+            dgvHoaDon.RowsDefaultCellStyle = dataGridViewCellStyle4;
             dgvHoaDon.Size = new Size(531, 436);
             dgvHoaDon.TabIndex = 0;
+            dgvHoaDon.CellClick += dgvHoaDon_CellClick;
             // 
-            // tbMaHoaDon
+            // txtMaHoaDon
             // 
-            tbMaHoaDon.Location = new Point(3, 31);
-            tbMaHoaDon.Name = "tbMaHoaDon";
-            tbMaHoaDon.Size = new Size(296, 28);
-            tbMaHoaDon.TabIndex = 0;
+            txtMaHoaDon.Location = new Point(3, 31);
+            txtMaHoaDon.Name = "txtMaHoaDon";
+            txtMaHoaDon.Size = new Size(296, 28);
+            txtMaHoaDon.TabIndex = 0;
             // 
             // label1
             // 
@@ -180,7 +219,7 @@
             // 
             // panel4
             // 
-            panel4.Controls.Add(tbMaHoaDon);
+            panel4.Controls.Add(txtMaHoaDon);
             panel4.Controls.Add(label1);
             panel4.Location = new Point(8, 26);
             panel4.Name = "panel4";
@@ -195,6 +234,13 @@
             panel5.Name = "panel5";
             panel5.Size = new Size(328, 62);
             panel5.TabIndex = 0;
+            // 
+            // txtMaNhanVien
+            // 
+            txtMaNhanVien.Location = new Point(3, 27);
+            txtMaNhanVien.Name = "txtMaNhanVien";
+            txtMaNhanVien.Size = new Size(296, 28);
+            txtMaNhanVien.TabIndex = 0;
             // 
             // label2
             // 
@@ -215,6 +261,13 @@
             panel6.Name = "panel6";
             panel6.Size = new Size(328, 62);
             panel6.TabIndex = 0;
+            // 
+            // txtMaBanAn
+            // 
+            txtMaBanAn.Location = new Point(3, 27);
+            txtMaBanAn.Name = "txtMaBanAn";
+            txtMaBanAn.Size = new Size(296, 28);
+            txtMaBanAn.TabIndex = 0;
             // 
             // label3
             // 
@@ -259,20 +312,6 @@
             panel3.Size = new Size(315, 459);
             panel3.TabIndex = 4;
             // 
-            // txtMaBanAn
-            // 
-            txtMaBanAn.Location = new Point(3, 27);
-            txtMaBanAn.Name = "txtMaBanAn";
-            txtMaBanAn.Size = new Size(296, 28);
-            txtMaBanAn.TabIndex = 0;
-            // 
-            // txtMaNhanVien
-            // 
-            txtMaNhanVien.Location = new Point(3, 27);
-            txtMaNhanVien.Name = "txtMaNhanVien";
-            txtMaNhanVien.Size = new Size(296, 28);
-            txtMaNhanVien.TabIndex = 0;
-            // 
             // HoaDon_AD
             // 
             AutoScaleDimensions = new SizeF(9F, 21F);
@@ -312,7 +351,7 @@
         private Button btnXem;
         private Button btnLamMoi;
         private DataGridView dgvHoaDon;
-        private TextBox tbMaHoaDon;
+        private TextBox txtMaHoaDon;
         private Label label1;
         private Panel panel4;
         private Panel panel5;
