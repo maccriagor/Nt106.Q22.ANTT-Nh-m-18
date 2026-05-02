@@ -335,6 +335,11 @@ namespace CafeServer
                         await Broadcast("RELOAD_TABLE_MAP");
                     }
                     return delRes;
+
+                case "GET_BILLS":
+                    var bills = await ServiceManager.Bill.GetAllAsync();
+                    return "SUCCESS|" + JsonConvert.SerializeObject(bills);
+
                 default:
                     return "UNKNOWN_COMMAND";
 

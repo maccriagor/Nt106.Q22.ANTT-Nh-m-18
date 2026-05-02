@@ -22,7 +22,11 @@ namespace CafeServer.Services
                 await DatabaseService.Client.From<BanAn>().Insert(ban);
                 return true;
             }
-            catch { return false; }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[TableService.AddAsync] Exception: {ex}");
+                return false;
+            }
         }
 
         public async Task<bool> UpdateAsync(BanAn ban)
@@ -37,7 +41,11 @@ namespace CafeServer.Services
                     .Update();
                 return true;
             }
-            catch { return false; }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[TableService.UpdateAsync] Exception: {ex}");
+                return false;
+            }
         }
 
         public async Task<string> DeleteAsync(int id)

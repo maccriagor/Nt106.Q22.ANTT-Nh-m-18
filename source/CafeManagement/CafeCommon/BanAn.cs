@@ -23,8 +23,8 @@ namespace CafeCommon
         [Column("trangthai")]
         public string TrangThai { get; set; }
 
-        [Column("manv")]
-        public int MaNV { get; set; }
+        [Column("manhanvien")]
+        public int? MaNhanVien { get; set; }
 
         [Column("ngaytao")]
         public DateTime NgayTao { get; set; }
