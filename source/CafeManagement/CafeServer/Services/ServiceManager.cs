@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +20,8 @@ namespace CafeServer.Services
         public static TableService Table = new TableService();
 
         public static BillService Bill = new BillService();
+        
+        public static KhachHangService KhachHang = new KhachHangService();
 
         // public static FoodService Food = new FoodService();
 

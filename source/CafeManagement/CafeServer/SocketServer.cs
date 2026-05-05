@@ -1,5 +1,6 @@
 ﻿using CafeCommon;
 using CafeServer.Services;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -340,8 +341,76 @@ namespace CafeServer
                     var bills = await ServiceManager.Bill.GetAllAsync();
                     return "SUCCESS|" + JsonConvert.SerializeObject(bills);
 
+                case "GET_CUSTOMERS":
+                    var customers = await ServiceManager.KhachHang.GetAllAsync();
+                    return "SUCCESS|" + JsonConvert.SerializeObject(customers);
+
+                case "ADD_CUSTOMERS":
+                    try
+                    {
+                        var newCustomer = JsonConvert.DeserializeObject<KhachHang>(parts[1]);
+
+                        // It's a good idea to check if the ID is empty before proceeding
+                        if (newCustomer.MaKH <= 0)
+                            return "FAIL|Mã Khách Hàng không để trống";
+
+                        bool isAdded2 = await ServiceManager.KhachHang.AddAsync(newCustomer);
+
+                        return isAdded2 ? "SUCCESS|Thêm thành công" : "FAIL|Duplicate ID or Database Error";
+                    }
+                    catch (Exception ex)
+                    {
+                        return $"FAIL|Server Error: {ex.Message}";
+                    }
+
+
+                case "DELETE_CUSTOMERS":
+                    try
+                    {
+                        // parts[1] contains the ID sent from the WinForm
+                        int idDel2 = int.Parse(parts[1]);
+
+                        bool isDeleted2 = await ServiceManager.KhachHang.DeleteAsync(idDel2);
+
+                        if (isDeleted2)
+                        {
+                      
+                            return "SUCCESS|Xóa Khách Hàng Thành Công";
+                        }
+                        return "FAIL|Không thấy khách hàng";
+                    }
+                    catch (Exception ex)
+                    {
+                        return $"FAIL|Server Error: {ex.Message}";
+                    }
+
+                case "UPDATE_CUSTOMERS":
+                    try
+                    {
+                        // Deserialize the JSON string back into a KhachHang object
+                        var customerUpdate = JsonConvert.DeserializeObject<KhachHang>(parts[1]);
+
+                        // Call the service to perform the update in Supabase
+                        bool isUpdated2 = await ServiceManager.KhachHang.UpdateAsync(customerUpdate);
+
+                        if (isUpdated2)
+                        {
+                            // Optional: Notify other clients to refresh their data
+                            // await Broadcast("RELOAD_CUSTOMER_LIST");
+                            return "SUCCESS|Cập nhật thông tin khách hàng thành công";
+                        }
+                        return "FAIL|Lỗi khi cập nhật thông tin khách hàng";
+                    }
+                    catch (Exception ex)
+                    {
+                        return $"FAIL|Server Error: {ex.Message}";
+                    }
+
+
                 default:
                     return "UNKNOWN_COMMAND";
+
+               
 
             }
         }
