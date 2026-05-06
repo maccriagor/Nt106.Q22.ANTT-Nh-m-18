@@ -116,7 +116,7 @@ namespace CafeServer
             switch (command)
             {
                 case "LOGIN":
-                    var account = await ServiceManager.User.LoginAsync(parts[1], parts[2]);
+                    var account = await ServiceManager.User.LoginAsync(parts[1], parts[2].Trim());
 
                     if (account != null)
                     {

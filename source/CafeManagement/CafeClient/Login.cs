@@ -17,6 +17,18 @@ namespace CafeClient
             this.Hide();
         }
 
+        private void txtPassword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                // 1. Prevent the "Ding" sound and stop the character from entering the textbox
+                e.SuppressKeyPress = true;
+
+                // 2. Call your login logic
+                btnLogin_Click(sender, e);
+            }
+        }
+
         private async void btnLogin_Click(object sender, EventArgs e)
         {
             // 1. Kiểm tra nhập liệu
