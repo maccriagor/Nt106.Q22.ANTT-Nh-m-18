@@ -15,6 +15,7 @@ namespace CafeClient
         private static string _ip = "127.0.0.1"; // IP của máy chạy Server
         private static int _port = 8888;
 
+
         public static async Task<bool> ConnectAsync()
         {
             try

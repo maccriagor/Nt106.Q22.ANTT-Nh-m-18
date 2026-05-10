@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CafeServer
 {
@@ -343,6 +344,175 @@ namespace CafeServer
                 default:
                     return "UNKNOWN_COMMAND";
 
+                case "SAVE_BILL":
+                    {
+                        try
+                        {
+                            // Client sends: SAVE_BILL | MaHD | MaNV | MaBanAn | NgayXuat
+                            // Index mapping:  [0]    | [1]  | [2]  |   [3]   |   [4]
+
+                            var b = new HoaDon
+                            {
+                                MaHD = int.Parse(parts[1]),
+                                MaNV = int.Parse(parts[2]),
+                                MaBanAn = string.IsNullOrEmpty(parts[3]) ? (int?)null : int.Parse(parts[3]),
+                                NgayTao = DateTime.Parse(parts[4]),
+
+                                // Explicitly set these to avoid the "Default 0" error
+                                MaDonHang = 2, // Use a real ID from your 'donhang' table
+                                TrangThai = "Hoàn thành",
+                                TongTien = 0,
+                                ThanhTien = 0
+                            };
+
+                            await DatabaseService.Client.From<HoaDon>().Upsert(b);
+                            return "SAVE_SUCCESS";
+                        }
+                        catch (Exception ex) { return $"ERROR|{ex.Message}"; }
+                    }
+
+                case "DELETE_BILL":
+                    {
+                        try
+                        {
+                            int id = int.Parse(parts[1]);
+                            await DatabaseService.Client.From<HoaDon>()
+                                .Filter("mahd", Supabase.Postgrest.Constants.Operator.Equals, id)
+                                .Delete();
+                            return "DELETE_SUCCESS";
+                        }
+                        catch (Exception ex) { return $"ERROR|{ex.Message}"; }
+                    }
+
+                case "GET_ALL_BILLS":
+                    {
+                        try
+                        {
+                            var billresult = await DatabaseService.Client.From<HoaDon>().Get();
+
+                            // Add the "SUCCESS|" prefix so the Client knows how to split the string
+                            return "SUCCESS|" + JsonConvert.SerializeObject(billresult.Models);
+                        }
+                        catch (Exception ex)
+                        {
+                            return $"ERROR|{ex.Message}";
+                        }
+                    }
+
+
+
+                case "CHECK_EXISTS":
+                    {
+                        try
+                        {
+                            string tableName = parts[1];
+                            string columnName = parts[2]; // Passed from client
+                            int idValue = int.Parse(parts[3]);
+
+                            // Use the ServiceManager to call your new service
+                            bool exists = await ServiceManager.Bill.CheckIdExists(tableName, columnName, idValue);
+
+                            return exists ? "EXISTS_TRUE" : "EXISTS_FALSE";
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"CheckExists Error: {ex.Message}");
+                            return "EXISTS_FALSE";
+                        }
+                    }
+
+                case "SEARCH_BILL_BY_ID":
+                    {
+                        try
+                        {
+                            string searchId = parts[1];
+                            var billresult = await DatabaseService.Client.From<HoaDon>()
+                                .Filter("mahd", Supabase.Postgrest.Constants.Operator.Equals, searchId)
+                                .Get();
+
+                            // Return SUCCESS prefix for consistency, or just the JSON if your client expects it
+                            return JsonConvert.SerializeObject(billresult.Models);
+                        }
+                        catch (Exception ex)
+                        {
+                            return $"ERROR|{ex.Message}";
+                        }
+                    }
+
+                case "GET_ALL_NV":
+                    {
+                        try
+                        {
+                            // Use the service to fetch the data
+                            var res = await DatabaseService.Client.From<BillService.nhanvien>().Get();
+                            return "SUCCESS|" + JsonConvert.SerializeObject(res.Models);
+                        }
+                        catch { return "ERROR|Could not fetch employees"; }
+                    }
+
+                case "GET_ALL_BAN":
+                    {
+                        try
+                        {
+                            var res = await DatabaseService.Client.From<BillService.banan>().Get();
+                            return "SUCCESS|" + JsonConvert.SerializeObject(res.Models);
+                        }
+                        catch { return "ERROR|Could not fetch tables"; }
+                    }
+                case "GET_CUSTOMER_BY_PHONE":
+                    {
+                        // 1. Kiểm tra dữ liệu đầu vào (parts[1] tương ứng với SDT gửi từ Client)
+                        if (parts.Length < 2) return "FAIL|Thiếu số điện thoại";
+
+                        string phone = parts[1];
+
+                        // 2. Gọi hàm async từ ServiceManager (sử dụng await thay vì .Wait())
+                        var customerInfo = await ServiceManager.Customer.GetCustomerByPhoneAsync(phone);
+
+                        // 3. Trả về kết quả dưới dạng string để hàm HandleClient gửi đi
+                        if (customerInfo != null)
+                        {
+                            return "SUCCESS|" + JsonConvert.SerializeObject(customerInfo);
+                        }
+                        return "NOT_FOUND";
+                    }
+                case "CONFIRM_PAYMENT":
+                    {
+                        try
+                        {
+                            // Gói tin: CONFIRM_PAYMENT|MaHD|MaBanAn|MaKH|TongTienCuoi|HinhThuc
+                            int maHD = int.Parse(parts[1]);
+                            int maBan = int.Parse(parts[2]);
+                            int? maKH = string.IsNullOrEmpty(parts[3]) ? (int?)null : int.Parse(parts[3]);
+                            decimal soTien = decimal.Parse(parts[4]);
+                            string phuongThuc = parts[5];
+
+                            // 1. Cập nhật Hóa đơn thành "Đã thanh toán"
+                            await DatabaseService.Client.From<HoaDon>()
+                                .Where(x => x.MaHD == maHD)
+                                .Set(x => x.TrangThai, "Đã thanh toán")
+                                .Set(x => x.ThanhTien, soTien)
+                                .Set(x => x.PhuongThucThanhToan, phuongThuc)
+                                .Update();
+
+                            // 2. Cập nhật Bàn ăn thành "Trống"
+                            var banUpdate = new BanAn { MaBanAn = maBan, TrangThai = "Trống" };
+                            await ServiceManager.Table.UpdateAsync(banUpdate);
+
+                            // 3. Cộng điểm cho khách (nếu có)
+                            if (maKH.HasValue)
+                            {
+                                int diemCong = (int)(soTien / 10000); // Ví dụ: 10k được 1 điểm
+                                                                      // Bạn có thể viết thêm hàm UpdatePoints trong CustomService
+                            }
+
+                            await Broadcast("RELOAD_TABLE_MAP"); // Thông báo cho tất cả máy nhân viên cập nhật sơ đồ bàn
+                            return "PAYMENT_SUCCESS";
+                        }
+                        catch (Exception ex) { return $"ERROR|{ex.Message}"; }
+                    }
+                default:
+                    return "UNKNOWN_COMMAND";
             }
         }
 

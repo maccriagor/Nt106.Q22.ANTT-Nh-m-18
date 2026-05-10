@@ -20,6 +20,8 @@ namespace CafeServer.Services
 
         public static BillService Bill = new BillService();
 
+        public static CustomerService Customer = new CustomerService();
+
         // public static FoodService Food = new FoodService();
 
         // public static TableService Table = new TableService();
