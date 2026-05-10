@@ -407,6 +407,31 @@ namespace CafeServer
                     }
 
 
+
+                case "GET_ORDERS_EXTENDED":
+                    var orders = await ServiceManager.Order.GetAllOrdersExtendedAsync();
+                    string jsonResponse2 = JsonConvert.SerializeObject(orders);
+
+                    // ADD THIS LINE TEMPORARILY:
+                    Console.WriteLine($"[DEBUG JSON]: {jsonResponse2}");
+
+                    return "SUCCESS|" + jsonResponse2;
+
+                case "GET_ORDER_DETAILS_EXTENDED":
+                    int orderId = int.Parse(parts[1]);
+                    var details = await ServiceManager.Order.GetOrderDetailsExtendedAsync(orderId);
+                    return "SUCCESS|" + JsonConvert.SerializeObject(details);
+
+                case "DELETE_ORDER":
+                    int delId = int.Parse(parts[1]);
+                    bool ok = await ServiceManager.Order.DeleteOrderAsync(delId);
+                    return ok ? "SUCCESS|Deleted" : "FAIL|Could not delete order";
+
+
+                case "GET_UNIQUE_TABLES":
+                    var tables3 = await ServiceManager.Order.GetUniqueTableNumbersAsync();
+                    return "SUCCESS|" + JsonConvert.SerializeObject(tables3);
+
                 default:
                     return "UNKNOWN_COMMAND";
 

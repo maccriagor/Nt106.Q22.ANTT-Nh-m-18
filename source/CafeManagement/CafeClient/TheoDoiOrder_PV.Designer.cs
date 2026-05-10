@@ -32,24 +32,33 @@
             btnLamMoi = new Button();
             btnXoa = new Button();
             cbSoBan = new ComboBox();
-            label4 = new Label();
             cbTrangThai = new ComboBox();
             label2 = new Label();
-            label3 = new Label();
             label1 = new Label();
             panel9 = new Panel();
             lblTitle = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
             groupBox1 = new GroupBox();
+            dgvDonHang = new DataGridView();
             groupBox2 = new GroupBox();
-            dataGridView1 = new DataGridView();
-            listView1 = new ListView();
+            lvDonHang = new ListView();
+            columnHeader1 = new ColumnHeader();
+            columnHeader2 = new ColumnHeader();
+            columnHeader3 = new ColumnHeader();
+            columnHeader4 = new ColumnHeader();
+            columnHeader5 = new ColumnHeader();
+            Column1 = new DataGridViewTextBoxColumn();
+            Column2 = new DataGridViewTextBoxColumn();
+            Column3 = new DataGridViewTextBoxColumn();
+            Column4 = new DataGridViewTextBoxColumn();
+            Column5 = new DataGridViewTextBoxColumn();
+            Column6 = new DataGridViewTextBoxColumn();
             panel3.SuspendLayout();
             panel9.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvDonHang).BeginInit();
             groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
             // panel3
@@ -57,10 +66,8 @@
             panel3.Controls.Add(btnLamMoi);
             panel3.Controls.Add(btnXoa);
             panel3.Controls.Add(cbSoBan);
-            panel3.Controls.Add(label4);
             panel3.Controls.Add(cbTrangThai);
             panel3.Controls.Add(label2);
-            panel3.Controls.Add(label3);
             panel3.Controls.Add(label1);
             panel3.Dock = DockStyle.Right;
             panel3.Location = new Point(526, 68);
@@ -81,6 +88,7 @@
             btnLamMoi.TabIndex = 2;
             btnLamMoi.Text = "🔁 Làm mới";
             btnLamMoi.UseVisualStyleBackColor = false;
+            btnLamMoi.Click += btnLamMoi_Click;
             // 
             // btnXoa
             // 
@@ -94,6 +102,7 @@
             btnXoa.TabIndex = 3;
             btnXoa.Text = "❌ Xóa";
             btnXoa.UseVisualStyleBackColor = false;
+            btnXoa.Click += btnXoa_Click;
             // 
             // cbSoBan
             // 
@@ -102,24 +111,17 @@
             cbSoBan.Name = "cbSoBan";
             cbSoBan.Size = new Size(216, 29);
             cbSoBan.TabIndex = 1;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.ForeColor = Color.FromArgb(128, 64, 64);
-            label4.Location = new Point(3, 384);
-            label4.Name = "label4";
-            label4.Size = new Size(337, 21);
-            label4.TabIndex = 0;
-            label4.Text = "ở dưới sẽ hiện Tên món, SL, ghi chú, trạng thái";
+            cbSoBan.SelectedIndexChanged += cbSoBan_SelectedIndexChanged;
             // 
             // cbTrangThai
             // 
             cbTrangThai.FormattingEnabled = true;
+            cbTrangThai.Items.AddRange(new object[] { "Tất cả trạng thái", "1", "2" });
             cbTrangThai.Location = new Point(105, 70);
             cbTrangThai.Name = "cbTrangThai";
             cbTrangThai.Size = new Size(216, 29);
             cbTrangThai.TabIndex = 1;
+            cbTrangThai.SelectedIndexChanged += cbTrangThai_SelectedIndexChanged;
             // 
             // label2
             // 
@@ -130,16 +132,6 @@
             label2.Size = new Size(84, 21);
             label2.TabIndex = 0;
             label2.Text = "Trạng thái:";
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.ForeColor = Color.FromArgb(128, 64, 64);
-            label3.Location = new Point(15, 206);
-            label3.Name = "label3";
-            label3.Size = new Size(617, 42);
-            label3.TabIndex = 0;
-            label3.Text = "Chọn đơn hàng ở bảng trên\r\n(có Mã hóa đơn, Tên bàn, giờ gửi đơn hàng, trạng thái, số lượng món trong đơn hàng)";
             // 
             // label1
             // 
@@ -188,7 +180,7 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(dataGridView1);
+            groupBox1.Controls.Add(dgvDonHang);
             groupBox1.Dock = DockStyle.Fill;
             groupBox1.ForeColor = Color.FromArgb(128, 64, 0);
             groupBox1.Location = new Point(3, 3);
@@ -198,9 +190,21 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "Đơn hàng";
             // 
+            // dgvDonHang
+            // 
+            dgvDonHang.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvDonHang.Columns.AddRange(new DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6 });
+            dgvDonHang.Dock = DockStyle.Fill;
+            dgvDonHang.Location = new Point(3, 24);
+            dgvDonHang.Name = "dgvDonHang";
+            dgvDonHang.RowHeadersWidth = 51;
+            dgvDonHang.Size = new Size(514, 236);
+            dgvDonHang.TabIndex = 0;
+            dgvDonHang.CellClick += dgvDonHang_CellClick;
+            // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(listView1);
+            groupBox2.Controls.Add(lvDonHang);
             groupBox2.Dock = DockStyle.Fill;
             groupBox2.ForeColor = Color.FromArgb(128, 64, 0);
             groupBox2.Location = new Point(3, 272);
@@ -210,24 +214,91 @@
             groupBox2.TabStop = false;
             groupBox2.Text = "Chi tiết đơn hàng";
             // 
-            // dataGridView1
+            // lvDonHang
             // 
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(3, 24);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(514, 236);
-            dataGridView1.TabIndex = 0;
+            lvDonHang.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5 });
+            lvDonHang.Dock = DockStyle.Fill;
+            lvDonHang.Location = new Point(3, 24);
+            lvDonHang.Name = "lvDonHang";
+            lvDonHang.Size = new Size(514, 236);
+            lvDonHang.TabIndex = 0;
+            lvDonHang.UseCompatibleStateImageBehavior = false;
+            lvDonHang.View = View.Details;
             // 
-            // listView1
+            // columnHeader1
             // 
-            listView1.Dock = DockStyle.Fill;
-            listView1.Location = new Point(3, 24);
-            listView1.Name = "listView1";
-            listView1.Size = new Size(514, 236);
-            listView1.TabIndex = 0;
-            listView1.UseCompatibleStateImageBehavior = false;
+            columnHeader1.Text = "Tên Món";
+            columnHeader1.Width = 90;
+            // 
+            // columnHeader2
+            // 
+            columnHeader2.Text = "Số Lượng";
+            columnHeader2.Width = 90;
+            // 
+            // columnHeader3
+            // 
+            columnHeader3.Text = "Ghi Chú Khách";
+            columnHeader3.Width = 120;
+            // 
+            // columnHeader4
+            // 
+            columnHeader4.Text = "Ghi Chú Bếp";
+            columnHeader4.Width = 120;
+            // 
+            // columnHeader5
+            // 
+            columnHeader5.Text = "Trạng Thái";
+            columnHeader5.Width = 90;
+            // 
+            // Column1
+            // 
+            Column1.DataPropertyName = "MaHD";
+            Column1.HeaderText = "MaHD";
+            Column1.MinimumWidth = 6;
+            Column1.Name = "Column1";
+            Column1.Width = 125;
+            // 
+            // Column2
+            // 
+            Column2.DataPropertyName = "TenBan";
+            Column2.HeaderText = "Tên Bàn";
+            Column2.MinimumWidth = 6;
+            Column2.Name = "Column2";
+            Column2.Width = 125;
+            // 
+            // Column3
+            // 
+            Column3.DataPropertyName = "SoLuong";
+            Column3.HeaderText = "Số lượng";
+            Column3.MinimumWidth = 6;
+            Column3.Name = "Column3";
+            Column3.ReadOnly = true;
+            Column3.Width = 125;
+            // 
+            // Column4
+            // 
+            Column4.DataPropertyName = "TrangThai";
+            Column4.HeaderText = "Trạng Thái";
+            Column4.MinimumWidth = 6;
+            Column4.Name = "Column4";
+            Column4.Width = 125;
+            // 
+            // Column5
+            // 
+            Column5.DataPropertyName = "NgayOrder";
+            Column5.HeaderText = "Ngày Order";
+            Column5.MinimumWidth = 6;
+            Column5.Name = "Column5";
+            Column5.Width = 125;
+            // 
+            // Column6
+            // 
+            Column6.DataPropertyName = "MaDonHang";
+            Column6.HeaderText = "Ma Don Hang";
+            Column6.MinimumWidth = 6;
+            Column6.Name = "Column6";
+            Column6.Visible = false;
+            Column6.Width = 125;
             // 
             // TheoDoiOrder_PV
             // 
@@ -248,8 +319,8 @@
             panel9.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvDonHang).EndInit();
             groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
         }
 
@@ -261,14 +332,23 @@
         private ComboBox cbTrangThai;
         private Button btnLamMoi;
         private Button btnXoa;
-        private Label label3;
-        private Label label4;
         private Panel panel9;
         private Label lblTitle;
         private TableLayoutPanel tableLayoutPanel1;
         private GroupBox groupBox1;
         private GroupBox groupBox2;
-        private DataGridView dataGridView1;
-        private ListView listView1;
+        private DataGridView dgvDonHang;
+        private ListView lvDonHang;
+        private ColumnHeader columnHeader1;
+        private ColumnHeader columnHeader2;
+        private ColumnHeader columnHeader3;
+        private ColumnHeader columnHeader4;
+        private ColumnHeader columnHeader5;
+        private DataGridViewTextBoxColumn Column1;
+        private DataGridViewTextBoxColumn Column2;
+        private DataGridViewTextBoxColumn Column3;
+        private DataGridViewTextBoxColumn Column4;
+        private DataGridViewTextBoxColumn Column5;
+        private DataGridViewTextBoxColumn Column6;
     }
 }
