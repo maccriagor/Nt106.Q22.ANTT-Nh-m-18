@@ -26,5 +26,19 @@ namespace CafeServer.Services
                 return new List<HoaDon>();
             }
         }
+
+        public async Task<HoaDon> GetActiveBillByTableAsync(int tableId)
+        {
+            try
+            {
+                var res = await DatabaseService.Client.From<HoaDon>()
+                    .Where(x => x.MaBanAn == tableId)
+                    .Where(x => x.TrangThai == "Chưa thanh toán")
+                    .Get();
+
+                return res.Models.FirstOrDefault();
+            }
+            catch { return null; }
+        }
     }
 }

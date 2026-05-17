@@ -20,7 +20,7 @@ namespace CafeCommon
         [Column("mota")] 
         public string MoTa { get; set; }
 
-        [Column("trangthai")] 
-        public bool TrangThai { get; set; }
+        [Column("trangthai")]
+        public bool TrangThai { get; set; } = true;
     }
 }

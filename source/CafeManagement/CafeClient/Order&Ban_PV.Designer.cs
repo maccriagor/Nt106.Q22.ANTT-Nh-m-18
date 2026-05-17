@@ -29,56 +29,54 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            txtGhiChu = new TextBox();
             label7 = new Label();
+            label5 = new Label();
             label6 = new Label();
             nmSoLuong = new NumericUpDown();
             cbLoaiMonAn = new ComboBox();
             panel3 = new Panel();
+            flpTables = new FlowLayoutPanel();
             groupBox1 = new GroupBox();
             label3 = new Label();
             lbTrangThaiBan = new Label();
             label2 = new Label();
-            button2 = new Button();
-            button1 = new Button();
+            btnHuyBan = new Button();
+            btnDatBan = new Button();
             cbSoBan = new ComboBox();
             label1 = new Label();
-            flowLayoutPanel_Table = new FlowLayoutPanel();
-            label8 = new Label();
             btnXoa = new Button();
             btnThem = new Button();
             btnGuiOrder = new Button();
-            button3 = new Button();
+            btnChuyenBan = new Button();
             cbBanMuonChuyenDen = new ComboBox();
             panel11 = new Panel();
             lblTitle = new Label();
             panel4 = new Panel();
+            label10 = new Label();
+            label9 = new Label();
+            label4 = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
             groupBox2 = new GroupBox();
-            dataGridView2 = new DataGridView();
-            label4 = new Label();
-            label9 = new Label();
-            label10 = new Label();
+            dgvGioHang = new DataGridView();
             groupBox3 = new GroupBox();
-            dataGridView1 = new DataGridView();
-            label5 = new Label();
-            textBox1 = new TextBox();
+            dgvMenu = new DataGridView();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nmSoLuong).BeginInit();
             panel3.SuspendLayout();
             groupBox1.SuspendLayout();
-            flowLayoutPanel_Table.SuspendLayout();
             panel11.SuspendLayout();
             panel4.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvGioHang).BeginInit();
             groupBox3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvMenu).BeginInit();
             SuspendLayout();
             // 
             // panel1
             // 
-            panel1.Controls.Add(textBox1);
+            panel1.Controls.Add(txtGhiChu);
             panel1.Controls.Add(label7);
             panel1.Controls.Add(label5);
             panel1.Controls.Add(label6);
@@ -90,6 +88,13 @@
             panel1.Size = new Size(462, 71);
             panel1.TabIndex = 0;
             // 
+            // txtGhiChu
+            // 
+            txtGhiChu.Location = new Point(131, 40);
+            txtGhiChu.Name = "txtGhiChu";
+            txtGhiChu.Size = new Size(325, 28);
+            txtGhiChu.TabIndex = 4;
+            // 
             // label7
             // 
             label7.AutoSize = true;
@@ -99,6 +104,16 @@
             label7.Size = new Size(79, 21);
             label7.TabIndex = 3;
             label7.Text = "Số lượng:";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.ForeColor = Color.FromArgb(128, 64, 0);
+            label5.Location = new Point(14, 43);
+            label5.Name = "label5";
+            label5.Size = new Size(117, 21);
+            label5.TabIndex = 3;
+            label5.Text = "Ghi chú khách: ";
             // 
             // label6
             // 
@@ -125,31 +140,42 @@
             cbLoaiMonAn.Name = "cbLoaiMonAn";
             cbLoaiMonAn.Size = new Size(151, 29);
             cbLoaiMonAn.TabIndex = 1;
+            cbLoaiMonAn.SelectedIndexChanged += cbLoaiMonAn_SelectedIndexChanged;
             // 
             // panel3
             // 
+            panel3.Controls.Add(flpTables);
             panel3.Controls.Add(groupBox1);
             panel3.Controls.Add(label1);
-            panel3.Controls.Add(flowLayoutPanel_Table);
             panel3.Dock = DockStyle.Left;
             panel3.Location = new Point(0, 68);
             panel3.Name = "panel3";
             panel3.Size = new Size(399, 460);
             panel3.TabIndex = 0;
             // 
+            // flpTables
+            // 
+            flpTables.AutoScroll = true;
+            flpTables.Dock = DockStyle.Left;
+            flpTables.Location = new Point(0, 121);
+            flpTables.Name = "flpTables";
+            flpTables.Size = new Size(399, 339);
+            flpTables.TabIndex = 0;
+            // 
             // groupBox1
             // 
             groupBox1.Controls.Add(label3);
             groupBox1.Controls.Add(lbTrangThaiBan);
             groupBox1.Controls.Add(label2);
-            groupBox1.Controls.Add(button2);
-            groupBox1.Controls.Add(button1);
+            groupBox1.Controls.Add(btnHuyBan);
+            groupBox1.Controls.Add(btnDatBan);
             groupBox1.Controls.Add(cbSoBan);
+            groupBox1.Dock = DockStyle.Top;
             groupBox1.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox1.ForeColor = Color.FromArgb(128, 64, 0);
-            groupBox1.Location = new Point(3, 6);
+            groupBox1.Location = new Point(0, 0);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(393, 121);
+            groupBox1.Size = new Size(399, 121);
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
             groupBox1.Text = "Thông tin bàn ăn";
@@ -158,7 +184,7 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
-            label3.Location = new Point(6, 70);
+            label3.Location = new Point(6, 76);
             label3.Name = "label3";
             label3.Size = new Size(114, 21);
             label3.TabIndex = 2;
@@ -170,11 +196,11 @@
             lbTrangThaiBan.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
             lbTrangThaiBan.Location = new Point(126, 76);
             lbTrangThaiBan.Name = "lbTrangThaiBan";
-            lbTrangThaiBan.Size = new Size(118, 42);
+            lbTrangThaiBan.Size = new Size(78, 21);
             lbTrangThaiBan.TabIndex = 3;
-            lbTrangThaiBan.Text = "thay đổi lb này \r\nvd: Đã đặt\r\n";
+            lbTrangThaiBan.Text = "trạng thái";
             // 
-            // label5
+            // label2
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
@@ -185,32 +211,34 @@
             label2.Text = "Chọn bàn:";
             label2.Click += label2_Click;
             // 
-            // button2
+            // btnHuyBan
             // 
-            button2.BackColor = Color.White;
-            button2.FlatStyle = FlatStyle.Flat;
-            button2.Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button2.ForeColor = Color.FromArgb(128, 64, 0);
-            button2.Location = new Point(262, 66);
-            button2.Name = "button2";
-            button2.Size = new Size(99, 29);
-            button2.TabIndex = 3;
-            button2.Text = "Hủy bàn";
-            button2.UseVisualStyleBackColor = false;
+            btnHuyBan.BackColor = Color.White;
+            btnHuyBan.FlatStyle = FlatStyle.Flat;
+            btnHuyBan.Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnHuyBan.ForeColor = Color.FromArgb(128, 64, 0);
+            btnHuyBan.Location = new Point(262, 66);
+            btnHuyBan.Name = "btnHuyBan";
+            btnHuyBan.Size = new Size(99, 29);
+            btnHuyBan.TabIndex = 3;
+            btnHuyBan.Text = "Hủy bàn";
+            btnHuyBan.UseVisualStyleBackColor = false;
+            btnHuyBan.Click += btnHuyBan_Click;
             // 
-            // button1
+            // btnDatBan
             // 
-            button1.BackColor = Color.FromArgb(128, 64, 0);
-            button1.FlatAppearance.BorderSize = 0;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button1.ForeColor = Color.White;
-            button1.Location = new Point(262, 33);
-            button1.Name = "button1";
-            button1.Size = new Size(99, 29);
-            button1.TabIndex = 3;
-            button1.Text = "Đặt bàn";
-            button1.UseVisualStyleBackColor = false;
+            btnDatBan.BackColor = Color.FromArgb(128, 64, 0);
+            btnDatBan.FlatAppearance.BorderSize = 0;
+            btnDatBan.FlatStyle = FlatStyle.Flat;
+            btnDatBan.Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnDatBan.ForeColor = Color.White;
+            btnDatBan.Location = new Point(262, 33);
+            btnDatBan.Name = "btnDatBan";
+            btnDatBan.Size = new Size(99, 29);
+            btnDatBan.TabIndex = 3;
+            btnDatBan.Text = "Đặt bàn";
+            btnDatBan.UseVisualStyleBackColor = false;
+            btnDatBan.Click += btnDatBan_Click;
             // 
             // cbSoBan
             // 
@@ -219,6 +247,7 @@
             cbSoBan.Name = "cbSoBan";
             cbSoBan.Size = new Size(151, 32);
             cbSoBan.TabIndex = 0;
+            cbSoBan.SelectedIndexChanged += cbSoBan_SelectedIndexChanged_1;
             // 
             // label1
             // 
@@ -227,25 +256,6 @@
             label1.Name = "label1";
             label1.Size = new Size(0, 21);
             label1.TabIndex = 0;
-            // 
-            // flowLayoutPanel_Table
-            // 
-            flowLayoutPanel_Table.Controls.Add(label8);
-            flowLayoutPanel_Table.Location = new Point(9, 133);
-            flowLayoutPanel_Table.Name = "flowLayoutPanel_Table";
-            flowLayoutPanel_Table.Size = new Size(387, 327);
-            flowLayoutPanel_Table.TabIndex = 0;
-            // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.Dock = DockStyle.Fill;
-            label8.ForeColor = Color.FromArgb(128, 64, 0);
-            label8.Location = new Point(3, 0);
-            label8.Name = "label8";
-            label8.Size = new Size(165, 21);
-            label8.TabIndex = 1;
-            label8.Text = "(Sơ đồ bàn trực quan)";
             // 
             // btnXoa
             // 
@@ -261,6 +271,7 @@
             btnXoa.TabIndex = 2;
             btnXoa.Text = "❌ Xóa";
             btnXoa.UseVisualStyleBackColor = false;
+            btnXoa.Click += btnXoa_Click;
             // 
             // btnThem
             // 
@@ -276,6 +287,7 @@
             btnThem.TabIndex = 3;
             btnThem.Text = "➕ Thêm";
             btnThem.UseVisualStyleBackColor = false;
+            btnThem.Click += btnThem_Click;
             // 
             // btnGuiOrder
             // 
@@ -291,20 +303,22 @@
             btnGuiOrder.TabIndex = 2;
             btnGuiOrder.Text = "Gửi Order";
             btnGuiOrder.UseVisualStyleBackColor = false;
+            btnGuiOrder.Click += btnGuiOrder_Click;
             // 
-            // button3
+            // btnChuyenBan
             // 
-            button3.BackColor = Color.FromArgb(128, 64, 0);
-            button3.FlatAppearance.BorderSize = 0;
-            button3.FlatStyle = FlatStyle.Flat;
-            button3.Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button3.ForeColor = Color.White;
-            button3.Location = new Point(9, 9);
-            button3.Name = "button3";
-            button3.Size = new Size(142, 29);
-            button3.TabIndex = 3;
-            button3.Text = "Chuyển bàn";
-            button3.UseVisualStyleBackColor = false;
+            btnChuyenBan.BackColor = Color.FromArgb(128, 64, 0);
+            btnChuyenBan.FlatAppearance.BorderSize = 0;
+            btnChuyenBan.FlatStyle = FlatStyle.Flat;
+            btnChuyenBan.Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnChuyenBan.ForeColor = Color.White;
+            btnChuyenBan.Location = new Point(9, 9);
+            btnChuyenBan.Name = "btnChuyenBan";
+            btnChuyenBan.Size = new Size(142, 29);
+            btnChuyenBan.TabIndex = 3;
+            btnChuyenBan.Text = "Chuyển bàn";
+            btnChuyenBan.UseVisualStyleBackColor = false;
+            btnChuyenBan.Click += btnChuyenBan_Click;
             // 
             // cbBanMuonChuyenDen
             // 
@@ -313,6 +327,7 @@
             cbBanMuonChuyenDen.Name = "cbBanMuonChuyenDen";
             cbBanMuonChuyenDen.Size = new Size(142, 29);
             cbBanMuonChuyenDen.TabIndex = 0;
+            cbBanMuonChuyenDen.SelectedIndexChanged += cbBanMuonChuyenDen_SelectedIndexChanged;
             // 
             // panel11
             // 
@@ -336,7 +351,7 @@
             // 
             // panel4
             // 
-            panel4.Controls.Add(button3);
+            panel4.Controls.Add(btnChuyenBan);
             panel4.Controls.Add(cbBanMuonChuyenDen);
             panel4.Controls.Add(label10);
             panel4.Controls.Add(label9);
@@ -349,6 +364,39 @@
             panel4.Name = "panel4";
             panel4.Size = new Size(861, 78);
             panel4.TabIndex = 12;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
+            label10.Location = new Point(183, 57);
+            label10.Name = "label10";
+            label10.Size = new Size(99, 21);
+            label10.TabIndex = 1;
+            label10.Text = "xám - đã đặt";
+            label10.Click += label2_Click;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
+            label9.Location = new Point(183, 36);
+            label9.Name = "label9";
+            label9.Size = new Size(103, 21);
+            label9.TabIndex = 1;
+            label9.Text = "đỏ - có khách";
+            label9.Click += label2_Click;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
+            label4.Location = new Point(183, 13);
+            label4.Name = "label4";
+            label4.Size = new Size(95, 21);
+            label4.TabIndex = 1;
+            label4.Text = "xanh - trống";
+            label4.Click += label2_Click;
             // 
             // tableLayoutPanel1
             // 
@@ -368,7 +416,7 @@
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(dataGridView2);
+            groupBox2.Controls.Add(dgvGioHang);
             groupBox2.Dock = DockStyle.Fill;
             groupBox2.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox2.ForeColor = Color.FromArgb(128, 64, 0);
@@ -379,52 +427,20 @@
             groupBox2.TabStop = false;
             groupBox2.Text = "Giỏ hàng";
             // 
-            // dataGridView2
+            // dgvGioHang
             // 
-            dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView2.Dock = DockStyle.Fill;
-            dataGridView2.Location = new Point(3, 28);
-            dataGridView2.Name = "dataGridView2";
-            dataGridView2.RowHeadersWidth = 51;
-            dataGridView2.Size = new Size(450, 158);
-            dataGridView2.TabIndex = 0;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
-            label4.Location = new Point(183, 13);
-            label4.Name = "label4";
-            label4.Size = new Size(95, 21);
-            label4.TabIndex = 1;
-            label4.Text = "xanh - trống";
-            label4.Click += label2_Click;
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
-            label9.Location = new Point(183, 36);
-            label9.Name = "label9";
-            label9.Size = new Size(103, 21);
-            label9.TabIndex = 1;
-            label9.Text = "đỏ - có khách";
-            label9.Click += label2_Click;
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
-            label10.Location = new Point(183, 57);
-            label10.Name = "label10";
-            label10.Size = new Size(99, 21);
-            label10.TabIndex = 1;
-            label10.Text = "xám - đã đặt";
-            label10.Click += label2_Click;
+            dgvGioHang.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvGioHang.Dock = DockStyle.Fill;
+            dgvGioHang.Location = new Point(3, 28);
+            dgvGioHang.Name = "dgvGioHang";
+            dgvGioHang.RowHeadersWidth = 51;
+            dgvGioHang.Size = new Size(450, 158);
+            dgvGioHang.TabIndex = 0;
+            dgvGioHang.CellFormatting += dgvGioHang_CellFormatting;
             // 
             // groupBox3
             // 
-            groupBox3.Controls.Add(dataGridView1);
+            groupBox3.Controls.Add(dgvMenu);
             groupBox3.Dock = DockStyle.Fill;
             groupBox3.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             groupBox3.ForeColor = Color.FromArgb(128, 64, 0);
@@ -435,32 +451,16 @@
             groupBox3.TabStop = false;
             groupBox3.Text = "Menu";
             // 
-            // dataGridView1
+            // dgvMenu
             // 
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(3, 28);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(450, 157);
-            dataGridView1.TabIndex = 0;
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.ForeColor = Color.FromArgb(128, 64, 0);
-            label5.Location = new Point(14, 43);
-            label5.Name = "label5";
-            label5.Size = new Size(117, 21);
-            label5.TabIndex = 3;
-            label5.Text = "Ghi chú khách: ";
-            // 
-            // textBox1
-            // 
-            textBox1.Location = new Point(131, 40);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(325, 28);
-            textBox1.TabIndex = 4;
+            dgvMenu.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvMenu.Dock = DockStyle.Fill;
+            dgvMenu.Location = new Point(3, 28);
+            dgvMenu.Name = "dgvMenu";
+            dgvMenu.RowHeadersWidth = 51;
+            dgvMenu.Size = new Size(450, 157);
+            dgvMenu.TabIndex = 0;
+            dgvMenu.CellFormatting += DgvMenu_CellFormatting;
             // 
             // Order_Ban
             // 
@@ -477,6 +477,7 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "Order_Ban";
             Text = "Order_Ban";
+            Load += Order_Ban_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)nmSoLuong).EndInit();
@@ -484,17 +485,15 @@
             panel3.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
-            flowLayoutPanel_Table.ResumeLayout(false);
-            flowLayoutPanel_Table.PerformLayout();
             panel11.ResumeLayout(false);
             panel11.PerformLayout();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvGioHang).EndInit();
             groupBox3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvMenu).EndInit();
             ResumeLayout(false);
         }
 
@@ -516,24 +515,23 @@
         private Label label7;
         private Button btnXoa;
         private Button btnThem;
-        private FlowLayoutPanel flowLayoutPanel_Table;
-        private Button button1;
-        private Label label8;
+        private FlowLayoutPanel flpTables;
+        private Button btnDatBan;
         private Button btnGuiOrder;
-        private Button button2;
-        private Button button3;
+        private Button btnHuyBan;
+        private Button btnChuyenBan;
         private ComboBox cbBanMuonChuyenDen;
         private Panel panel11;
         private Label lblTitle;
         private TableLayoutPanel tableLayoutPanel1;
         private GroupBox groupBox2;
-        private DataGridView dataGridView2;
+        private DataGridView dgvGioHang;
         private Label label9;
         private Label label4;
         private Label label10;
         private GroupBox groupBox3;
-        private DataGridView dataGridView1;
-        private TextBox textBox1;
+        private DataGridView dgvMenu;
+        private TextBox txtGhiChu;
         private Label label5;
     }
 }

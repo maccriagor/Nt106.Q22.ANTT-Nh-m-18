@@ -22,5 +22,17 @@ namespace CafeCommon
             MaNguoiDung = 0;
             TenDangNhap = HoTen = Email = VaiTro = SDT = null;
         }
+
+        // GIỎ HÀNG TẠM THỜI: Chứa danh sách các món đang chọn nhưng CHƯA nhấn "Gửi Order"
+        public static List<CTDonHang> Cart { get; set; } = new List<CTDonHang>();
+
+        // BÀN ĐANG CHỌN: Để biết các món trong Cart là dành cho bàn nào
+        public static int CurrentTableId { get; set; } = 0;
+
+        public static void ClearCart()
+        {
+            Cart.Clear();
+            CurrentTableId = 0;
+        }
     }
 }

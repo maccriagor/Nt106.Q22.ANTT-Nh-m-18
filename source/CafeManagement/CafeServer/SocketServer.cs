@@ -109,6 +109,7 @@ namespace CafeServer
         private async Task<string> ProcessRequest(string request, int currentUserId)
         {
             // Định dạng gói tin: COMMAND|DATA1|DATA2|...
+            if (string.IsNullOrWhiteSpace(request)) return "ERROR|Empty request";
             string[] parts = request.Split('|');
             string command = parts[0];
 
@@ -339,6 +340,151 @@ namespace CafeServer
                 case "GET_BILLS":
                     var bills = await ServiceManager.Bill.GetAllAsync();
                     return "SUCCESS|" + JsonConvert.SerializeObject(bills);
+
+                case "UPDATE_TABLE_STATUS":
+                    {
+                        // Gói tin nhận từ Client: UPDATE_TABLE_STATUS|maBanAn|TrangThaiMoi
+                        int tableId = int.Parse(parts[1]);
+                        string newStatus = parts[2];
+
+                        try
+                        {
+                            // =======================================================================
+                            // Nếu chuyển từ "Có khách" về "Trống" (Hủy Đơn)
+                            // =======================================================================
+                            if (newStatus == "Trống")
+                            {
+                                // 1. Tìm hóa đơn chưa thanh toán (đang treo) của bàn này
+                                var billRes = await DatabaseService.Client.From<HoaDon>()
+                                    .Where(x => x.MaBanAn == tableId && x.TrangThai == "Chưa thanh toán")
+                                    .Get();
+                                var activeBill = billRes.Models.FirstOrDefault();
+
+                                // Nếu có hóa đơn đang hoạt động thì thực hiện hủy
+                                if (activeBill != null)
+                                {
+                                    // 2. Cập nhật trạng thái Hóa đơn thành "Đã hủy"
+                                    await DatabaseService.Client.From<HoaDon>()
+                                        .Where(x => x.MaHD == activeBill.MaHD)
+                                        .Set(x => x.TrangThai, "Đã hủy")
+                                        .Update();
+
+                                    // 3. Cập nhật trạng thái Đơn hàng thành "Đã hủy"
+                                    await DatabaseService.Client.From<DonHang>()
+                                        .Where(x => x.MaDonHang == activeBill.MaDonHang)
+                                        .Set(x => x.TrangThai, "Đã hủy") // Nếu cột TrangThai của bạn dạng số, bạn thay bằng "3" nhé
+                                        .Update();
+                                }
+                            }
+
+                            // =======================================================================
+                            // CẬP NHẬT TRẠNG THÁI BÀN ĂN
+                            // =======================================================================
+                            // Gọi hàm gộp thông minh trong TableService của bạn để đổi màu trạng thái bàn
+                            bool isStatusUpdated = await ServiceManager.Table.UpdateStatusAsync(tableId, newStatus);
+
+                            if (isStatusUpdated)
+                            {
+                                // Phát tín hiệu Realtime cho tất cả máy khách đang mở App tải lại sơ đồ bàn ngay lập tức
+                                await Broadcast("RELOAD_TABLE_MAP");
+                                return $"SUCCESS|Cập nhật trạng thái bàn sang '{newStatus}' thành công!";
+                            }
+                            return "FAIL|Lỗi hệ thống, không thể cập nhật trạng thái bàn!";
+                        }
+                        catch (Exception ex)
+                        {
+                            return $"FAIL|Lỗi xử lý Server: {ex.Message}";
+                        }
+                    }
+
+                case "TRANSFER_TABLE":
+                    {
+                        // Gói tin nhận từ Client: TRANSFER_TABLE|maBanCu|maBanMoi
+                        int fromTableId = int.Parse(parts[1]);
+                        int toTableId = int.Parse(parts[2]);
+
+                        try
+                        {
+                            // Gọi hàm TransferTableAsync đã sửa đổi ở lượt trước (Tìm kiếm và xử lý dựa trên bảng HoaDon)
+                            bool isTransferOk = await ServiceManager.Table.TransferTableAsync(fromTableId, toTableId);
+
+                            if (isTransferOk)
+                            {
+                                // Đồng bộ Realtime sơ đồ bàn ăn cho toàn bộ hệ thống nhân viên phục vụ
+                                await Broadcast("RELOAD_TABLE_MAP");
+                                return "SUCCESS|Chuyển bàn thành công!";
+                            }
+                            return "FAIL|Chuyển bàn thất bại! (Bàn cũ không có hóa đơn hoạt động hoặc bàn mới không trống)";
+                        }
+                        catch (Exception ex)
+                        {
+                            return $"FAIL|Lỗi xử lý hệ thống khi chuyển bàn: {ex.Message}";
+                        }
+                    }
+
+                case "GET_CATEGORIES":
+                    {
+                        var categorieslist = await ServiceManager.Menu.GetAllCategoriesAsync();
+                        return "SUCCESS|" + JsonConvert.SerializeObject(categorieslist);
+                    }
+
+                case "GET_MENU_BY_CATEGORY":
+                    {
+                        int cateId = int.Parse(parts[1]);
+                        List<Menu> menus;
+
+                        if (cateId == 0) // Nếu là "Tất cả"
+                        {
+                            menus = await ServiceManager.Menu.GetAllMenuAsync(); // Gọi hàm lấy hết
+                        }
+                        else
+                        {
+                            menus = await ServiceManager.Menu.GetByCategoryIdAsync(cateId);
+                        }
+                        return "SUCCESS|" + JsonConvert.SerializeObject(menus);
+                    }
+
+                case "SUBMIT_ORDER":
+                    {
+                        // Gói tin nhận từ Client dạng phẳng: SUBMIT_ORDER|maBanAn|maNguoiDung|JSON_GioHang
+                        if (parts.Length < 4) return "FAIL|Thiếu dữ liệu order";
+                        if (!int.TryParse(parts[1], out int orderTableId)) return "FAIL|Id bàn không hợp lệ";
+                        if (!int.TryParse(parts[2], out int orderStaffId)) return "FAIL|Id nhân viên không hợp lệ";
+
+                        List<CTDonHang> items = null;
+                        try
+                        {
+                            items = JsonConvert.DeserializeObject<List<CTDonHang>>(parts[3]);
+                        }
+                        catch (Exception jsEx)
+                        {
+                            return "FAIL|Dữ liệu giỏ hàng không hợp lệ: " + jsEx.Message;
+                        }
+
+                        if (items == null || items.Count == 0) return "FAIL|Giỏ hàng rỗng";
+
+                        // Khởi tạo đối tượng đầu đơn hàng từ dữ liệu Socket để truyền vào hàm tổng hợp
+                        var orderHeader = new DonHang
+                        {
+                            MaBanAn = orderTableId,
+                            MaNVOrder = orderStaffId,
+                            NgayOrder = DateTime.Now,
+                            TrangThai = 0, // 0: Đơn hàng mới tinh
+                            LoaiDonHang = "Tại chỗ"
+                        };
+
+                        // GỌI DUY NHẤT HÀM SỬ LÝ THÔNG MINH ĐÃ VIẾT TRONG ORDER_SERVICE
+                        bool isSuccess = await ServiceManager.Order.SubmitOrderAsync(orderHeader, items);
+
+                        if (isSuccess)
+                        {
+                            // Trạng thái bàn sẽ được cập nhật tự động trực tiếp bên trong hàm SubmitOrderAsync
+                            return "SUCCESS|Đã gửi order xuống bếp thành công!";
+                        }
+                        return "FAIL|Lưu đơn hàng hoặc hóa đơn thất bại trên hệ thống Server!";
+                    }
+
+
 
                 default:
                     return "UNKNOWN_COMMAND";

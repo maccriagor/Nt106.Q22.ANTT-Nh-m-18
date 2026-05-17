@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,6 +16,15 @@ namespace CafeClient
         private static string _ip = "127.0.0.1"; // IP của máy chạy Server
         private static int _port = 8888;
 
+        // Đồng bộ I/O: đảm bảo chỉ một tác vụ đọc/ghi lên stream tại một thời điểm
+        private static readonly SemaphoreSlim _ioLock = new SemaphoreSlim(1, 1);
+
+        // Dùng để hủy vòng lặp StartListening khi disconnect
+        private static CancellationTokenSource _listenCts;
+
+        // Sự kiện để các Form đăng ký lắng nghe tin push từ server
+        public static event Action<string> OnMessageReceived;
+
         public static async Task<bool> ConnectAsync()
         {
             try
@@ -27,7 +37,10 @@ namespace CafeClient
                 }
                 return true;
             }
-            catch { return false; }
+            catch
+            {
+                return false;
+            }
         }
 
         public static async Task<string> SendRequestAsync(string message)
@@ -36,39 +49,119 @@ namespace CafeClient
             {
                 if (!await ConnectAsync()) return "ERROR|Không thể kết nối Server";
 
-                byte[] dataSend = Encoding.UTF8.GetBytes(message);
-                await _stream.WriteAsync(dataSend, 0, dataSend.Length);
-
-                StringBuilder responseBuilder = new StringBuilder();
-                byte[] buffer = new byte[4096]; // Tăng buffer lên 4KB để đọc nhanh hơn
-                int bytesRead;
-
-                do
+                // Đảm bảo tuần tự IO để tránh tranh đọc với StartListening
+                await _ioLock.WaitAsync();
+                try
                 {
-                    bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
-                    if (bytesRead > 0)
+                    byte[] dataSend = Encoding.UTF8.GetBytes(message);
+                    await _stream.WriteAsync(dataSend, 0, dataSend.Length);
+
+                    var responseBuilder = new StringBuilder();
+                    byte[] buffer = new byte[4096];
+                    int bytesRead = 0;
+
+                    // Đọc ít nhất một lần (server trả ngay) và tiếp tục nếu còn DataAvailable
+                    do
                     {
-                        responseBuilder.Append(Encoding.UTF8.GetString(buffer, 0, bytesRead));
-                    }
+                        bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+                        if (bytesRead > 0)
+                            responseBuilder.Append(Encoding.UTF8.GetString(buffer, 0, bytesRead));
+                    } while (_stream.DataAvailable);
 
-                    // Nếu dữ liệu vẫn còn trên luồng thì tiếp tục đọc
-                } while (_stream.DataAvailable);
-
-                return responseBuilder.ToString().Trim('\0', ' ', '\r', '\n');
+                    string raw = responseBuilder.ToString();
+                    return raw.Trim('\0', ' ', '\r', '\n', '\uFEFF', '\u200B');
+                }
+                finally
+                {
+                    _ioLock.Release();
+                }
             }
             catch (Exception ex)
             {
-                Disconnect();
+                // Không tự động Disconnect ở đây để tránh server đánh offline nếu temporary error
+                Console.WriteLine($"[SocketClient] SendRequestAsync error: {ex.Message}");
                 return $"ERROR|{ex.Message}";
             }
         }
 
+        // Bắt đầu luồng lắng nghe push từ server (RELOAD_TABLE_MAP, ...).
+        // Gọi StartListening() 1 lần sau khi Login thành công.
+        public static void StartListening()
+        {
+            // Nếu đã đang lắng nghe, không làm lại
+            if (_listenCts != null && !_listenCts.IsCancellationRequested) return;
+
+            _listenCts = new CancellationTokenSource();
+            CancellationToken token = _listenCts.Token;
+
+            Task.Run(async () =>
+            {
+                byte[] buffer = new byte[4096];
+                while (!token.IsCancellationRequested && _client != null && _client.Connected)
+                {
+                    try
+                    {
+                        // Giữ quyền đọc để không tranh với SendRequestAsync
+                        await _ioLock.WaitAsync(token);
+                        try
+                        {
+                            // Đọc chờ (blocking) - nếu server không gửi gì, ReadAsync sẽ chờ
+                            int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length, token);
+                            if (bytesRead > 0)
+                            {
+                                string message = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim('\0', '\r', '\n', '\uFEFF', '\u200B');
+
+                                // Nếu đây là một phản hồi dành cho một request sync (có pipe '|' thường),
+                                // StartListening vẫn có thể nhận được, nhưng vì chúng ta serialize IO bằng _ioLock,
+                                // thường chỉ nhận push (broadcast) khi không có request đang chờ.
+                                OnMessageReceived?.Invoke(message);
+                            }
+                            else
+                            {
+                                // bytesRead == 0 nghĩa là kết nối đã đóng
+                                break;
+                            }
+                        }
+                        finally
+                        {
+                            _ioLock.Release();
+                        }
+                    }
+                    catch (OperationCanceledException) { break; }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[SocketClient] Listening error: {ex.Message}");
+                        break;
+                    }
+                }
+            }, token);
+        }
+
+        public static void StopListening()
+        {
+            try
+            {
+                _listenCts?.Cancel();
+                _listenCts?.Dispose();
+            }
+            catch { }
+            _listenCts = null;
+        }
+
         public static void Disconnect()
         {
-            _stream?.Close();
-            _client?.Close();
-            _client = null;
-            _stream = null;
+            try
+            {
+                StopListening();
+                _stream?.Close();
+                _client?.Close();
+            }
+            catch { }
+            finally
+            {
+                _stream = null;
+                _client = null;
+            }
         }
     }
 }

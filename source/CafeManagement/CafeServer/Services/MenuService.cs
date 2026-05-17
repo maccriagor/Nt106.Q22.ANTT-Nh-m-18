@@ -77,8 +77,17 @@ namespace CafeServer.Services
 
         public async Task<List<LoaiMon>> GetAllCategoriesAsync()
         {
-            var result = await DatabaseService.Client.From<LoaiMon>().Get();
-            return result.Models;
+            var res = await DatabaseService.Client.From<LoaiMon>().Get();
+            return res.Models;
+        }
+
+        public async Task<List<Menu>> GetByCategoryIdAsync(int cateId)
+        {
+            // Lọc các món ăn theo mã loại món
+            var res = await DatabaseService.Client.From<Menu>()
+                .Where(x => x.MaLoaiMon == cateId)
+                .Get();
+            return res.Models;
         }
     }
 }
