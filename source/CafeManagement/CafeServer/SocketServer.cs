@@ -341,49 +341,6 @@ namespace CafeServer
                     var bills = await ServiceManager.Bill.GetAllAsync();
                     return "SUCCESS|" + JsonConvert.SerializeObject(bills);
 
-                default:
-                    return "UNKNOWN_COMMAND";
-
-                case "SAVE_BILL":
-                    {
-                        try
-                        {
-                            // Client sends: SAVE_BILL | MaHD | MaNV | MaBanAn | NgayXuat
-                            // Index mapping:  [0]    | [1]  | [2]  |   [3]   |   [4]
-
-                            var b = new HoaDon
-                            {
-                                MaHD = int.Parse(parts[1]),
-                                MaNV = int.Parse(parts[2]),
-                                MaBanAn = string.IsNullOrEmpty(parts[3]) ? (int?)null : int.Parse(parts[3]),
-                                NgayTao = DateTime.Parse(parts[4]),
-
-                                // Explicitly set these to avoid the "Default 0" error
-                                MaDonHang = 2, // Use a real ID from your 'donhang' table
-                                TrangThai = "Hoàn thành",
-                                TongTien = 0,
-                                ThanhTien = 0
-                            };
-
-                            await DatabaseService.Client.From<HoaDon>().Upsert(b);
-                            return "SAVE_SUCCESS";
-                        }
-                        catch (Exception ex) { return $"ERROR|{ex.Message}"; }
-                    }
-
-                case "DELETE_BILL":
-                    {
-                        try
-                        {
-                            int id = int.Parse(parts[1]);
-                            await DatabaseService.Client.From<HoaDon>()
-                                .Filter("mahd", Supabase.Postgrest.Constants.Operator.Equals, id)
-                                .Delete();
-                            return "DELETE_SUCCESS";
-                        }
-                        catch (Exception ex) { return $"ERROR|{ex.Message}"; }
-                    }
-
                 case "GET_ALL_BILLS":
                     {
                         try
@@ -396,28 +353,6 @@ namespace CafeServer
                         catch (Exception ex)
                         {
                             return $"ERROR|{ex.Message}";
-                        }
-                    }
-
-
-
-                case "CHECK_EXISTS":
-                    {
-                        try
-                        {
-                            string tableName = parts[1];
-                            string columnName = parts[2]; // Passed from client
-                            int idValue = int.Parse(parts[3]);
-
-                            // Use the ServiceManager to call your new service
-                            bool exists = await ServiceManager.Bill.CheckIdExists(tableName, columnName, idValue);
-
-                            return exists ? "EXISTS_TRUE" : "EXISTS_FALSE";
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"CheckExists Error: {ex.Message}");
-                            return "EXISTS_FALSE";
                         }
                     }
 
@@ -439,26 +374,6 @@ namespace CafeServer
                         }
                     }
 
-                case "GET_ALL_NV":
-                    {
-                        try
-                        {
-                            // Use the service to fetch the data
-                            var res = await DatabaseService.Client.From<BillService.nhanvien>().Get();
-                            return "SUCCESS|" + JsonConvert.SerializeObject(res.Models);
-                        }
-                        catch { return "ERROR|Could not fetch employees"; }
-                    }
-
-                case "GET_ALL_BAN":
-                    {
-                        try
-                        {
-                            var res = await DatabaseService.Client.From<BillService.banan>().Get();
-                            return "SUCCESS|" + JsonConvert.SerializeObject(res.Models);
-                        }
-                        catch { return "ERROR|Could not fetch tables"; }
-                    }
                 case "GET_CUSTOMER_BY_PHONE":
                     {
                         // 1. Kiểm tra dữ liệu đầu vào (parts[1] tương ứng với SDT gửi từ Client)
@@ -476,18 +391,48 @@ namespace CafeServer
                         }
                         return "NOT_FOUND";
                     }
+              
+                case "GET_CUSTOMER_BY_ID":
+                    if (parts.Length < 2) return "ERROR|Missing ID";
+                    // Gọi Service tìm khách hàng theo MaKH
+                    var customerById = await ServiceManager.Customer.GetCustomerByIdAsync(int.Parse(parts[1]));
+                    return customerById != null ? "SUCCESS|" + JsonConvert.SerializeObject(customerById) : "NOT_FOUND";
+                case "GET_DISCOUNT_BY_CODE":
+                    { 
+                        try
+                        {
+                            if (parts.Length < 2) return "ERROR|Missing Code";
+                            string voucherCode = parts[1].Trim();
+
+                            var promoResult = await DatabaseService.Client.From<KhuyenMai>()
+                                .Filter("codekm", Supabase.Postgrest.Constants.Operator.Equals, voucherCode)
+                                .Get();
+
+                            var km = promoResult.Models.FirstOrDefault();
+
+                            if (km != null && km.TrangThai && km.NgayBatDau <= DateTime.Now && km.NgayHetHan >= DateTime.Now)
+                            {
+                                return "SUCCESS|" + JsonConvert.SerializeObject(km);
+                            }
+                            return "NOT_FOUND";
+                        }
+                        catch (Exception ex) { return $"ERROR|{ex.Message}"; }
+                    } 
+
                 case "CONFIRM_PAYMENT":
                     {
                         try
                         {
-                            // Gói tin: CONFIRM_PAYMENT|MaHD|MaBanAn|MaKH|TongTienCuoi|HinhThuc
                             int maHD = int.Parse(parts[1]);
-                            int maBan = int.Parse(parts[2]);
+                            int? maBan = string.IsNullOrEmpty(parts[2]) ? (int?)null : int.Parse(parts[2]);
                             int? maKH = string.IsNullOrEmpty(parts[3]) ? (int?)null : int.Parse(parts[3]);
-                            decimal soTien = decimal.Parse(parts[4]);
-                            string phuongThuc = parts[5];
 
-                            // 1. Cập nhật Hóa đơn thành "Đã thanh toán"
+                            // Đọc số theo chuẩn InvariantCulture để tránh lỗi hệ thống phân tách thập phân
+                            decimal soTien = decimal.Parse(parts[4], System.Globalization.CultureInfo.InvariantCulture);
+                            string phuongThuc = parts[5];
+                            float diemDaDung = parts.Length > 6 ? float.Parse(parts[6], System.Globalization.CultureInfo.InvariantCulture) : 0f;
+
+                            // 1. Cập nhật Hóa đơn
                             await DatabaseService.Client.From<HoaDon>()
                                 .Where(x => x.MaHD == maHD)
                                 .Set(x => x.TrangThai, "Đã thanh toán")
@@ -495,18 +440,38 @@ namespace CafeServer
                                 .Set(x => x.PhuongThucThanhToan, phuongThuc)
                                 .Update();
 
-                            // 2. Cập nhật Bàn ăn thành "Trống"
-                            var banUpdate = new BanAn { MaBanAn = maBan, TrangThai = "Trống" };
-                            await ServiceManager.Table.UpdateAsync(banUpdate);
-
-                            // 3. Cộng điểm cho khách (nếu có)
-                            if (maKH.HasValue)
+                            // 2. Cập nhật Bàn ăn
+                            if (maBan.HasValue && maBan > 0)
                             {
-                                int diemCong = (int)(soTien / 10000); // Ví dụ: 10k được 1 điểm
-                                                                      // Bạn có thể viết thêm hàm UpdatePoints trong CustomService
+                                await DatabaseService.Client.From<BanAn>()
+                                    .Where(x => x.MaBanAn == maBan.Value)
+                                    .Set(x => x.TrangThai, "Trống")
+                                    .Update();
                             }
 
-                            await Broadcast("RELOAD_TABLE_MAP"); // Thông báo cho tất cả máy nhân viên cập nhật sơ đồ bàn
+                            // 3. Tích điểm thành viên (Cứ 100k cộng 1 điểm)
+                            if (maKH.HasValue && maKH > 0)
+                            {
+                                var resKH = await DatabaseService.Client.From<KhachHang>().Where(x => x.MaKH == maKH.Value).Get();
+                                var kh = resKH.Models.FirstOrDefault();
+
+                                if (kh != null)
+                                {
+                                    // Lấy tổng tiền chia cho 100,000 và làm tròn xuống để lấy số điểm chẵn được cộng thêm
+                                    float diemTichLuyMoi = (float)Math.Floor((double)soTien / 100000);
+
+                                    // Điểm cuối cùng = Điểm hiện tại - Điểm đã tiêu ở HD này + Điểm vừa được thưởng
+                                    float diemCapNhat = kh.DiemTichLuy - diemDaDung + diemTichLuyMoi;
+                                    if (diemCapNhat < 0) diemCapNhat = 0f;
+
+                                    await DatabaseService.Client.From<KhachHang>()
+                                        .Where(x => x.MaKH == maKH.Value)
+                                        .Set(x => x.DiemTichLuy, diemCapNhat)
+                                        .Update();
+                                }
+                            }
+
+                            await Broadcast("RELOAD_TABLE_MAP");
                             return "PAYMENT_SUCCESS";
                         }
                         catch (Exception ex) { return $"ERROR|{ex.Message}"; }

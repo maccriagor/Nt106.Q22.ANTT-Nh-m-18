@@ -52,6 +52,10 @@
             txtMaHD = new TextBox();
             label1 = new Label();
             dgvHoaDon = new DataGridView();
+            colMaHD = new DataGridViewTextBoxColumn();
+            colMaBanAn = new DataGridViewTextBoxColumn();
+            colTongTien = new DataGridViewTextBoxColumn();
+            colNgayTao = new DataGridViewTextBoxColumn();
             panel1 = new Panel();
             panel11 = new Panel();
             lblTitle = new Label();
@@ -315,13 +319,39 @@
             // dgvHoaDon
             // 
             dgvHoaDon.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvHoaDon.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvHoaDon.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvHoaDon.Columns.AddRange(new DataGridViewColumn[] { colMaHD, colMaBanAn, colTongTien, colNgayTao });
             dgvHoaDon.Location = new Point(12, 3);
             dgvHoaDon.Name = "dgvHoaDon";
             dgvHoaDon.RowHeadersWidth = 51;
             dgvHoaDon.Size = new Size(522, 290);
             dgvHoaDon.TabIndex = 0;
-            dgvHoaDon.CellContentClick += dgvHoaDon_CellContentClick;
+            dgvHoaDon.CellClick += dgvHoaDon_CellClick;
+            // 
+            // colMaHD
+            // 
+            colMaHD.HeaderText = "Mã Hóa Đơn";
+            colMaHD.MinimumWidth = 6;
+            colMaHD.Name = "colMaHD";
+            // 
+            // colMaBanAn
+            // 
+            colMaBanAn.HeaderText = "Bàn";
+            colMaBanAn.MinimumWidth = 6;
+            colMaBanAn.Name = "colMaBanAn";
+            // 
+            // colTongTien
+            // 
+            colTongTien.HeaderText = "Tổng Tiền";
+            colTongTien.MinimumWidth = 6;
+            colTongTien.Name = "colTongTien";
+            // 
+            // colNgayTao
+            // 
+            colNgayTao.HeaderText = "Ngày Tạo";
+            colNgayTao.MinimumWidth = 6;
+            colNgayTao.Name = "colNgayTao";
             // 
             // panel1
             // 
@@ -405,6 +435,7 @@
             checkBox1.TabIndex = 25;
             checkBox1.Text = "Tiền mặt";
             checkBox1.UseVisualStyleBackColor = true;
+            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
             // 
             // textBox4
             // 
@@ -466,6 +497,7 @@
             picQR.Size = new Size(218, 169);
             picQR.TabIndex = 0;
             picQR.TabStop = false;
+            picQR.Click += picQR_Click;
             // 
             // cbDiemTichLuy
             // 
@@ -615,5 +647,9 @@
         private CheckBox checkBox1;
         private TextBox txtThanhTien;
         private PictureBox picQR;
+        private DataGridViewTextBoxColumn colMaHD;
+        private DataGridViewTextBoxColumn colMaBanAn;
+        private DataGridViewTextBoxColumn colTongTien;
+        private DataGridViewTextBoxColumn colNgayTao;
     }
 }
