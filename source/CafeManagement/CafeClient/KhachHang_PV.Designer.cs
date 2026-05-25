@@ -28,16 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            dgvNhanVien = new DataGridView();
+            dgvKhachHang = new DataGridView();
             panel1 = new Panel();
-            tvMaKH = new TextBox();
+            txtMaKH = new TextBox();
             label1 = new Label();
             panel4 = new Panel();
-            tbTenKH = new TextBox();
-            tbSDT = new TextBox();
+            txtTenKH = new TextBox();
+            txtSDT = new TextBox();
             label5 = new Label();
             panel8 = new Panel();
-            tbDiemTichLuy = new TextBox();
+            txtDiemTichLuy = new TextBox();
             label3 = new Label();
             panel6 = new Panel();
             dtpNgayDangKi = new DateTimePicker();
@@ -47,6 +47,8 @@
             panel5 = new Panel();
             label2 = new Label();
             panel2 = new Panel();
+            txtTimKiem = new TextBox();
+            btn_TimKiem = new Button();
             txtTim = new TextBox();
             btnTim = new Button();
             tbTimKiem = new TextBox();
@@ -58,9 +60,7 @@
             button3 = new Button();
             btnXoa = new Button();
             btnThem = new Button();
-            textBox2 = new TextBox();
-            button1 = new Button();
-            ((System.ComponentModel.ISupportInitialize)dgvNhanVien).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvKhachHang).BeginInit();
             panel1.SuspendLayout();
             panel4.SuspendLayout();
             panel8.SuspendLayout();
@@ -71,31 +71,32 @@
             panel2.SuspendLayout();
             SuspendLayout();
             // 
-            // dgvNhanVien
+            // dgvKhachHang
             // 
-            dgvNhanVien.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvNhanVien.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvNhanVien.Location = new Point(12, 157);
-            dgvNhanVien.Name = "dgvNhanVien";
-            dgvNhanVien.RowHeadersWidth = 51;
-            dgvNhanVien.Size = new Size(528, 437);
-            dgvNhanVien.TabIndex = 0;
+            dgvKhachHang.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvKhachHang.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvKhachHang.Location = new Point(12, 157);
+            dgvKhachHang.Name = "dgvKhachHang";
+            dgvKhachHang.RowHeadersWidth = 51;
+            dgvKhachHang.Size = new Size(528, 437);
+            dgvKhachHang.TabIndex = 0;
+            dgvKhachHang.CellClick += dgvKhachHang_CellClick;
             // 
             // panel1
             // 
-            panel1.Controls.Add(dgvNhanVien);
+            panel1.Controls.Add(dgvKhachHang);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
             panel1.Size = new Size(861, 606);
             panel1.TabIndex = 9;
             // 
-            // tvMaKH
+            // txtMaKH
             // 
-            tvMaKH.Location = new Point(3, 31);
-            tvMaKH.Name = "tvMaKH";
-            tvMaKH.Size = new Size(296, 28);
-            tvMaKH.TabIndex = 0;
+            txtMaKH.Location = new Point(3, 31);
+            txtMaKH.Name = "txtMaKH";
+            txtMaKH.Size = new Size(296, 28);
+            txtMaKH.TabIndex = 0;
             // 
             // label1
             // 
@@ -110,26 +111,26 @@
             // 
             // panel4
             // 
-            panel4.Controls.Add(tvMaKH);
+            panel4.Controls.Add(txtMaKH);
             panel4.Controls.Add(label1);
             panel4.Location = new Point(8, 26);
             panel4.Name = "panel4";
             panel4.Size = new Size(328, 62);
             panel4.TabIndex = 0;
             // 
-            // tbTenKH
+            // txtTenKH
             // 
-            tbTenKH.Location = new Point(3, 31);
-            tbTenKH.Name = "tbTenKH";
-            tbTenKH.Size = new Size(296, 28);
-            tbTenKH.TabIndex = 0;
+            txtTenKH.Location = new Point(3, 31);
+            txtTenKH.Name = "txtTenKH";
+            txtTenKH.Size = new Size(296, 28);
+            txtTenKH.TabIndex = 0;
             // 
-            // tbSDT
+            // txtSDT
             // 
-            tbSDT.Location = new Point(3, 31);
-            tbSDT.Name = "tbSDT";
-            tbSDT.Size = new Size(296, 28);
-            tbSDT.TabIndex = 0;
+            txtSDT.Location = new Point(3, 31);
+            txtSDT.Name = "txtSDT";
+            txtSDT.Size = new Size(296, 28);
+            txtSDT.TabIndex = 0;
             // 
             // label5
             // 
@@ -144,19 +145,19 @@
             // 
             // panel8
             // 
-            panel8.Controls.Add(tbSDT);
+            panel8.Controls.Add(txtSDT);
             panel8.Controls.Add(label5);
             panel8.Location = new Point(8, 162);
             panel8.Name = "panel8";
             panel8.Size = new Size(307, 62);
             panel8.TabIndex = 0;
             // 
-            // tbDiemTichLuy
+            // txtDiemTichLuy
             // 
-            tbDiemTichLuy.Location = new Point(3, 31);
-            tbDiemTichLuy.Name = "tbDiemTichLuy";
-            tbDiemTichLuy.Size = new Size(296, 28);
-            tbDiemTichLuy.TabIndex = 0;
+            txtDiemTichLuy.Location = new Point(3, 31);
+            txtDiemTichLuy.Name = "txtDiemTichLuy";
+            txtDiemTichLuy.Size = new Size(296, 28);
+            txtDiemTichLuy.TabIndex = 0;
             // 
             // label3
             // 
@@ -171,7 +172,7 @@
             // 
             // panel6
             // 
-            panel6.Controls.Add(tbDiemTichLuy);
+            panel6.Controls.Add(txtDiemTichLuy);
             panel6.Controls.Add(label3);
             panel6.Location = new Point(6, 230);
             panel6.Name = "panel6";
@@ -220,7 +221,7 @@
             // 
             // panel5
             // 
-            panel5.Controls.Add(tbTenKH);
+            panel5.Controls.Add(txtTenKH);
             panel5.Controls.Add(label2);
             panel5.Location = new Point(8, 94);
             panel5.Name = "panel5";
@@ -240,8 +241,8 @@
             // 
             // panel2
             // 
-            panel2.Controls.Add(textBox2);
-            panel2.Controls.Add(button1);
+            panel2.Controls.Add(txtTimKiem);
+            panel2.Controls.Add(btn_TimKiem);
             panel2.Controls.Add(txtTim);
             panel2.Controls.Add(btnTim);
             panel2.Controls.Add(tbTimKiem);
@@ -258,6 +259,30 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(861, 151);
             panel2.TabIndex = 11;
+            // 
+            // txtTimKiem
+            // 
+            txtTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            txtTimKiem.Location = new Point(548, 98);
+            txtTimKiem.Name = "txtTimKiem";
+            txtTimKiem.Size = new Size(201, 28);
+            txtTimKiem.TabIndex = 16;
+            // 
+            // btn_TimKiem
+            // 
+            btn_TimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            btn_TimKiem.BackColor = Color.FromArgb(128, 64, 0);
+            btn_TimKiem.FlatAppearance.BorderSize = 0;
+            btn_TimKiem.FlatStyle = FlatStyle.Flat;
+            btn_TimKiem.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btn_TimKiem.ForeColor = Color.White;
+            btn_TimKiem.Location = new Point(757, 83);
+            btn_TimKiem.Name = "btn_TimKiem";
+            btn_TimKiem.Size = new Size(92, 57);
+            btn_TimKiem.TabIndex = 17;
+            btn_TimKiem.Text = "🔍 Tìm";
+            btn_TimKiem.UseVisualStyleBackColor = false;
+            btn_TimKiem.Click += btnTimKiem_Click;
             // 
             // txtTim
             // 
@@ -329,6 +354,7 @@
             btnXem.TabIndex = 1;
             btnXem.Text = "👁️ Xem";
             btnXem.UseVisualStyleBackColor = false;
+            btnXem.Click += btnXem_Click;
             // 
             // textBox1
             // 
@@ -351,6 +377,7 @@
             btnSua.TabIndex = 1;
             btnSua.Text = "✏️ Sửa";
             btnSua.UseVisualStyleBackColor = false;
+            btnSua.Click += btnSua_Click;
             // 
             // button3
             // 
@@ -380,6 +407,7 @@
             btnXoa.TabIndex = 1;
             btnXoa.Text = "❌ Xóa";
             btnXoa.UseVisualStyleBackColor = false;
+            btnXoa.Click += btnXoa_Click;
             // 
             // btnThem
             // 
@@ -394,29 +422,7 @@
             btnThem.TabIndex = 1;
             btnThem.Text = "➕ Thêm";
             btnThem.UseVisualStyleBackColor = false;
-            // 
-            // textBox2
-            // 
-            textBox2.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            textBox2.Location = new Point(548, 98);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(201, 28);
-            textBox2.TabIndex = 16;
-            // 
-            // button1
-            // 
-            button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button1.BackColor = Color.FromArgb(128, 64, 0);
-            button1.FlatAppearance.BorderSize = 0;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button1.ForeColor = Color.White;
-            button1.Location = new Point(757, 83);
-            button1.Name = "button1";
-            button1.Size = new Size(92, 57);
-            button1.TabIndex = 17;
-            button1.Text = "🔍 Tìm";
-            button1.UseVisualStyleBackColor = false;
+            btnThem.Click += btnThem_Click;
             // 
             // KhachHang_PV
             // 
@@ -432,7 +438,7 @@
             FormBorderStyle = FormBorderStyle.None;
             Name = "KhachHang_PV";
             Text = "KhachHang_PV";
-            ((System.ComponentModel.ISupportInitialize)dgvNhanVien).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvKhachHang).EndInit();
             panel1.ResumeLayout(false);
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
@@ -451,16 +457,16 @@
         }
 
         #endregion
-        private DataGridView dgvNhanVien;
+        private DataGridView dgvKhachHang;
         private Panel panel1;
-        private TextBox tvMaKH;
+        private TextBox txtMaKH;
         private Label label1;
         private Panel panel4;
-        private TextBox tbTenKH;
-        private TextBox tbSDT;
+        private TextBox txtTenKH;
+        private TextBox txtSDT;
         private Label label5;
         private Panel panel8;
-        private TextBox tbDiemTichLuy;
+        private TextBox txtDiemTichLuy;
         private Label label3;
         private Panel panel6;
         private DateTimePicker dtpNgayDangKi;
@@ -481,7 +487,7 @@
         private Button button3;
         private Button btnXoa;
         private Button btnThem;
-        private TextBox textBox2;
-        private Button button1;
+        private TextBox txtTimKiem;
+        private Button btn_TimKiem;
     }
 }

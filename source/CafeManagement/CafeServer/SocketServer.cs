@@ -1,5 +1,6 @@
 ﻿using CafeCommon;
 using CafeServer.Services;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -116,7 +117,7 @@ namespace CafeServer
             switch (command)
             {
                 case "LOGIN":
-                    var account = await ServiceManager.User.LoginAsync(parts[1], parts[2]);
+                    var account = await ServiceManager.User.LoginAsync(parts[1], parts[2].Trim());
 
                     if (account != null)
                     {
@@ -484,7 +485,96 @@ namespace CafeServer
                         return "FAIL|Lưu đơn hàng hoặc hóa đơn thất bại trên hệ thống Server!";
                     }
 
+                case "GET_CUSTOMERS":
+                    var customers = await ServiceManager.KhachHang.GetAllAsync();
+                    return "SUCCESS|" + JsonConvert.SerializeObject(customers);
 
+                case "ADD_CUSTOMERS":
+                    try
+                    {
+                        var newCustomer = JsonConvert.DeserializeObject<KhachHang>(parts[1]);
+
+                        // It's a good idea to check if the ID is empty before proceeding
+                        if (newCustomer.MaKH <= 0)
+                            return "FAIL|Mã Khách Hàng không để trống";
+
+                        bool isAdded2 = await ServiceManager.KhachHang.AddAsync(newCustomer);
+
+                        return isAdded2 ? "SUCCESS|Thêm thành công" : "FAIL|Duplicate ID or Database Error";
+                    }
+                    catch (Exception ex)
+                    {
+                        return $"FAIL|Server Error: {ex.Message}";
+                    }
+
+
+                case "DELETE_CUSTOMERS":
+                    try
+                    {
+                        // parts[1] contains the ID sent from the WinForm
+                        int idDel2 = int.Parse(parts[1]);
+
+                        bool isDeleted2 = await ServiceManager.KhachHang.DeleteAsync(idDel2);
+
+                        if (isDeleted2)
+                        {
+
+                            return "SUCCESS|Xóa Khách Hàng Thành Công";
+                        }
+                        return "FAIL|Không thấy khách hàng";
+                    }
+                    catch (Exception ex)
+                    {
+                        return $"FAIL|Server Error: {ex.Message}";
+                    }
+
+                case "UPDATE_CUSTOMERS":
+                    try
+                    {
+                        // Deserialize the JSON string back into a KhachHang object
+                        var customerUpdate = JsonConvert.DeserializeObject<KhachHang>(parts[1]);
+
+                        // Call the service to perform the update in Supabase
+                        bool isUpdated2 = await ServiceManager.KhachHang.UpdateAsync(customerUpdate);
+
+                        if (isUpdated2)
+                        {
+                            // Optional: Notify other clients to refresh their data
+                            // await Broadcast("RELOAD_CUSTOMER_LIST");
+                            return "SUCCESS|Cập nhật thông tin khách hàng thành công";
+                        }
+                        return "FAIL|Lỗi khi cập nhật thông tin khách hàng";
+                    }
+                    catch (Exception ex)
+                    {
+                        return $"FAIL|Server Error: {ex.Message}";
+                    }
+
+
+
+                case "GET_ORDERS_EXTENDED":
+                    var orders = await ServiceManager.Order.GetAllOrdersExtendedAsync();
+                    string jsonResponse2 = JsonConvert.SerializeObject(orders);
+
+                    // ADD THIS LINE TEMPORARILY:
+                    Console.WriteLine($"[DEBUG JSON]: {jsonResponse2}");
+
+                    return "SUCCESS|" + jsonResponse2;
+
+                case "GET_ORDER_DETAILS_EXTENDED":
+                    int orderId = int.Parse(parts[1]);
+                    var details = await ServiceManager.Order.GetOrderDetailsExtendedAsync(orderId);
+                    return "SUCCESS|" + JsonConvert.SerializeObject(details);
+
+                case "DELETE_ORDER":
+                    int delId = int.Parse(parts[1]);
+                    bool ok = await ServiceManager.Order.DeleteOrderAsync(delId);
+                    return ok ? "SUCCESS|Deleted" : "FAIL|Could not delete order";
+
+
+                case "GET_UNIQUE_TABLES":
+                    var tables3 = await ServiceManager.Order.GetUniqueTableNumbersAsync();
+                    return "SUCCESS|" + JsonConvert.SerializeObject(tables3);
 
                 default:
                     return "UNKNOWN_COMMAND";
