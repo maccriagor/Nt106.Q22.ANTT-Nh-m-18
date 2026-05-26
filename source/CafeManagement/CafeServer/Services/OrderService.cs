@@ -135,14 +135,14 @@ namespace CafeServer.Services
                         .Where(x => x.MaBanAn == order.MaBanAn)
                         .Set(x => x.TrangThai, "Có khách")
                         .Update();
-            }
+                }
                 else
-            {
+                {
                     // ========================================================
                     // TRƯỜNG HỢP 2: KHÁCH GỌI THÊM MÓN (Đã có hóa đơn treo)
                     // ========================================================
                     finalMaDonHang = activeBill.MaDonHang; // Lấy luôn MaDonHang cũ ra dùng tiếp
-        }
+                }
 
                 step = 5;
                 // 2. Xử lý thêm/bớt món trong CTDonHang (Giữ nguyên logic vòng lặp cũ)
@@ -163,7 +163,7 @@ namespace CafeServer.Services
                             await DatabaseService.Client.From<CTDonHang>().Where(x => x.MaCT == activeDetail.MaCT).Delete();
                         }
                         else
-        {
+                        {
                             await DatabaseService.Client.From<CTDonHang>()
                                 .Where(x => x.MaCT == activeDetail.MaCT)
                                 .Set(x => x.SoLuong, newQty)
@@ -171,7 +171,7 @@ namespace CafeServer.Services
                         }
                     }
                     else if (detail.SoLuong > 0)
-            {
+                    {
                         await DatabaseService.Client.From<CTDonHang>().Insert(detail);
                     }
                 }
@@ -203,6 +203,7 @@ namespace CafeServer.Services
                 Console.WriteLine($"==================================================");
                 return false;
             }
+        }
 
             public async Task<List<dynamic>> GetAllOrdersExtendedAsync()
             {
@@ -304,6 +305,5 @@ namespace CafeServer.Services
                     return new List<int>();
                 }
             }
-        }
     }
 }
