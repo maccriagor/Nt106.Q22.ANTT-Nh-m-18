@@ -28,6 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             panel1 = new Panel();
             txtGhiChu = new TextBox();
             label7 = new Label();
@@ -429,11 +435,32 @@
             // 
             // dgvGioHang
             // 
+            dgvGioHang.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle1.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = Color.White;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvGioHang.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvGioHang.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvGioHang.Dock = DockStyle.Fill;
             dgvGioHang.Location = new Point(3, 28);
             dgvGioHang.Name = "dgvGioHang";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle2.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgvGioHang.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             dgvGioHang.RowHeadersWidth = 51;
+            dataGridViewCellStyle3.Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle3.ForeColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dgvGioHang.RowsDefaultCellStyle = dataGridViewCellStyle3;
             dgvGioHang.Size = new Size(450, 158);
             dgvGioHang.TabIndex = 0;
             dgvGioHang.CellFormatting += dgvGioHang_CellFormatting;
@@ -453,11 +480,32 @@
             // 
             // dgvMenu
             // 
+            dgvMenu.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle4.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle4.ForeColor = Color.White;
+            dataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = DataGridViewTriState.True;
+            dgvMenu.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             dgvMenu.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvMenu.Dock = DockStyle.Fill;
             dgvMenu.Location = new Point(3, 28);
             dgvMenu.Name = "dgvMenu";
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle5.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = Color.White;
+            dataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
+            dgvMenu.RowHeadersDefaultCellStyle = dataGridViewCellStyle5;
             dgvMenu.RowHeadersWidth = 51;
+            dataGridViewCellStyle6.Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle6.SelectionBackColor = SystemColors.Highlight;
+            dgvMenu.RowsDefaultCellStyle = dataGridViewCellStyle6;
             dgvMenu.Size = new Size(450, 157);
             dgvMenu.TabIndex = 0;
             dgvMenu.CellFormatting += DgvMenu_CellFormatting;

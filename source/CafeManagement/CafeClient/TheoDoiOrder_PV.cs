@@ -28,7 +28,7 @@ namespace CafeClient
         {
             string response = await SocketClient.SendRequestAsync("GET_UNIQUE_TABLES");
 
-            if (response.StartsWith("SUCCESS"))
+            if (response.Contains("SUCCESS"))
             {
                 var json = response.Split('|')[1];
                 var tableIds = JsonConvert.DeserializeObject<List<int>>(json);
@@ -93,7 +93,7 @@ namespace CafeClient
             // Call the case we just made
             string response = await SocketClient.SendRequestAsync("GET_ORDERS_EXTENDED");
 
-            if (response.StartsWith("SUCCESS"))
+            if (response.Contains("SUCCESS"))
             {
                 string json = response.Split('|')[1];
                 fullOrderList = JsonConvert.DeserializeObject<List<dynamic>>(json);
@@ -213,7 +213,7 @@ namespace CafeClient
             }
             string response = await SocketClient.SendRequestAsync($"GET_ORDER_DETAILS_EXTENDED|{orderId}");
 
-            if (response.StartsWith("SUCCESS"))
+            if (response.Contains("SUCCESS"))
             {
                 var details = JsonConvert.DeserializeObject<List<dynamic>>(response.Split('|')[1]);
 
@@ -289,7 +289,7 @@ namespace CafeClient
                 // 4. Send delete request to server
                 string res = await SocketClient.SendRequestAsync($"DELETE_ORDER|{orderId}");
 
-                if (res.StartsWith("SUCCESS"))
+                if (res.Contains("SUCCESS"))
                 {
                     MessageBox.Show("Đã xóa đơn hàng thành công!");
 

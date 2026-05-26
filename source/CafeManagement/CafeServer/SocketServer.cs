@@ -487,7 +487,7 @@ namespace CafeServer
                     }
 
                 case "GET_CUSTOMERS":
-                    var customers = await ServiceManager.KhachHang.GetAllAsync();
+                    var customers = await ServiceManager.Customer.GetAllAsync();
                     return "SUCCESS|" + JsonConvert.SerializeObject(customers);
 
                 case "ADD_CUSTOMERS":
@@ -499,7 +499,7 @@ namespace CafeServer
                         if (newCustomer.MaKH <= 0)
                             return "FAIL|Mã Khách Hàng không để trống";
 
-                        bool isAdded2 = await ServiceManager.KhachHang.AddAsync(newCustomer);
+                        bool isAdded2 = await ServiceManager.Customer.AddAsync(newCustomer);
 
                         return isAdded2 ? "SUCCESS|Thêm thành công" : "FAIL|Duplicate ID or Database Error";
                     }
@@ -515,7 +515,7 @@ namespace CafeServer
                         // parts[1] contains the ID sent from the WinForm
                         int idDel2 = int.Parse(parts[1]);
 
-                        bool isDeleted2 = await ServiceManager.KhachHang.DeleteAsync(idDel2);
+                        bool isDeleted2 = await ServiceManager.Customer.DeleteAsync(idDel2);
 
                         if (isDeleted2)
                         {
@@ -536,7 +536,7 @@ namespace CafeServer
                         var customerUpdate = JsonConvert.DeserializeObject<KhachHang>(parts[1]);
 
                         // Call the service to perform the update in Supabase
-                        bool isUpdated2 = await ServiceManager.KhachHang.UpdateAsync(customerUpdate);
+                        bool isUpdated2 = await ServiceManager.Customer.UpdateAsync(customerUpdate);
 
                         if (isUpdated2)
                         {

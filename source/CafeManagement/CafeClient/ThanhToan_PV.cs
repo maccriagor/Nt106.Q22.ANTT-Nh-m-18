@@ -119,7 +119,7 @@ namespace CafeClient
             if (!string.IsNullOrEmpty(tbMaGiamGia.Text.Trim()))
             {
                 string res = await SocketClient.SendRequestAsync("GET_DISCOUNT_BY_CODE|" + tbMaGiamGia.Text.Trim());
-                if (res.StartsWith("SUCCESS|"))
+                if (res.Contains("SUCCESS|"))
                 {
                     var km = JsonConvert.DeserializeObject<KhuyenMai>(res.Substring(8));
                     if (km != null)
@@ -199,7 +199,7 @@ namespace CafeClient
             string req = $"CONFIRM_PAYMENT|{selectedBill.MaHD}|{selectedBill.MaBanAn}|{maKH}|{soTienGui}|{hinhThuc}|{stringDiemDung}";
             string res = await SocketClient.SendRequestAsync(req);
 
-            if (res == "PAYMENT_SUCCESS")
+            if (res.Contains("PAYMENT_SUCCESS"))
             {
                 MessageBox.Show("Thanh toán hoàn tất và hóa đơn đã được cập nhật thành 'Đã thanh toán'!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
