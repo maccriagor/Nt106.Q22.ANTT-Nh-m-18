@@ -31,7 +31,7 @@
             panel3 = new Panel();
             tbTimKiem = new TextBox();
             btnTimKiem = new Button();
-            btnSua = new Button();
+            btnLamMoi = new Button();
             btnThanhToan = new Button();
             panel10 = new Panel();
             txtDiemTichLuy = new TextBox();
@@ -40,36 +40,41 @@
             txtTenKH = new TextBox();
             label9 = new Label();
             panel7 = new Panel();
-            textBox3 = new TextBox();
+            txtNgayXuatHD = new TextBox();
             label4 = new Label();
             panel6 = new Panel();
-            textBox2 = new TextBox();
+            txtTongTien = new TextBox();
             label3 = new Label();
             panel5 = new Panel();
-            textBox1 = new TextBox();
+            txtMaBanAn = new TextBox();
             label2 = new Label();
             panel4 = new Panel();
-            tbMaMon = new TextBox();
+            txtMaHD = new TextBox();
             label1 = new Label();
             dgvHoaDon = new DataGridView();
+            colMaHD = new DataGridViewTextBoxColumn();
+            colMaBanAn = new DataGridViewTextBoxColumn();
+            colTongTien = new DataGridViewTextBoxColumn();
+            colNgayTao = new DataGridViewTextBoxColumn();
             panel1 = new Panel();
             panel11 = new Panel();
             lblTitle = new Label();
             panel2 = new Panel();
+            txtThanhTien = new TextBox();
+            chkChuyenKhoan = new CheckBox();
+            checkBox1 = new CheckBox();
             textBox4 = new TextBox();
             tbMaGiamGia = new TextBox();
             btnTimKH = new Button();
             btnTinhThanhTien = new Button();
             panel8 = new Panel();
-            label7 = new Label();
+            picQR = new PictureBox();
             cbDiemTichLuy = new ComboBox();
             lbTongTien = new Label();
             label11 = new Label();
             label8 = new Label();
             label5 = new Label();
             label6 = new Label();
-            checkBox1 = new CheckBox();
-            checkBox2 = new CheckBox();
             panel3.SuspendLayout();
             panel10.SuspendLayout();
             panel9.SuspendLayout();
@@ -82,13 +87,14 @@
             panel11.SuspendLayout();
             panel2.SuspendLayout();
             panel8.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)picQR).BeginInit();
             SuspendLayout();
             // 
             // panel3
             // 
             panel3.Controls.Add(tbTimKiem);
             panel3.Controls.Add(btnTimKiem);
-            panel3.Controls.Add(btnSua);
+            panel3.Controls.Add(btnLamMoi);
             panel3.Controls.Add(btnThanhToan);
             panel3.Controls.Add(panel10);
             panel3.Controls.Add(panel9);
@@ -122,20 +128,22 @@
             btnTimKiem.TabIndex = 3;
             btnTimKiem.Text = "🔍 Tìm";
             btnTimKiem.UseVisualStyleBackColor = false;
+            btnTimKiem.Click += btnTimKiem_Click;
             // 
-            // btnSua
+            // btnLamMoi
             // 
-            btnSua.BackColor = Color.FromArgb(128, 64, 0);
-            btnSua.FlatAppearance.BorderSize = 0;
-            btnSua.FlatStyle = FlatStyle.Flat;
-            btnSua.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
-            btnSua.ForeColor = Color.White;
-            btnSua.Location = new Point(169, 473);
-            btnSua.Name = "btnSua";
-            btnSua.Size = new Size(139, 61);
-            btnSua.TabIndex = 1;
-            btnSua.Text = "🔁 Làm mới";
-            btnSua.UseVisualStyleBackColor = false;
+            btnLamMoi.BackColor = Color.FromArgb(128, 64, 0);
+            btnLamMoi.FlatAppearance.BorderSize = 0;
+            btnLamMoi.FlatStyle = FlatStyle.Flat;
+            btnLamMoi.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
+            btnLamMoi.ForeColor = Color.White;
+            btnLamMoi.Location = new Point(169, 473);
+            btnLamMoi.Name = "btnLamMoi";
+            btnLamMoi.Size = new Size(139, 61);
+            btnLamMoi.TabIndex = 1;
+            btnLamMoi.Text = "🔁 Làm mới";
+            btnLamMoi.UseVisualStyleBackColor = false;
+            btnLamMoi.Click += btnLamMoi_Click;
             // 
             // btnThanhToan
             // 
@@ -150,6 +158,7 @@
             btnThanhToan.TabIndex = 1;
             btnThanhToan.Text = "💳 Thanh toán";
             btnThanhToan.UseVisualStyleBackColor = false;
+            btnThanhToan.Click += btnThanhToan_Click;
             // 
             // panel10
             // 
@@ -205,19 +214,19 @@
             // 
             // panel7
             // 
-            panel7.Controls.Add(textBox3);
+            panel7.Controls.Add(txtNgayXuatHD);
             panel7.Controls.Add(label4);
             panel7.Location = new Point(13, 268);
             panel7.Name = "panel7";
             panel7.Size = new Size(307, 62);
             panel7.TabIndex = 0;
             // 
-            // textBox3
+            // txtNgayXuatHD
             // 
-            textBox3.Location = new Point(3, 31);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(296, 28);
-            textBox3.TabIndex = 0;
+            txtNgayXuatHD.Location = new Point(3, 31);
+            txtNgayXuatHD.Name = "txtNgayXuatHD";
+            txtNgayXuatHD.Size = new Size(296, 28);
+            txtNgayXuatHD.TabIndex = 0;
             // 
             // label4
             // 
@@ -231,19 +240,19 @@
             // 
             // panel6
             // 
-            panel6.Controls.Add(textBox2);
+            panel6.Controls.Add(txtTongTien);
             panel6.Controls.Add(label3);
             panel6.Location = new Point(13, 207);
             panel6.Name = "panel6";
             panel6.Size = new Size(307, 62);
             panel6.TabIndex = 0;
             // 
-            // textBox2
+            // txtTongTien
             // 
-            textBox2.Location = new Point(3, 31);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(296, 28);
-            textBox2.TabIndex = 0;
+            txtTongTien.Location = new Point(3, 31);
+            txtTongTien.Name = "txtTongTien";
+            txtTongTien.Size = new Size(296, 28);
+            txtTongTien.TabIndex = 0;
             // 
             // label3
             // 
@@ -257,19 +266,19 @@
             // 
             // panel5
             // 
-            panel5.Controls.Add(textBox1);
+            panel5.Controls.Add(txtMaBanAn);
             panel5.Controls.Add(label2);
             panel5.Location = new Point(13, 146);
             panel5.Name = "panel5";
             panel5.Size = new Size(307, 62);
             panel5.TabIndex = 0;
             // 
-            // textBox1
+            // txtMaBanAn
             // 
-            textBox1.Location = new Point(3, 31);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(296, 28);
-            textBox1.TabIndex = 0;
+            txtMaBanAn.Location = new Point(3, 31);
+            txtMaBanAn.Name = "txtMaBanAn";
+            txtMaBanAn.Size = new Size(296, 28);
+            txtMaBanAn.TabIndex = 0;
             // 
             // label2
             // 
@@ -283,19 +292,19 @@
             // 
             // panel4
             // 
-            panel4.Controls.Add(tbMaMon);
+            panel4.Controls.Add(txtMaHD);
             panel4.Controls.Add(label1);
             panel4.Location = new Point(13, 85);
             panel4.Name = "panel4";
             panel4.Size = new Size(307, 62);
             panel4.TabIndex = 0;
             // 
-            // tbMaMon
+            // txtMaHD
             // 
-            tbMaMon.Location = new Point(3, 31);
-            tbMaMon.Name = "tbMaMon";
-            tbMaMon.Size = new Size(296, 28);
-            tbMaMon.TabIndex = 0;
+            txtMaHD.Location = new Point(3, 31);
+            txtMaHD.Name = "txtMaHD";
+            txtMaHD.Size = new Size(296, 28);
+            txtMaHD.TabIndex = 0;
             // 
             // label1
             // 
@@ -310,12 +319,39 @@
             // dgvHoaDon
             // 
             dgvHoaDon.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvHoaDon.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvHoaDon.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvHoaDon.Columns.AddRange(new DataGridViewColumn[] { colMaHD, colMaBanAn, colTongTien, colNgayTao });
             dgvHoaDon.Location = new Point(12, 3);
             dgvHoaDon.Name = "dgvHoaDon";
             dgvHoaDon.RowHeadersWidth = 51;
             dgvHoaDon.Size = new Size(522, 290);
             dgvHoaDon.TabIndex = 0;
+            dgvHoaDon.CellClick += dgvHoaDon_CellClick;
+            // 
+            // colMaHD
+            // 
+            colMaHD.HeaderText = "Mã Hóa Đơn";
+            colMaHD.MinimumWidth = 6;
+            colMaHD.Name = "colMaHD";
+            // 
+            // colMaBanAn
+            // 
+            colMaBanAn.HeaderText = "Bàn";
+            colMaBanAn.MinimumWidth = 6;
+            colMaBanAn.Name = "colMaBanAn";
+            // 
+            // colTongTien
+            // 
+            colTongTien.HeaderText = "Tổng Tiền";
+            colTongTien.MinimumWidth = 6;
+            colTongTien.Name = "colTongTien";
+            // 
+            // colNgayTao
+            // 
+            colNgayTao.HeaderText = "Ngày Tạo";
+            colNgayTao.MinimumWidth = 6;
+            colNgayTao.Name = "colNgayTao";
             // 
             // panel1
             // 
@@ -334,6 +370,7 @@
             panel11.Name = "panel11";
             panel11.Size = new Size(861, 68);
             panel11.TabIndex = 10;
+            panel11.Paint += panel11_Paint;
             // 
             // lblTitle
             // 
@@ -348,7 +385,8 @@
             // 
             // panel2
             // 
-            panel2.Controls.Add(checkBox2);
+            panel2.Controls.Add(txtThanhTien);
+            panel2.Controls.Add(chkChuyenKhoan);
             panel2.Controls.Add(checkBox1);
             panel2.Controls.Add(textBox4);
             panel2.Controls.Add(tbMaGiamGia);
@@ -366,6 +404,38 @@
             panel2.Name = "panel2";
             panel2.Size = new Size(534, 239);
             panel2.TabIndex = 11;
+            // 
+            // txtThanhTien
+            // 
+            txtThanhTien.Location = new Point(105, 22);
+            txtThanhTien.Name = "txtThanhTien";
+            txtThanhTien.RightToLeft = RightToLeft.No;
+            txtThanhTien.Size = new Size(172, 28);
+            txtThanhTien.TabIndex = 26;
+            // 
+            // chkChuyenKhoan
+            // 
+            chkChuyenKhoan.AutoSize = true;
+            chkChuyenKhoan.ForeColor = Color.FromArgb(128, 64, 0);
+            chkChuyenKhoan.Location = new Point(389, 26);
+            chkChuyenKhoan.Name = "chkChuyenKhoan";
+            chkChuyenKhoan.Size = new Size(132, 25);
+            chkChuyenKhoan.TabIndex = 25;
+            chkChuyenKhoan.Text = "Chuyển khoản";
+            chkChuyenKhoan.UseVisualStyleBackColor = true;
+            chkChuyenKhoan.CheckedChanged += chkChuyenKhoan_CheckedChanged_1;
+            // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.ForeColor = Color.FromArgb(128, 64, 0);
+            checkBox1.Location = new Point(289, 26);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(94, 25);
+            checkBox1.TabIndex = 25;
+            checkBox1.Text = "Tiền mặt";
+            checkBox1.UseVisualStyleBackColor = true;
+            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
             // 
             // textBox4
             // 
@@ -394,6 +464,7 @@
             btnTimKH.TabIndex = 15;
             btnTimKH.Text = "Tìm";
             btnTimKH.UseVisualStyleBackColor = false;
+            btnTimKH.Click += btnTimKH_Click;
             // 
             // btnTinhThanhTien
             // 
@@ -408,26 +479,25 @@
             btnTinhThanhTien.TabIndex = 16;
             btnTinhThanhTien.Text = "TÍnh thành tiền";
             btnTinhThanhTien.UseVisualStyleBackColor = false;
+            btnTinhThanhTien.Click += btnTinhThanhTien_Click;
             // 
             // panel8
             // 
             panel8.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            panel8.Controls.Add(label7);
+            panel8.Controls.Add(picQR);
             panel8.Location = new Point(289, 61);
             panel8.Name = "panel8";
             panel8.Size = new Size(224, 175);
             panel8.TabIndex = 24;
             // 
-            // label7
+            // picQR
             // 
-            label7.AutoSize = true;
-            label7.Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label7.ForeColor = Color.FromArgb(128, 64, 64);
-            label7.Location = new Point(80, 32);
-            label7.Name = "label7";
-            label7.Size = new Size(71, 21);
-            label7.TabIndex = 11;
-            label7.Text = "chứa QR";
+            picQR.Location = new Point(3, 6);
+            picQR.Name = "picQR";
+            picQR.Size = new Size(218, 169);
+            picQR.TabIndex = 0;
+            picQR.TabStop = false;
+            picQR.Click += picQR_Click;
             // 
             // cbDiemTichLuy
             // 
@@ -445,9 +515,8 @@
             lbTongTien.ForeColor = Color.Red;
             lbTongTien.Location = new Point(105, 20);
             lbTongTien.Name = "lbTongTien";
-            lbTongTien.Size = new Size(132, 28);
+            lbTongTien.Size = new Size(0, 28);
             lbTongTien.TabIndex = 19;
-            lbTongTien.Text = "36.000 VND ";
             // 
             // label11
             // 
@@ -494,28 +563,6 @@
             label6.TabIndex = 23;
             label6.Text = "Phương thức thanh toán:  ";
             // 
-            // checkBox1
-            // 
-            checkBox1.AutoSize = true;
-            checkBox1.ForeColor = Color.FromArgb(128, 64, 0);
-            checkBox1.Location = new Point(289, 26);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(94, 25);
-            checkBox1.TabIndex = 25;
-            checkBox1.Text = "Tiền mặt";
-            checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // checkBox2
-            // 
-            checkBox2.AutoSize = true;
-            checkBox2.ForeColor = Color.FromArgb(128, 64, 0);
-            checkBox2.Location = new Point(389, 26);
-            checkBox2.Name = "checkBox2";
-            checkBox2.Size = new Size(132, 25);
-            checkBox2.TabIndex = 25;
-            checkBox2.Text = "Chuyển khoản";
-            checkBox2.UseVisualStyleBackColor = true;
-            // 
             // ThanhToan_PV
             // 
             AutoScaleDimensions = new SizeF(9F, 21F);
@@ -551,28 +598,28 @@
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             panel8.ResumeLayout(false);
-            panel8.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)picQR).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
         private Panel panel3;
-        private Button btnSua;
+        private Button btnLamMoi;
         private Button btnThanhToan;
         private Panel panel4;
-        private TextBox tbMaMon;
+        private TextBox txtMaHD;
         private Label label1;
         private DataGridView dgvHoaDon;
         private Panel panel1;
         private Panel panel7;
-        private TextBox textBox3;
+        private TextBox txtNgayXuatHD;
         private Label label4;
         private Panel panel6;
-        private TextBox textBox2;
+        private TextBox txtTongTien;
         private Label label3;
         private Panel panel5;
-        private TextBox textBox1;
+        private TextBox txtMaBanAn;
         private Label label2;
         private Panel panel9;
         private TextBox txtTenKH;
@@ -590,14 +637,19 @@
         private Button btnTimKH;
         private Button btnTinhThanhTien;
         private Panel panel8;
-        private Label label7;
         private ComboBox cbDiemTichLuy;
         private Label lbTongTien;
         private Label label11;
         private Label label8;
         private Label label5;
         private Label label6;
-        private CheckBox checkBox2;
+        private CheckBox chkChuyenKhoan;
         private CheckBox checkBox1;
+        private TextBox txtThanhTien;
+        private PictureBox picQR;
+        private DataGridViewTextBoxColumn colMaHD;
+        private DataGridViewTextBoxColumn colMaBanAn;
+        private DataGridViewTextBoxColumn colTongTien;
+        private DataGridViewTextBoxColumn colNgayTao;
     }
 }

@@ -1,18 +1,17 @@
-﻿using System;
+﻿using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Supabase.Postgrest.Attributes;
-using Supabase.Postgrest.Models;
-using System;
 
 namespace CafeCommon
 {
-    [Table("khachhang")]
+    [Table("khachhang")] 
     public class KhachHang : BaseModel
     {
-        [PrimaryKey("makh", false)] 
+        [PrimaryKey("makh", false)]
         public int MaKH { get; set; }
 
         [Column("tenkh")]
@@ -22,8 +21,7 @@ namespace CafeCommon
         public string SDT { get; set; }
 
         [Column("diemtichluy")]
-        public double DiemTichLuy { get; set; }
-
+        public float DiemTichLuy { get; set; }
         [Column("ngaydangky")]
         public DateTime NgayDangKy { get; set; }
     }

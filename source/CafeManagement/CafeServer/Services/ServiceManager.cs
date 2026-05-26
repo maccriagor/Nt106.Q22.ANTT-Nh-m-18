@@ -23,7 +23,7 @@ namespace CafeServer.Services
 
         public static OrderService Order = new OrderService();
 
-        public static KhachHangService KhachHang = new KhachHangService();
+        public static CustomerService Customer = new CustomerService();
 
         // public static FoodService Food = new FoodService();
 

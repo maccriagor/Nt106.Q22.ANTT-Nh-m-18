@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CafeServer
 {
@@ -576,9 +577,143 @@ namespace CafeServer
                     var tables3 = await ServiceManager.Order.GetUniqueTableNumbersAsync();
                     return "SUCCESS|" + JsonConvert.SerializeObject(tables3);
 
+                case "GET_ALL_BILLS":
+                    {
+                        try
+                        {
+                            var billresult = await DatabaseService.Client.From<HoaDon>().Get();
+
+                            // Add the "SUCCESS|" prefix so the Client knows how to split the string
+                            return "SUCCESS|" + JsonConvert.SerializeObject(billresult.Models);
+                        }
+                        catch (Exception ex)
+                        {
+                            return $"ERROR|{ex.Message}";
+                        }
+                    }
+
+                case "SEARCH_BILL_BY_ID":
+                    {
+                        try
+                        {
+                            string searchId = parts[1];
+                            var billresult = await DatabaseService.Client.From<HoaDon>()
+                                .Filter("mahd", Supabase.Postgrest.Constants.Operator.Equals, searchId)
+                                .Get();
+
+                            // Return SUCCESS prefix for consistency, or just the JSON if your client expects it
+                            return JsonConvert.SerializeObject(billresult.Models);
+                        }
+                        catch (Exception ex)
+                        {
+                            return $"ERROR|{ex.Message}";
+                        }
+                    }
+
+                case "GET_CUSTOMER_BY_PHONE":
+                    {
+                        // 1. Kiểm tra dữ liệu đầu vào (parts[1] tương ứng với SDT gửi từ Client)
+                        if (parts.Length < 2) return "FAIL|Thiếu số điện thoại";
+
+                        string phone = parts[1];
+
+                        // 2. Gọi hàm async từ ServiceManager (sử dụng await thay vì .Wait())
+                        var customerInfo = await ServiceManager.Customer.GetCustomerByPhoneAsync(phone);
+
+                        // 3. Trả về kết quả dưới dạng string để hàm HandleClient gửi đi
+                        if (customerInfo != null)
+                        {
+                            return "SUCCESS|" + JsonConvert.SerializeObject(customerInfo);
+                        }
+                        return "NOT_FOUND";
+                    }
+
+                case "GET_CUSTOMER_BY_ID":
+                    if (parts.Length < 2) return "ERROR|Missing ID";
+                    // Gọi Service tìm khách hàng theo MaKH
+                    var customerById = await ServiceManager.Customer.GetCustomerByIdAsync(int.Parse(parts[1]));
+                    return customerById != null ? "SUCCESS|" + JsonConvert.SerializeObject(customerById) : "NOT_FOUND";
+                case "GET_DISCOUNT_BY_CODE":
+                    {
+                        try
+                        {
+                            if (parts.Length < 2) return "ERROR|Missing Code";
+                            string voucherCode = parts[1].Trim();
+
+                            var promoResult = await DatabaseService.Client.From<KhuyenMai>()
+                                .Filter("codekm", Supabase.Postgrest.Constants.Operator.Equals, voucherCode)
+                                .Get();
+
+                            var km = promoResult.Models.FirstOrDefault();
+
+                            if (km != null && km.TrangThai && km.NgayBatDau <= DateTime.Now && km.NgayHetHan >= DateTime.Now)
+                            {
+                                return "SUCCESS|" + JsonConvert.SerializeObject(km);
+                            }
+                            return "NOT_FOUND";
+                        }
+                        catch (Exception ex) { return $"ERROR|{ex.Message}"; }
+                    }
+
+                case "CONFIRM_PAYMENT":
+                    {
+                        try
+                        {
+                            int maHD = int.Parse(parts[1]);
+                            int? maBan = string.IsNullOrEmpty(parts[2]) ? (int?)null : int.Parse(parts[2]);
+                            int? maKH = string.IsNullOrEmpty(parts[3]) ? (int?)null : int.Parse(parts[3]);
+
+                            // Đọc số theo chuẩn InvariantCulture để tránh lỗi hệ thống phân tách thập phân
+                            decimal soTien = decimal.Parse(parts[4], System.Globalization.CultureInfo.InvariantCulture);
+                            string phuongThuc = parts[5];
+                            float diemDaDung = parts.Length > 6 ? float.Parse(parts[6], System.Globalization.CultureInfo.InvariantCulture) : 0f;
+
+                            // 1. Cập nhật Hóa đơn
+                            await DatabaseService.Client.From<HoaDon>()
+                                .Where(x => x.MaHD == maHD)
+                                .Set(x => x.TrangThai, "Đã thanh toán")
+                                .Set(x => x.ThanhTien, soTien)
+                                .Set(x => x.PhuongThucThanhToan, phuongThuc)
+                                .Update();
+
+                            // 2. Cập nhật Bàn ăn
+                            if (maBan.HasValue && maBan > 0)
+                            {
+                                await DatabaseService.Client.From<BanAn>()
+                                    .Where(x => x.MaBanAn == maBan.Value)
+                                    .Set(x => x.TrangThai, "Trống")
+                                    .Update();
+                            }
+
+                            // 3. Tích điểm thành viên (Cứ 100k cộng 1 điểm)
+                            if (maKH.HasValue && maKH > 0)
+                            {
+                                var resKH = await DatabaseService.Client.From<KhachHang>().Where(x => x.MaKH == maKH.Value).Get();
+                                var kh = resKH.Models.FirstOrDefault();
+
+                                if (kh != null)
+                                {
+                                    // Lấy tổng tiền chia cho 100,000 và làm tròn xuống để lấy số điểm chẵn được cộng thêm
+                                    float diemTichLuyMoi = (float)Math.Floor((double)soTien / 100000);
+
+                                    // Điểm cuối cùng = Điểm hiện tại - Điểm đã tiêu ở HD này + Điểm vừa được thưởng
+                                    float diemCapNhat = kh.DiemTichLuy - diemDaDung + diemTichLuyMoi;
+                                    if (diemCapNhat < 0) diemCapNhat = 0f;
+
+                                    await DatabaseService.Client.From<KhachHang>()
+                                        .Where(x => x.MaKH == maKH.Value)
+                                        .Set(x => x.DiemTichLuy, diemCapNhat)
+                                        .Update();
+                                }
+                            }
+
+                            await Broadcast("RELOAD_TABLE_MAP");
+                            return "PAYMENT_SUCCESS";
+                        }
+                        catch (Exception ex) { return $"ERROR|{ex.Message}"; }
+                    }
                 default:
                     return "UNKNOWN_COMMAND";
-
             }
         }
 
