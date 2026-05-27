@@ -398,6 +398,7 @@ namespace CafeClient
                 object mahkObj = null;
                 string tenBanStr = "";
                 string ngayTaoStr = "";
+                string tenKHDaLuu = "";
 
                 if (dataItem is System.Data.DataRowView drv)
                 {
@@ -408,6 +409,8 @@ namespace CafeClient
                     mahkObj = row.Table.Columns.Contains("MaKH") ? row["MaKH"] : null;
                     tenBanStr = row.Table.Columns.Contains("TenBan") && row["TenBan"] != DBNull.Value ? row["TenBan"].ToString() : "";
                     ngayTaoStr = row.Table.Columns.Contains("NgayTao") && row["NgayTao"] != DBNull.Value ? row["NgayTao"].ToString() : "";
+                    tenKHDaLuu = row.Table.Columns.Contains("TenKH") && row["TenKH"] != DBNull.Value ? row["TenKH"].ToString() : "";
+                    
                 }
                 else
                 {
@@ -418,13 +421,15 @@ namespace CafeClient
                     try { mahkObj = dataItem.GetType().GetProperty("MaKH")?.GetValue(dataItem); } catch { }
                     try { tenBanStr = dataItem.GetType().GetProperty("TenBan")?.GetValue(dataItem)?.ToString() ?? ""; } catch { }
                     try { ngayTaoStr = dataItem.GetType().GetProperty("NgayTao")?.GetValue(dataItem)?.ToString() ?? ""; } catch { }
+                    try { tenKHDaLuu = dataItem.GetType().GetProperty("TenKH")?.GetValue(dataItem)?.ToString() ?? ""; } catch { }
                 }
 
                 selectedBill = new HoaDon
                 {
                     MaHD = mahd,
                     TongTien = tong,
-                    TrangThai = trangthai
+                    TrangThai = trangthai,
+                    TenKH = tenKHDaLuu
                 };
 
                 txtMaHD.Text = selectedBill.MaHD.ToString();
@@ -452,7 +457,14 @@ namespace CafeClient
                 }
                 else
                 {
-                    txtTenKH.Text = "Khách vãng lai";
+                    if (!string.IsNullOrEmpty(selectedBill.TenKH))
+                    {
+                        txtTenKH.Text = selectedBill.TenKH;
+                    }
+                    else
+                    {
+                        txtTenKH.Text = "Khách vãng lai";
+                    }
                     txtDiemTichLuy.Text = "0";
                     currentCustomer = null;
                 }

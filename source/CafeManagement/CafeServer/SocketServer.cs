@@ -696,13 +696,41 @@ namespace CafeServer
                             string phuongThuc = parts[5];
                             float diemDaDung = parts.Length > 6 ? float.Parse(parts[6], System.Globalization.CultureInfo.InvariantCulture) : 0f;
 
-                            // 1. Cập nhật Hóa đơn
-                            await DatabaseService.Client.From<HoaDon>()
+                            // Đọc thông tin khách hàng thành viên bổ sung từ Client gửi lên
+                            string tenKH = parts.Length > 7 ? parts[7] : "";
+                            string sdtKH = parts.Length > 8 ? parts[8] : "";
+
+                            // Lấy thông tin hóa đơn hiện tại để biết mã đơn hàng (MaDonHang) liên quan
+                            var resBillCur = await DatabaseService.Client.From<HoaDon>().Where(x => x.MaHD == maHD).Get();
+                            var currentBillObj = resBillCur.Models.FirstOrDefault();
+
+                            int maDonHangLienQuan = currentBillObj != null ? currentBillObj.MaDonHang : 0;
+
+                            // 1. Khởi tạo truy vấn cập nhật Hóa đơn
+                            var updateBillQuery = DatabaseService.Client.From<HoaDon>()
                                 .Where(x => x.MaHD == maHD)
                                 .Set(x => x.TrangThai, "Đã thanh toán")
                                 .Set(x => x.ThanhTien, soTien)
-                                .Set(x => x.PhuongThucThanhToan, phuongThuc)
-                                .Update();
+                                .Set(x => x.PhuongThucThanhToan, phuongThuc);
+
+                            // Nếu có tên khách hàng thành viên thì cập nhật thêm vào HoaDon (sử dụng thuộc tính TenKH vừa thêm)
+                            if (!string.IsNullOrEmpty(tenKH))
+                            {
+                                updateBillQuery = updateBillQuery.Set(x => x.TenKH, tenKH);
+                            }
+
+                            await updateBillQuery.Update();
+
+                            // 1b. Cập nhật Đơn hàng (DonHang) liên quan
+                            // Nếu có thông tin khách hàng thành viên, cập nhật vào bảng Đơn hàng thông qua mã đơn hàng liên quan
+                            if ((!string.IsNullOrEmpty(tenKH) || !string.IsNullOrEmpty(sdtKH)) && maDonHangLienQuan > 0)
+                            {
+                                await DatabaseService.Client.From<DonHang>()
+                                    .Where(x => x.MaDonHang == maDonHangLienQuan)
+                                    .Set(x => x.TenKH, tenKH)   // Sử dụng đúng thuộc tính TenKH trong DonHang.cs
+                                    .Set(x => x.SDTKH, sdtKH)   // Sử dụng đúng thuộc tính SDTKH trong DonHang.cs
+                                    .Update();
+                            }
 
                             // 2. Cập nhật Bàn ăn
                             if (maBan.HasValue && maBan > 0)

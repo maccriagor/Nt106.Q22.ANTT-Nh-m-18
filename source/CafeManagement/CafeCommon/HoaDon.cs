@@ -50,5 +50,7 @@ namespace CafeCommon
 
         [Supabase.Postgrest.Attributes.Reference(typeof(BanAn))]
         public BanAn banan { get; set; }
+        [Column("tenkh")]
+        public string TenKH { get; set; }
     }
 }
