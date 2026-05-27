@@ -56,6 +56,7 @@
             colMaBanAn = new DataGridViewTextBoxColumn();
             colTongTien = new DataGridViewTextBoxColumn();
             colNgayTao = new DataGridViewTextBoxColumn();
+            colTrangThai = new DataGridViewTextBoxColumn();
             panel1 = new Panel();
             panel11 = new Panel();
             lblTitle = new Label();
@@ -321,7 +322,7 @@
             dgvHoaDon.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvHoaDon.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvHoaDon.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvHoaDon.Columns.AddRange(new DataGridViewColumn[] { colMaHD, colMaBanAn, colTongTien, colNgayTao });
+            dgvHoaDon.Columns.AddRange(new DataGridViewColumn[] { colMaHD, colMaBanAn, colTongTien, colTrangThai, colNgayTao });
             dgvHoaDon.Location = new Point(12, 3);
             dgvHoaDon.Name = "dgvHoaDon";
             dgvHoaDon.RowHeadersWidth = 51;
@@ -352,6 +353,13 @@
             colNgayTao.HeaderText = "Ngày Tạo";
             colNgayTao.MinimumWidth = 6;
             colNgayTao.Name = "colNgayTao";
+            // 
+            // colTrangThai
+            // 
+            colTrangThai.HeaderText = "Trạng Thái";
+            colTrangThai.MinimumWidth = 6;
+            colTrangThai.Name = "colTrangThai";
+            colTrangThai.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             // 
             // panel1
             // 
@@ -651,5 +659,6 @@
         private DataGridViewTextBoxColumn colMaBanAn;
         private DataGridViewTextBoxColumn colTongTien;
         private DataGridViewTextBoxColumn colNgayTao;
+        private DataGridViewTextBoxColumn colTrangThai;
     }
 }

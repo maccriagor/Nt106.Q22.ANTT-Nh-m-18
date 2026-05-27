@@ -21,10 +21,25 @@ namespace CafeClient
 
             picQR.Click += picQR_Click;
             btnThanhToan.Enabled = false;
+
+            // ĐỊNH NGHĨA ÁNH XẠ CHÍNH XÁC VÀO CÁC CỘT TĨNH DESIGNER CỦA BẠN:
+            dgvHoaDon.AutoGenerateColumns = false;
+            colMaHD.DataPropertyName = "MaHD";
+            colMaBanAn.DataPropertyName = "TenBan"; // Đọc thẳng trường chữ "TenBan" xử lý từ Server gửi sang
+            colTongTien.DataPropertyName = "TongTien";
+            colNgayTao.DataPropertyName = "NgayTao";
+
+            // Map status column (added in designer dynamically)
+            if (dgvHoaDon.Columns.Contains("colTrangThai"))
+            {
+                dgvHoaDon.Columns["colTrangThai"].DataPropertyName = "TrangThai";
+                dgvHoaDon.Columns["colTrangThai"].HeaderText = "Trạng Thái";
+            }
+            colTongTien.DefaultCellStyle.Format = "N0";
+
             LoadDSHoaDon();
 
         }
-
         private KhachHang currentCustomer = null;
         private HoaDon selectedBill = null;
         private decimal finalThanhTien = 0;
@@ -36,28 +51,59 @@ namespace CafeClient
             try
             {
                 string res = await SocketClient.SendRequestAsync("GET_ALL_BILLS");
+
                 if (res.StartsWith("SUCCESS|"))
                 {
-                    var data = JsonConvert.DeserializeObject<List<HoaDon>>(res.Substring(8));
+                    // payload after prefix
+                    var payload = res.Substring(8);
 
-                    dgvHoaDon.DataSource = null;
-                    dgvHoaDon.Columns.Clear();
-                    dgvHoaDon.AutoGenerateColumns = false;
+                    // Deserialize into DataTable so DataGridView can bind to named columns (MaHD, TenBan, TongTien, NgayTao)
+                    System.Data.DataTable table = null;
+                    try
+                    {
+                        table = JsonConvert.DeserializeObject<System.Data.DataTable>(payload);
+                    }
+                    catch
+                    {
+                        // fallback: try parse to list of HoaDon then convert
+                        try
+                        {
+                            var list = JsonConvert.DeserializeObject<List<HoaDon>>(payload);
+                            table = new System.Data.DataTable();
+                            if (list != null && list.Count > 0)
+                            {
+                                // create columns from properties we need
+                                table.Columns.Add("MaHD", typeof(int));
+                                table.Columns.Add("TenBan", typeof(string));
+                                table.Columns.Add("TongTien", typeof(decimal));
+                                table.Columns.Add("NgayTao", typeof(string));
+                                table.Columns.Add("TrangThai", typeof(string));
+                                table.Columns.Add("MaKH", typeof(int));
 
-                    dgvHoaDon.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "MaHD", HeaderText = "Mã HĐ", Name = "MaHD" });
-                    dgvHoaDon.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "MaBanAn", HeaderText = "Bàn", Name = "MaBanAn" });
-                    dgvHoaDon.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "TongTien", HeaderText = "Tổng Tiền", Name = "TongTien" });
-                    dgvHoaDon.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "NgayTao", HeaderText = "Ngày Tạo", Name = "NgayTao" });
-                    dgvHoaDon.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "TrangThai", HeaderText = "Trạng Thái", Name = "TrangThai" });
+                                foreach (var it in list)
+                                {
+                                    table.Rows.Add(it.MaHD, it.TenBan, it.TongTien, it.NgayTao.ToString("dd/MM/yyyy"), it.TrangThai, it.MaKH ?? 0);
+                                }
+                            }
+                        }
+                        catch { }
+                    }
 
-                    dgvHoaDon.Columns["TongTien"].DefaultCellStyle.Format = "N0";
+                    if (table != null)
+                    {
+                        dgvHoaDon.DataSource = null;
+                        dgvHoaDon.DataSource = table;
+                        dgvHoaDon.Refresh();
 
-                    dgvHoaDon.DataSource = data;
-                    dgvHoaDon.Refresh();
-
-                    dgvHoaDon.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                    dgvHoaDon.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-                    dgvHoaDon.DefaultCellStyle.ForeColor = Color.Black;
+                        dgvHoaDon.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                        dgvHoaDon.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                        dgvHoaDon.DefaultCellStyle.ForeColor = Color.Black;
+                        // No debug dialogs: table populated
+                    }
+                    else
+                    {
+                        MessageBox.Show("DEBUG: Failed to parse GET_ALL_BILLS payload:\n" + payload, "Debug", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
             }
             catch (Exception ex)
@@ -98,7 +144,16 @@ namespace CafeClient
             // Cập nhật lại dgvHoaDon
             if (!res.StartsWith("ERROR"))
             {
-                dgvHoaDon.DataSource = JsonConvert.DeserializeObject<List<HoaDon>>(res);
+                try
+                {
+                    var table = JsonConvert.DeserializeObject<System.Data.DataTable>(res);
+                    dgvHoaDon.DataSource = table;
+                }
+                catch
+                {
+                    // fallback to attempt parsing as list of HoaDon
+                    dgvHoaDon.DataSource = JsonConvert.DeserializeObject<List<HoaDon>>(res);
+                }
             }
         }
 
@@ -164,6 +219,7 @@ namespace CafeClient
 
         private async void btnThanhToan_Click(object sender, EventArgs e)
         {
+            // 1. Kiểm tra các điều kiện đầu vào cơ bản có sẵn
             if (selectedBill == null)
             {
                 MessageBox.Show("Vui lòng chọn một hóa đơn từ danh sách để thanh toán!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -182,8 +238,60 @@ namespace CafeClient
                 return;
             }
 
+            // --- BẮT ĐẦU YÊU CẦU 2: HIỂN THỊ HỘP THOẠI XÁC NHẬN CHI TIẾT ---
+            decimal tongTienGoc = selectedBill.TongTien;
+            decimal giamDiem = 0;
+            if (cbDiemTichLuy.SelectedIndex == 1 && currentCustomer != null)
+            {
+                giamDiem = (decimal)currentCustomer.DiemTichLuy * 1000;
+            }
+
+            string maGiamGiaDaDung = string.IsNullOrEmpty(tbMaGiamGia.Text.Trim()) ? "Không sử dụng" : tbMaGiamGia.Text.Trim();
+            string hinhThucThanhToan = chkChuyenKhoan.Checked ? "Chuyển khoản" : "Tiền mặt";
+            string loaiKhachHang = (currentCustomer != null) ? $"{currentCustomer.TenKH} (Thành viên)" : "Khách vãng lai";
+
+            // Xây dựng chuỗi nội dung thông báo tóm tắt đơn hàng
+            StringBuilder confirmMsg = new StringBuilder();
+            confirmMsg.AppendLine("=== THÔNG TIN XÁC NHẬN THANH TOÁN ===");
+            confirmMsg.AppendLine($"Khách hàng: {loaiKhachHang}");
+            confirmMsg.AppendLine($"Tổng tiền hóa đơn: {tongTienGoc.ToString("N0")} đ");
+            if (giamDiem > 0)
+            {
+                confirmMsg.AppendLine($"- Giảm trừ điểm tích lũy: {giamDiem.ToString("N0")} đ ({currentCustomer.DiemTichLuy} điểm)");
+            }
+            if (maGiamGiaDaDung != "Không sử dụng")
+            {
+                confirmMsg.AppendLine($"- Mã giảm giá áp dụng: {maGiamGiaDaDung}");
+            }
+            confirmMsg.AppendLine("------------------------------------");
+            confirmMsg.AppendLine($"THÀNH TIỀN CUỐI CÙNG: {finalThanhTien.ToString("N0")} đ");
+            confirmMsg.AppendLine($"Hình thức: {hinhThucThanhToan}");
+            confirmMsg.AppendLine("\nBạn có chắc chắn muốn tiến hành xác nhận thanh toán hóa đơn này không?");
+
+            // Hiển thị MessageBox xác nhận Yes/No
+            DialogResult dialogResult = MessageBox.Show(confirmMsg.ToString(), "Xác nhận thanh toán đơn hàng", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            // Nếu chọn No thì hủy bỏ hành động, quay lại màn hình
+            if (dialogResult == DialogResult.No)
+            {
+                return;
+            }
+            // --- KẾT THÚC YÊU CẦU 2 ---
+
+
+            // --- BẮT ĐẦU YÊU CẦU 1: XỬ LÝ THÔNG TIN KHÁCH HÀNG THÀNH VIÊN ---
             string maKH = currentCustomer != null ? currentCustomer.MaKH.ToString() : "";
-            string hinhThuc = chkChuyenKhoan.Checked ? "Chuyển khoản" : "Tiền mặt";
+            string tenKH = "";
+            string sdtKH = "";
+
+            // Nếu không phải khách vãng lai (có dữ liệu currentCustomer hợp lệ)
+            if (currentCustomer != null && txtTenKH.Text != "Khách vãng lai")
+            {
+                tenKH = currentCustomer.TenKH;
+                sdtKH = textBox4.Text.Trim(); // Lấy từ ô tìm kiếm số điện thoại của bạn
+            }
+            // --- KẾT THÚC YÊU CẦU 1 ---
+
 
             float diemDaDung = 0f;
             if (cbDiemTichLuy.SelectedIndex == 1 && currentCustomer != null)
@@ -191,12 +299,13 @@ namespace CafeClient
                 diemDaDung = currentCustomer.DiemTichLuy;
             }
 
-            // Định dạng số liệu sang chuỗi InvariantCulture để tránh xung đột định dạng dấu chấm/phẩy trên Server
+            // Định dạng số liệu sang chuỗi InvariantCulture để tránh xung đột hệ thống dấu chấm/phẩy
             string soTienGui = finalThanhTien.ToString("F1", System.Globalization.CultureInfo.InvariantCulture);
             string stringDiemDung = diemDaDung.ToString("F1", System.Globalization.CultureInfo.InvariantCulture);
 
-            // 4. Gửi yêu cầu CONFIRM_PAYMENT lên Server
-            string req = $"CONFIRM_PAYMENT|{selectedBill.MaHD}|{selectedBill.MaBanAn}|{maKH}|{soTienGui}|{hinhThuc}|{stringDiemDung}";
+            // Gửi thêm thông tin tên và SĐT qua chuỗi Request lên Server (bổ sung tham số vào cuối giao thức cũ)
+            // Cấu trúc chuỗi mới: CONFIRM_PAYMENT|MaHD|MaBanAn|MaKH|SoTien|HinhThuc|DiemDung|TenKH|SdtKH
+            string req = $"CONFIRM_PAYMENT|{selectedBill.MaHD}|{selectedBill.MaBanAn}|{maKH}|{soTienGui}|{hinhThucThanhToan}|{stringDiemDung}|{tenKH}|{sdtKH}";
             string res = await SocketClient.SendRequestAsync(req);
 
             if (res.Contains("PAYMENT_SUCCESS"))
@@ -210,7 +319,7 @@ namespace CafeClient
                     if (currentCustomer != null) currentCustomer.DiemTichLuy = 0f;
                 }
 
-                // 5. Xóa sạch dữ liệu cũ trên các ô TextBox để sẵn sàng nhận đơn mới
+                // Xóa sạch dữ liệu cũ trên các ô TextBox để sẵn sàng nhận đơn mới
                 txtMaHD.Clear();
                 txtMaBanAn.Clear();
                 txtTongTien.Clear();
@@ -230,7 +339,7 @@ namespace CafeClient
                 checkBox1.Checked = false;
                 btnThanhToan.Enabled = false;
 
-                // 6. Làm mới lại danh sách hóa đơn trên màn hình hiển thị
+                // Làm mới lại danh sách hóa đơn trên màn hình hiển thị
                 LoadDSHoaDon();
             }
             else
@@ -278,21 +387,57 @@ namespace CafeClient
         private async void dgvHoaDon_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
-            selectedBill = dgvHoaDon.Rows[e.RowIndex].DataBoundItem as HoaDon;
 
-            if (selectedBill != null)
+            // DataBoundItem can be dynamic, HoaDon or DataRowView depending on how we bound the grid.
+            var dataItem = dgvHoaDon.Rows[e.RowIndex].DataBoundItem;
+            if (dataItem != null)
             {
+                int mahd = 0;
+                decimal tong = 0;
+                string trangthai = "Chưa thanh toán";
+                object mahkObj = null;
+                string tenBanStr = "";
+                string ngayTaoStr = "";
+
+                if (dataItem is System.Data.DataRowView drv)
+                {
+                    var row = drv.Row;
+                    mahd = row.Table.Columns.Contains("MaHD") && row["MaHD"] != DBNull.Value ? Convert.ToInt32(row["MaHD"]) : 0;
+                    tong = row.Table.Columns.Contains("TongTien") && row["TongTien"] != DBNull.Value ? Convert.ToDecimal(row["TongTien"]) : 0;
+                    trangthai = row.Table.Columns.Contains("TrangThai") && row["TrangThai"] != DBNull.Value ? row["TrangThai"].ToString() : trangthai;
+                    mahkObj = row.Table.Columns.Contains("MaKH") ? row["MaKH"] : null;
+                    tenBanStr = row.Table.Columns.Contains("TenBan") && row["TenBan"] != DBNull.Value ? row["TenBan"].ToString() : "";
+                    ngayTaoStr = row.Table.Columns.Contains("NgayTao") && row["NgayTao"] != DBNull.Value ? row["NgayTao"].ToString() : "";
+                }
+                else
+                {
+                    // Fallback for dynamic / typed objects
+                    try { mahd = Convert.ToInt32(dataItem.GetType().GetProperty("MaHD")?.GetValue(dataItem)); } catch { }
+                    try { tong = Convert.ToDecimal(dataItem.GetType().GetProperty("TongTien")?.GetValue(dataItem)); } catch { }
+                    try { trangthai = dataItem.GetType().GetProperty("TrangThai")?.GetValue(dataItem)?.ToString() ?? trangthai; } catch { }
+                    try { mahkObj = dataItem.GetType().GetProperty("MaKH")?.GetValue(dataItem); } catch { }
+                    try { tenBanStr = dataItem.GetType().GetProperty("TenBan")?.GetValue(dataItem)?.ToString() ?? ""; } catch { }
+                    try { ngayTaoStr = dataItem.GetType().GetProperty("NgayTao")?.GetValue(dataItem)?.ToString() ?? ""; } catch { }
+                }
+
+                selectedBill = new HoaDon
+                {
+                    MaHD = mahd,
+                    TongTien = tong,
+                    TrangThai = trangthai
+                };
+
                 txtMaHD.Text = selectedBill.MaHD.ToString();
-                txtMaBanAn.Text = selectedBill.MaBanAn?.ToString() ?? "Mang về";
+                txtMaBanAn.Text = tenBanStr; // TenBan is already a display string like "Bàn 1" or "Mang về"
                 txtTongTien.Text = selectedBill.TongTien.ToString("N0");
-                txtNgayXuatHD.Text = selectedBill.NgayTao.ToString("dd/MM/yyyy");
+                txtNgayXuatHD.Text = ngayTaoStr;
 
                 txtTenKH.Text = "Đang tìm...";
 
-                if (selectedBill.MaKH.HasValue && selectedBill.MaKH > 0)
+                if (mahkObj != null && mahkObj != DBNull.Value && int.TryParse(mahkObj.ToString(), out int makh) && makh > 0)
                 {
+                    selectedBill.MaKH = makh;
                     string res = await SocketClient.SendRequestAsync($"GET_CUSTOMER_BY_ID|{selectedBill.MaKH}");
-
                     if (res.StartsWith("SUCCESS|"))
                     {
                         currentCustomer = JsonConvert.DeserializeObject<KhachHang>(res.Substring(8));
@@ -311,6 +456,7 @@ namespace CafeClient
                     txtDiemTichLuy.Text = "0";
                     currentCustomer = null;
                 }
+
                 chkChuyenKhoan.Checked = false;
                 checkBox1.Checked = false;
                 btnThanhToan.Enabled = false;

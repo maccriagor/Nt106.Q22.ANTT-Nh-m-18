@@ -581,10 +581,38 @@ namespace CafeServer
                     {
                         try
                         {
-                            var billresult = await DatabaseService.Client.From<HoaDon>().Get();
+                            // Fetch bills (no join) then resolve TenBan per bill to avoid PostgREST join alias issues
+                            var billRes = await DatabaseService.Client.From<HoaDon>().Order(x => x.NgayTao, Supabase.Postgrest.Constants.Ordering.Descending).Get();
+                            var billModels = billRes.Models;
 
-                            // Add the "SUCCESS|" prefix so the Client knows how to split the string
-                            return "SUCCESS|" + JsonConvert.SerializeObject(billresult.Models);
+                            var flatBills = new List<object>();
+                            foreach (var bill in billModels)
+                            {
+                                string tenBanHienThi = "Mang về";
+                                if (bill.MaBanAn.HasValue && bill.MaBanAn > 0)
+                                {
+                                    try
+                                    {
+                                        var banRes = await DatabaseService.Client.From<BanAn>().Where(x => x.MaBanAn == bill.MaBanAn.Value).Get();
+                                        var ban = banRes.Models.FirstOrDefault();
+                                        if (ban != null && !string.IsNullOrEmpty(ban.TenBan)) tenBanHienThi = ban.TenBan;
+                                        else tenBanHienThi = $"Bàn {bill.MaBanAn}";
+                                    }
+                                    catch { tenBanHienThi = $"Bàn {bill.MaBanAn}"; }
+                                }
+
+                                flatBills.Add(new
+                                {
+                                    MaHD = bill.MaHD,
+                                    TenBan = tenBanHienThi,
+                                    TongTien = bill.TongTien,
+                                    NgayTao = bill.NgayTao.ToString("dd/MM/yyyy"),
+                                    TrangThai = bill.TrangThai ?? "Chưa thanh toán",
+                                    MaKH = bill.MaKH
+                                });
+                            }
+
+                            return "SUCCESS|" + JsonConvert.SerializeObject(flatBills);
                         }
                         catch (Exception ex)
                         {
