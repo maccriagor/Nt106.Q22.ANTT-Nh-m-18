@@ -41,13 +41,13 @@ namespace CafeCommon
         public bool UuTien { get; set; }
 
         [Column("thoigianbatdau")]
-        public DateTime? ThoigianBatDau { get; set; } // Nullable 
+        public DateTime? ThoigianBatDau { get; set; }
 
         [Column("thoigianhoanthanh")]
         public DateTime? ThoigianHoanThanh { get; set; }
 
         [Column("thoigiandukien")]
-        public int ThoiGianDuKien { get; set; } // int as specified 
+        public int ThoiGianDuKien { get; set; }
 
         [Column("trangthaiitem")]
         public string TrangThaiItem { get; set; }

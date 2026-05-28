@@ -38,13 +38,11 @@ namespace CafeServer.Services
         {
             try
             {
-                // FIX: The error log suggested the table is called 'menu' instead of 'mon'.
-                // We go: CTDonHang -> Menu -> LoaiMon(tenloai)
-                // If your table is actually named 'menu', use this:
                 var res = await DatabaseService.Client
                     .From<CTDonHang>()
                     .Filter("madonhang", Operator.Equals, orderId)
-                    .Select("soluong, ghichukhach, ghichubep, trangthaiitem, menu(loaimon(tenloai))")
+                    // UPDATED: Just select tenmon straight from the menu relation
+                    .Select("soluong, ghichukhach, ghichubep, trangthaiitem, menu(mamon, tenmon)")
                     .Get();
 
                 if (string.IsNullOrEmpty(res.Content)) return new List<dynamic>();
@@ -52,8 +50,6 @@ namespace CafeServer.Services
             }
             catch (Exception ex)
             {
-                // If 'menu' still fails, it means the Foreign Key for 'mamon' 
-                // isn't set up in the Supabase Dashboard for the 'ctdonhang' table.
                 Console.WriteLine($"[OrderService] GetDetails Error: {ex.Message}");
                 return new List<dynamic>();
             }
@@ -84,32 +80,33 @@ namespace CafeServer.Services
             }
         }
 
-        public async Task<List<int>> GetUniqueTableNumbersAsync()
+        public async Task<List<string>> GetUniqueTableNamesAsync()
         {
             try
             {
+                // 1. Fetch both mabanan (for sorting consistency if needed) and tenban
                 var res = await DatabaseService.Client
-                    .From<DonHang>()
-                    .Select("mabanan")
+                    .From<BanAn>()
+                    .Select("mabanan, tenban")
                     .Get();
 
-                // Check if content is actually there
                 if (string.IsNullOrEmpty(res.Content) || res.Content == "[]")
-                    return new List<int>();
+                    return new List<string>();
 
-                // We deserialize to a list of the model to get the properties correctly
-                var list = JsonConvert.DeserializeObject<List<DonHang>>(res.Content);
+                var list = JsonConvert.DeserializeObject<List<BanAn>>(res.Content);
 
+                // 2. Extract the actual name column, sorting cleanly by ID
                 return list
-                    .Select(x => x.MaBanAn)
+                    .OrderBy(x => x.MaBanAn)
+                    .Select(x => x.TenBan)
+                    .Where(name => !string.IsNullOrEmpty(name))
                     .Distinct()
-                    .OrderBy(x => x)
                     .ToList();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"[OrderService Error]: {ex.Message}");
-                return new List<int>();
+                return new List<string>();
             }
         }
     }

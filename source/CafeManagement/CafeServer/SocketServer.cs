@@ -429,8 +429,10 @@ namespace CafeServer
 
 
                 case "GET_UNIQUE_TABLES":
-                    var tables3 = await ServiceManager.Order.GetUniqueTableNumbersAsync();
-                    return "SUCCESS|" + JsonConvert.SerializeObject(tables3);
+                    // FIX: Change the type to List<string> (or use 'var' to let C# infer it automatically)
+                    var tableNames = await ServiceManager.Order.GetUniqueTableNamesAsync();
+
+                    return "SUCCESS|" + JsonConvert.SerializeObject(tableNames);
 
                 default:
                     return "UNKNOWN_COMMAND";
