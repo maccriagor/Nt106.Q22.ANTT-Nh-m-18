@@ -11,80 +11,24 @@ namespace CafeServer.Services
 {
     public class OrderService
     {
-        // 1. Tạo hóa đơn mới (Khi bắt đầu mở bàn cho khách ngồi)
-        public async Task<HoaDon> CreateOrderAsync(int maBan, int maNV)
+
+        public async Task<List<dynamic>> GetAllOrdersExtendedAsync()
         {
             try
             {
-                // 1. TẠO ĐƠN HÀNG TRƯỚC
-                var newOrder = new DonHang
-                {
-                    MaBanAn = maBan,       // ĐÃ SỬA: Bổ sung số bàn ăn bị thiếu
-                    MaNVOrder = maNV,
-                    NgayOrder = DateTime.Now,
-                    TrangThai = 0,
-                    LoaiDonHang = "Tại chỗ" // ĐÃ SỬA: Bổ sung loại đơn hàng
-                };
+                var res = await DatabaseService.Client
+                    .From<DonHang>()
+                    // We add 'ctdonhang(soluong)' to the select string
+                    .Select("madonhang, trangthai, ngayorder, banan(tenban), hoadon(mahd), ctdonhang(soluong)")
+                    .Get();
 
-                var orderRes = await DatabaseService.Client.From<DonHang>().Insert(newOrder);
-                var createdOrder = orderRes.Models.FirstOrDefault();
-
-                if (createdOrder == null)
-                {
-                    Console.WriteLine("[OrderService] Không thể tạo Đơn hàng (DonHang)");
-                    return null;
-            }
-
-                // 2. TẠO HÓA ĐƠN GẮN VỚI ĐƠN HÀNG VỪA TẠO
-                var newBill = new HoaDon
-                {
-                    MaDonHang = createdOrder.MaDonHang,
-                    MaBanAn = maBan,
-                    MaNV = maNV,
-                    NgayTao = DateTime.Now,
-                    TrangThai = "Chưa thanh toán",
-                    TongTien = 0,
-                    ThanhTien = 0
-                };
-
-                var billRes = await DatabaseService.Client.From<HoaDon>().Insert(newBill);
-                return billRes.Models.FirstOrDefault();
+                if (string.IsNullOrEmpty(res.Content)) return new List<dynamic>();
+                return JsonConvert.DeserializeObject<List<dynamic>>(res.Content);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[OrderService.CreateOrderAsync] Exception chi tiết: {ex.Message}");
-                return null;
-            }
-        }
-
-        // 2. Thêm món vào chi tiết đơn hàng
-        public async Task<bool> AddItemsToOrderAsync(List<CTDonHang> items)
-        {
-            try
-            {
-                if (items == null || items.Count == 0) return false;
-
-                // Insert từng item để dễ bắt lỗi của item nào fail
-                foreach (var it in items)
-        {
-            try
-            {
-                        await DatabaseService.Client.From<CTDonHang>().Insert(it);
-                    }
-                    catch (Exception itemEx)
-                    {
-                        Console.WriteLine($"[OrderService.AddItemsToOrderAsync] Failed to insert item MaMon={it.MaMon}, MaDonHang={it.MaDonHang}: {itemEx}");
-                        // continue inserting remaining items or choose to return false
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[OrderService.AddItemsToOrderAsync] Exception: {ex}");
-                return false;
+                Console.WriteLine($"[OrderService] Error: {ex.Message}");
+                return new List<dynamic>();
             }
         }
 
@@ -205,105 +149,81 @@ namespace CafeServer.Services
             }
         }
 
-            public async Task<List<dynamic>> GetAllOrdersExtendedAsync()
+
+        public async Task<List<dynamic>> GetOrderDetailsExtendedAsync(int orderId)
+        {
+            try
             {
-                try
-                {
-                    var res = await DatabaseService.Client
-                        .From<DonHang>()
-                        // We add 'ctdonhang(soluong)' to the select string
-                        .Select("madonhang, trangthai, ngayorder, banan(tenban), hoadon(mahd), ctdonhang(soluong)")
-                        .Get();
+                var res = await DatabaseService.Client
+                    .From<CTDonHang>()
+                    .Filter("madonhang", Operator.Equals, orderId)
+                    // UPDATED: Just select tenmon straight from the menu relation
+                    .Select("soluong, ghichukhach, ghichubep, trangthaiitem, menu(mamon, tenmon)")
+                    .Get();
 
-                    if (string.IsNullOrEmpty(res.Content)) return new List<dynamic>();
-                    return JsonConvert.DeserializeObject<List<dynamic>>(res.Content);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[OrderService] Error: {ex.Message}");
-                    return new List<dynamic>();
-                }
+                if (string.IsNullOrEmpty(res.Content)) return new List<dynamic>();
+                return JsonConvert.DeserializeObject<List<dynamic>>(res.Content);
             }
-
-
-
-            public async Task<List<dynamic>> GetOrderDetailsExtendedAsync(int orderId)
+            catch (Exception ex)
             {
-                try
-                {
-                    // FIX: The error log suggested the table is called 'menu' instead of 'mon'.
-                    // We go: CTDonHang -> Menu -> LoaiMon(tenloai)
-                    // If your table is actually named 'menu', use this:
-                    var res = await DatabaseService.Client
-                        .From<CTDonHang>()
-                        .Filter("madonhang", Operator.Equals, orderId)
-                        .Select("soluong, ghichukhach, ghichubep, trangthaiitem, menu(loaimon(tenloai))")
-                        .Get();
-
-                    if (string.IsNullOrEmpty(res.Content)) return new List<dynamic>();
-                    return JsonConvert.DeserializeObject<List<dynamic>>(res.Content);
-                }
-                catch (Exception ex)
-                {
-                    // If 'menu' still fails, it means the Foreign Key for 'mamon' 
-                    // isn't set up in the Supabase Dashboard for the 'ctdonhang' table.
-                    Console.WriteLine($"[OrderService] GetDetails Error: {ex.Message}");
-                    return new List<dynamic>();
-                }
+                Console.WriteLine($"[OrderService] GetDetails Error: {ex.Message}");
+                return new List<dynamic>();
             }
+        }
 
-            public async Task<bool> DeleteOrderAsync(int orderId)
+        public async Task<bool> DeleteOrderAsync(int orderId)
+        {
+            try
             {
-                try
-                {
-                    // 1. Delete details first to avoid Foreign Key conflicts
-                    await DatabaseService.Client
-                        .From<CTDonHang>()
-                        .Where(x => x.MaDonHang == orderId)
-                        .Delete();
+                // 1. Delete details first to avoid Foreign Key conflicts
+                await DatabaseService.Client
+                    .From<CTDonHang>()
+                    .Where(x => x.MaDonHang == orderId)
+                    .Delete();
 
-                    // 2. Delete the main order
-                    await DatabaseService.Client
-                        .From<DonHang>()
-                        .Where(x => x.MaDonHang == orderId)
-                        .Delete();
+                // 2. Delete the main order
+                await DatabaseService.Client
+                    .From<DonHang>()
+                    .Where(x => x.MaDonHang == orderId)
+                    .Delete();
 
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[OrderService] Delete Error: {ex.Message}");
-                    return false;
-                }
+                return true;
             }
-
-            public async Task<List<int>> GetUniqueTableNumbersAsync()
+            catch (Exception ex)
             {
-                try
-                {
-                    var res = await DatabaseService.Client
-                        .From<DonHang>()
-                        .Select("mabanan")
-                        .Get();
-
-                    // Check if content is actually there
-                    if (string.IsNullOrEmpty(res.Content) || res.Content == "[]")
-                        return new List<int>();
-
-                    // We deserialize to a list of the model to get the properties correctly
-                    var list = JsonConvert.DeserializeObject<List<DonHang>>(res.Content);
-
-                    return list
-                        .Select(x => x.MaBanAn)
-                        .Distinct()
-                        .OrderBy(x => x)
-                        .ToList();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[OrderService Error]: {ex.Message}");
-                    return new List<int>();
-                }
+                Console.WriteLine($"[OrderService] Delete Error: {ex.Message}");
+                return false;
             }
+        }
+
+        public async Task<List<string>> GetUniqueTableNamesAsync()
+        {
+            try
+            {
+                // 1. Fetch both mabanan (for sorting consistency if needed) and tenban
+                var res = await DatabaseService.Client
+                    .From<BanAn>()
+                    .Select("mabanan, tenban")
+                    .Get();
+
+                if (string.IsNullOrEmpty(res.Content) || res.Content == "[]")
+                    return new List<string>();
+
+                var list = JsonConvert.DeserializeObject<List<BanAn>>(res.Content);
+
+                // 2. Extract the actual name column, sorting cleanly by ID
+                return list
+                    .OrderBy(x => x.MaBanAn)
+                    .Select(x => x.TenBan)
+                    .Where(name => !string.IsNullOrEmpty(name))
+                    .Distinct()
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[OrderService Error]: {ex.Message}");
+                return new List<string>();
+            }
+        }
     }
 }

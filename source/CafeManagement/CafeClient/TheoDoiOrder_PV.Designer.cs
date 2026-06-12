@@ -40,6 +40,12 @@
             tableLayoutPanel1 = new TableLayoutPanel();
             groupBox1 = new GroupBox();
             dgvDonHang = new DataGridView();
+            Column1 = new DataGridViewTextBoxColumn();
+            Column2 = new DataGridViewTextBoxColumn();
+            Column3 = new DataGridViewTextBoxColumn();
+            Column4 = new DataGridViewTextBoxColumn();
+            Column5 = new DataGridViewTextBoxColumn();
+            Column6 = new DataGridViewTextBoxColumn();
             groupBox2 = new GroupBox();
             lvDonHang = new ListView();
             columnHeader1 = new ColumnHeader();
@@ -47,12 +53,6 @@
             columnHeader3 = new ColumnHeader();
             columnHeader4 = new ColumnHeader();
             columnHeader5 = new ColumnHeader();
-            Column1 = new DataGridViewTextBoxColumn();
-            Column2 = new DataGridViewTextBoxColumn();
-            Column3 = new DataGridViewTextBoxColumn();
-            Column4 = new DataGridViewTextBoxColumn();
-            Column5 = new DataGridViewTextBoxColumn();
-            Column6 = new DataGridViewTextBoxColumn();
             panel3.SuspendLayout();
             panel9.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
@@ -202,54 +202,6 @@
             dgvDonHang.TabIndex = 0;
             dgvDonHang.CellClick += dgvDonHang_CellClick;
             // 
-            // groupBox2
-            // 
-            groupBox2.Controls.Add(lvDonHang);
-            groupBox2.Dock = DockStyle.Fill;
-            groupBox2.ForeColor = Color.FromArgb(128, 64, 0);
-            groupBox2.Location = new Point(3, 272);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(520, 263);
-            groupBox2.TabIndex = 1;
-            groupBox2.TabStop = false;
-            groupBox2.Text = "Chi tiết đơn hàng";
-            // 
-            // lvDonHang
-            // 
-            lvDonHang.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5 });
-            lvDonHang.Dock = DockStyle.Fill;
-            lvDonHang.Location = new Point(3, 24);
-            lvDonHang.Name = "lvDonHang";
-            lvDonHang.Size = new Size(514, 236);
-            lvDonHang.TabIndex = 0;
-            lvDonHang.UseCompatibleStateImageBehavior = false;
-            lvDonHang.View = View.Details;
-            // 
-            // columnHeader1
-            // 
-            columnHeader1.Text = "Tên Món";
-            columnHeader1.Width = 90;
-            // 
-            // columnHeader2
-            // 
-            columnHeader2.Text = "Số Lượng";
-            columnHeader2.Width = 90;
-            // 
-            // columnHeader3
-            // 
-            columnHeader3.Text = "Ghi Chú Khách";
-            columnHeader3.Width = 120;
-            // 
-            // columnHeader4
-            // 
-            columnHeader4.Text = "Ghi Chú Bếp";
-            columnHeader4.Width = 120;
-            // 
-            // columnHeader5
-            // 
-            columnHeader5.Text = "Trạng Thái";
-            columnHeader5.Width = 90;
-            // 
             // Column1
             // 
             Column1.DataPropertyName = "MaHD";
@@ -299,6 +251,54 @@
             Column6.Name = "Column6";
             Column6.Visible = false;
             Column6.Width = 125;
+            // 
+            // groupBox2
+            // 
+            groupBox2.Controls.Add(lvDonHang);
+            groupBox2.Dock = DockStyle.Fill;
+            groupBox2.ForeColor = Color.FromArgb(128, 64, 0);
+            groupBox2.Location = new Point(3, 272);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(520, 263);
+            groupBox2.TabIndex = 1;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Chi tiết đơn hàng";
+            // 
+            // lvDonHang
+            // 
+            lvDonHang.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5 });
+            lvDonHang.Dock = DockStyle.Fill;
+            lvDonHang.Location = new Point(3, 24);
+            lvDonHang.Name = "lvDonHang";
+            lvDonHang.Size = new Size(514, 236);
+            lvDonHang.TabIndex = 0;
+            lvDonHang.UseCompatibleStateImageBehavior = false;
+            lvDonHang.View = View.Details;
+            // 
+            // columnHeader1
+            // 
+            columnHeader1.Text = "Tên Món";
+            columnHeader1.Width = 200;
+            // 
+            // columnHeader2
+            // 
+            columnHeader2.Text = "Số Lượng";
+            columnHeader2.Width = 90;
+            // 
+            // columnHeader3
+            // 
+            columnHeader3.Text = "Ghi Chú Khách";
+            columnHeader3.Width = 120;
+            // 
+            // columnHeader4
+            // 
+            columnHeader4.Text = "Ghi Chú Bếp";
+            columnHeader4.Width = 120;
+            // 
+            // columnHeader5
+            // 
+            columnHeader5.Text = "Trạng Thái";
+            columnHeader5.Width = 90;
             // 
             // TheoDoiOrder_PV
             // 

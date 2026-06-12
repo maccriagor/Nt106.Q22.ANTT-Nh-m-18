@@ -551,8 +551,6 @@ namespace CafeServer
                         return $"FAIL|Server Error: {ex.Message}";
                     }
 
-
-
                 case "GET_ORDERS_EXTENDED":
                     var orders = await ServiceManager.Order.GetAllOrdersExtendedAsync();
                     string jsonResponse2 = JsonConvert.SerializeObject(orders);
@@ -574,8 +572,10 @@ namespace CafeServer
 
 
                 case "GET_UNIQUE_TABLES":
-                    var tables3 = await ServiceManager.Order.GetUniqueTableNumbersAsync();
-                    return "SUCCESS|" + JsonConvert.SerializeObject(tables3);
+                    // FIX: Change the type to List<string> (or use 'var' to let C# infer it automatically)
+                    var tableNames = await ServiceManager.Order.GetUniqueTableNamesAsync();
+
+                    return "SUCCESS|" + JsonConvert.SerializeObject(tableNames);
 
                 case "GET_ALL_BILLS":
                     {
