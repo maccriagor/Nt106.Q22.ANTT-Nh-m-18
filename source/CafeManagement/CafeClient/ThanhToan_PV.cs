@@ -78,11 +78,12 @@ namespace CafeClient
                                 table.Columns.Add("TongTien", typeof(decimal));
                                 table.Columns.Add("NgayTao", typeof(string));
                                 table.Columns.Add("TrangThai", typeof(string));
+                                table.Columns.Add("MaBan", typeof(int));
                                 table.Columns.Add("MaKH", typeof(int));
 
                                 foreach (var it in list)
                                 {
-                                    table.Rows.Add(it.MaHD, it.TenBan, it.TongTien, it.NgayTao.ToString("dd/MM/yyyy"), it.TrangThai, it.MaKH ?? 0);
+                                    table.Rows.Add(it.MaHD, it.TenBan, it.TongTien, it.NgayTao.ToString("dd/MM/yyyy"), it.TrangThai, it.MaBanAn ?? 0, it.MaKH ?? 0);
                                 }
                             }
                         }
@@ -396,6 +397,7 @@ namespace CafeClient
                 decimal tong = 0;
                 string trangthai = "Chưa thanh toán";
                 object mahkObj = null;
+                int maBan = 0;
                 string tenBanStr = "";
                 string ngayTaoStr = "";
                 string tenKHDaLuu = "";
@@ -410,7 +412,7 @@ namespace CafeClient
                     tenBanStr = row.Table.Columns.Contains("TenBan") && row["TenBan"] != DBNull.Value ? row["TenBan"].ToString() : "";
                     ngayTaoStr = row.Table.Columns.Contains("NgayTao") && row["NgayTao"] != DBNull.Value ? row["NgayTao"].ToString() : "";
                     tenKHDaLuu = row.Table.Columns.Contains("TenKH") && row["TenKH"] != DBNull.Value ? row["TenKH"].ToString() : "";
-                    
+                    maBan = row.Table.Columns.Contains("MaBan") && row["MaBan"] != DBNull.Value ? Convert.ToInt32(row["MaBan"]) : 0;
                 }
                 else
                 {
@@ -422,6 +424,7 @@ namespace CafeClient
                     try { tenBanStr = dataItem.GetType().GetProperty("TenBan")?.GetValue(dataItem)?.ToString() ?? ""; } catch { }
                     try { ngayTaoStr = dataItem.GetType().GetProperty("NgayTao")?.GetValue(dataItem)?.ToString() ?? ""; } catch { }
                     try { tenKHDaLuu = dataItem.GetType().GetProperty("TenKH")?.GetValue(dataItem)?.ToString() ?? ""; } catch { }
+                    try { maBan = Convert.ToInt32(dataItem.GetType().GetProperty("MaBan")?.GetValue(dataItem) ?? 0); } catch { maBan = 0; }
                 }
 
                 selectedBill = new HoaDon
@@ -429,7 +432,8 @@ namespace CafeClient
                     MaHD = mahd,
                     TongTien = tong,
                     TrangThai = trangthai,
-                    TenKH = tenKHDaLuu
+                    TenKH = tenKHDaLuu,
+                    MaBanAn = maBan > 0 ? (int?)maBan : null
                 };
 
                 txtMaHD.Text = selectedBill.MaHD.ToString();

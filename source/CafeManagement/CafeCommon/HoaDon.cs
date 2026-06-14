@@ -46,11 +46,17 @@ namespace CafeCommon
 
         [Column("ghichu")]
         public string GhiChu { get; set; }
-        public string TenBan { get; set; }
+
+        // TenBan is a UI convenience field and not a real DB column, ignore it during Supabase operations
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string TenBan { get; set; } = string.Empty;
 
         [Supabase.Postgrest.Attributes.Reference(typeof(BanAn))]
         public BanAn banan { get; set; }
-        [Column("tenkh")]
-        public string TenKH { get; set; }
+        // TenKH is a UI convenience field and not a real DB column, ignore it during Supabase operations
+        [Newtonsoft.Json.JsonIgnore]
+        [System.Text.Json.Serialization.JsonIgnore]
+        public string TenKH { get; set; } = string.Empty;
     }
 }

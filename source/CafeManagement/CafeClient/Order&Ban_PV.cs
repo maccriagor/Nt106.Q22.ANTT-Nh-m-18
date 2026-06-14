@@ -21,6 +21,14 @@ namespace CafeClient
         {
             InitializeComponent();
 
+            // Kiểm tra quyền truy cập - Kitchen không được phép mở form này
+            if (UserSession.VaiTro == "Kitchen")
+            {
+                MessageBox.Show("Bạn không có quyền truy cập chức năng này! Chỉ Waiter (nhân viên phục vụ) mới có thể quản lý order.", "Lỗi quyền hạn", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                this.Close();
+                return;
+            }
+
             // ĐĂNG KÝ Khi Socket nhận tin, hãy gọi hàm xử lý của tôi
             SocketClient.OnMessageReceived += SocketClient_OnMessageReceived;
 
@@ -525,6 +533,13 @@ namespace CafeClient
 
         private async void btnGuiOrder_Click(object sender, EventArgs e)
         {
+            // Ràng buộc 0: Kiểm tra quyền - Kitchen không được phép gửi order
+            if (UserSession.VaiTro == "Kitchen")
+            {
+                MessageBox.Show("Bạn không có quyền gửi đơn hàng! Chỉ nhân viên phục vụ (Waiter) mới được phép gửi order.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             var table = cbSoBan.SelectedItem as BanAn;
 
             // Ràng buộc 1: Chưa xác định số bàn

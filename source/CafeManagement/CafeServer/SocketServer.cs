@@ -604,6 +604,7 @@ namespace CafeServer
                                 flatBills.Add(new
                                 {
                                     MaHD = bill.MaHD,
+                                    MaBan = bill.MaBanAn,
                                     TenBan = tenBanHienThi,
                                     TongTien = bill.TongTien,
                                     NgayTao = bill.NgayTao.ToString("dd/MM/yyyy"),
@@ -723,12 +724,29 @@ namespace CafeServer
 
                             // 1b. Cập nhật Đơn hàng (DonHang) liên quan
                             // Nếu có thông tin khách hàng thành viên, cập nhật vào bảng Đơn hàng thông qua mã đơn hàng liên quan
-                            if ((!string.IsNullOrEmpty(tenKH) || !string.IsNullOrEmpty(sdtKH)) && maDonHangLienQuan > 0)
+                            if (maDonHangLienQuan > 0)
                             {
-                                await DatabaseService.Client.From<DonHang>()
+                                // Cập nhật thông tin khách hàng nếu có
+                                if (!string.IsNullOrEmpty(tenKH) || !string.IsNullOrEmpty(sdtKH))
+                                {
+                                    await DatabaseService.Client.From<DonHang>()
+                                        .Where(x => x.MaDonHang == maDonHangLienQuan)
+                                        .Set(x => x.TenKH, tenKH)   // Sử dụng đúng thuộc tính TenKH trong DonHang.cs
+                                            .Set(x => x.SDTKH, sdtKH)   // Sử dụng đúng thuộc tính SDTKH trong DonHang.cs
+                                            .Update();
+                                        }
+
+                                        // Cập nhật trạng thái đơn hàng sang 2: Hoàn thành
+                                        await DatabaseService.Client.From<DonHang>()
                                     .Where(x => x.MaDonHang == maDonHangLienQuan)
-                                    .Set(x => x.TenKH, tenKH)   // Sử dụng đúng thuộc tính TenKH trong DonHang.cs
-                                    .Set(x => x.SDTKH, sdtKH)   // Sử dụng đúng thuộc tính SDTKH trong DonHang.cs
+                                    .Set(x => x.TrangThai, 2)
+                                    .Update();
+
+                                // Cập nhật tất cả item của đơn hàng (ctdonhang) sang trạng thái 2: Xong và set thời gian hoàn thành
+                                await DatabaseService.Client.From<CTDonHang>()
+                                    .Where(x => x.MaDonHang == maDonHangLienQuan)
+                                    .Set(x => x.TrangThaiItem, 2)
+                                    .Set(x => x.ThoiGianHoanThanh, DateTime.Now)
                                     .Update();
                             }
 
@@ -740,6 +758,7 @@ namespace CafeServer
                                     .Set(x => x.TrangThai, "Trống")
                                     .Update();
                             }
+
 
                             // 3. Tích điểm thành viên (Cứ 100k cộng 1 điểm)
                             if (maKH.HasValue && maKH > 0)
