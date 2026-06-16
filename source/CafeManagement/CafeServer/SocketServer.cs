@@ -374,7 +374,7 @@ namespace CafeServer
                                     // 3. Cập nhật trạng thái Đơn hàng thành "Đã hủy"
                                     await DatabaseService.Client.From<DonHang>()
                                         .Where(x => x.MaDonHang == activeBill.MaDonHang)
-                                        .Set(x => x.TrangThai, "Đã hủy") // Nếu cột TrangThai của bạn dạng số, bạn thay bằng "3" nhé
+                                        .Set(x => x.TrangThai, 3) // Nếu cột TrangThai của bạn dạng số, bạn thay bằng "3" nhé
                                         .Update();
                                 }
                             }
