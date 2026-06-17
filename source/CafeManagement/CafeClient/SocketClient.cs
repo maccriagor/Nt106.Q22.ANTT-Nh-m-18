@@ -49,24 +49,44 @@ namespace CafeClient
             {
                 if (!await ConnectAsync()) return "ERROR|Không thể kết nối Server";
 
-                // Đảm bảo tuần tự IO để tránh tranh đọc với StartListening
+                // Đảm bảo tuần tự IO để tránh tranh đọc
                 await _ioLock.WaitAsync();
                 try
                 {
+                    // 1. DỌN SẠCH BỘ ĐỆM (FLUSH): Đọc bỏ mọi dữ liệu rác còn kẹt lại
+                    while (_stream.DataAvailable)
+                    {
+                        byte[] dump = new byte[1024];
+                        await _stream.ReadAsync(dump, 0, dump.Length);
+                    }
+
+                    // 2. Gửi lệnh mới lên Server
                     byte[] dataSend = Encoding.UTF8.GetBytes(message);
                     await _stream.WriteAsync(dataSend, 0, dataSend.Length);
 
+                    // 3. ĐỌC PHẢN HỒI AN TOÀN
                     var responseBuilder = new StringBuilder();
                     byte[] buffer = new byte[4096];
-                    int bytesRead = 0;
 
-                    // Đọc ít nhất một lần (server trả ngay) và tiếp tục nếu còn DataAvailable
-                    do
+                    // Lần đọc đầu tiên: Sẽ chờ ở đây cho đến khi Server bắt đầu trả lời
+                    int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+                    if (bytesRead > 0)
                     {
-                        bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
-                        if (bytesRead > 0)
-                            responseBuilder.Append(Encoding.UTF8.GetString(buffer, 0, bytesRead));
-                    } while (_stream.DataAvailable);
+                        responseBuilder.Append(Encoding.UTF8.GetString(buffer, 0, bytesRead));
+
+                        // BÍ QUYẾT CHỐNG PHÂN MẢNH: Chờ đúng 30ms để các gói tin dài (nếu có) kịp chui hết vào bộ đệm
+                        await Task.Delay(30);
+
+                        // Sau 30ms, đọc vét tất cả những gì đang có sẵn trong bộ đệm rồi thoát ngay lập tức
+                        while (_stream.DataAvailable)
+                        {
+                            bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+                            if (bytesRead > 0)
+                            {
+                                responseBuilder.Append(Encoding.UTF8.GetString(buffer, 0, bytesRead));
+                            }
+                        }
+                    }
 
                     string raw = responseBuilder.ToString();
                     return raw.Trim('\0', ' ', '\r', '\n', '\uFEFF', '\u200B');
@@ -78,7 +98,6 @@ namespace CafeClient
             }
             catch (Exception ex)
             {
-                // Không tự động Disconnect ở đây để tránh server đánh offline nếu temporary error
                 Console.WriteLine($"[SocketClient] SendRequestAsync error: {ex.Message}");
                 return $"ERROR|{ex.Message}";
             }
@@ -101,29 +120,40 @@ namespace CafeClient
                 {
                     try
                     {
-                        // Giữ quyền đọc để không tranh với SendRequestAsync
+                        // 1. NGĂN CHẶN DEADLOCK: Đứng ngoài cửa nhìn.
+                        // Nếu chưa có dữ liệu đẩy về từ Server, nhường CPU 50ms rồi quay lại nhìn tiếp.
+                        // TUYỆT ĐỐI KHÔNG XIN KHÓA LÚC NÀY để các lệnh khác (GET_TABLES...) có thể chạy.
+                        if (!_stream.DataAvailable)
+                        {
+                            await Task.Delay(50, token);
+                            continue;
+                        }
+
+                        // 2. TÓM ĐƯỢC DỮ LIỆU: Xin khóa để đọc an toàn
                         await _ioLock.WaitAsync(token);
                         try
                         {
-                            // Đọc chờ (blocking) - nếu server không gửi gì, ReadAsync sẽ chờ
-                            int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length, token);
-                            if (bytesRead > 0)
+                            // Kiểm tra lại lần nữa cho chắc ăn sau khi có khóa
+                            if (_stream.DataAvailable)
                             {
-                                string message = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim('\0', '\r', '\n', '\uFEFF', '\u200B');
+                                int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length, token);
+                                if (bytesRead > 0)
+                                {
+                                    string message = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim('\0', '\r', '\n', '\uFEFF', '\u200B');
 
-                                // Nếu đây là một phản hồi dành cho một request sync (có pipe '|' thường),
-                                // StartListening vẫn có thể nhận được, nhưng vì chúng ta serialize IO bằng _ioLock,
-                                // thường chỉ nhận push (broadcast) khi không có request đang chờ.
-                                OnMessageReceived?.Invoke(message);
-                            }
-                            else
-                            {
-                                // bytesRead == 0 nghĩa là kết nối đã đóng
-                                break;
+                                    // Kích hoạt sự kiện để Form giao diện cập nhật
+                                    OnMessageReceived?.Invoke(message);
+                                }
+                                else
+                                {
+                                    // bytesRead == 0 nghĩa là kết nối đã đóng
+                                    break;
+                                }
                             }
                         }
                         finally
                         {
+                            // Đọc xong lập tức trả lại Khóa (Micro) cho người khác dùng
                             _ioLock.Release();
                         }
                     }

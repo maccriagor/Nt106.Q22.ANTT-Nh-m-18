@@ -73,6 +73,8 @@ namespace CafeClient
 
                         MessageBox.Show($"Chào mừng {fullName} ({role}) quay trở lại!", "Thành công");
 
+                        // Mở luồng lắng nghe thông báo Realtime từ Server
+                        SocketClient.StartListening();
 
                         this.Hide();
 

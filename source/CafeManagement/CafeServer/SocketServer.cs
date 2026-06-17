@@ -304,24 +304,33 @@ namespace CafeServer
 
                 case "GET_ALL_CATEGORY":
                     var categories = await ServiceManager.Menu.GetAllCategoriesAsync();
-                    return JsonConvert.SerializeObject(categories);
+                    return "SUCCESS|" + JsonConvert.SerializeObject(categories);
 
                 case "GET_TABLES":
                     var tables = await ServiceManager.Table.GetAllAsync();
-                    return "SUCCESS|" + JsonConvert.SerializeObject(tables);
+
+                    // THÊM CẤU HÌNH NÀY: Ép định dạng JSON chuẩn Quốc tế để mọi máy Client đều đọc được
+                    var getSettings = new JsonSerializerSettings { DateFormatString = "yyyy-MM-ddTHH:mm:ss" };
+
+                    return "SUCCESS|" + JsonConvert.SerializeObject(tables, getSettings);
 
                 case "ADD_TABLE":
-                    var newTable = JsonConvert.DeserializeObject<BanAn>(parts[1]);
+                    // Cấp Culture Việt Nam để đọc được định dạng dd/MM/yyyy nếu Admin gửi lên
+                    var addSettings = new JsonSerializerSettings { Culture = new System.Globalization.CultureInfo("vi-VN") };
+                    var newTable = JsonConvert.DeserializeObject<BanAn>(parts[1], addSettings);
+
                     bool isAdd = await ServiceManager.Table.AddAsync(newTable);
                     if (isAdd)
                     {
-                        await Broadcast("RELOAD_TABLE_MAP"); // Báo cho các máy khác load lại sơ đồ
+                        await Broadcast("RELOAD_TABLE_MAP");
                         return "SUCCESS|Thêm bàn thành công";
                     }
                     return "FAIL|Lỗi khi thêm bàn";
 
                 case "UPDATE_TABLE":
-                    var tableUp = JsonConvert.DeserializeObject<BanAn>(parts[1]);
+                    var upSettings = new JsonSerializerSettings { Culture = new System.Globalization.CultureInfo("vi-VN") };
+                    var tableUp = JsonConvert.DeserializeObject<BanAn>(parts[1], upSettings);
+
                     bool isUp = await ServiceManager.Table.UpdateAsync(tableUp);
                     if (isUp)
                     {

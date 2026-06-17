@@ -43,20 +43,21 @@ namespace CafeClient
         }
 
         // Hàm xử lý tin nhắn Real-time
-        private void SocketClient_OnMessageReceived(string message)
+        private async void SocketClient_OnMessageReceived(string message)
         {
-            // Vì Socket chạy ở luồng khác, muốn đổi màu giao diện phải dùng Invoke
+            // Đảm bảo đưa tác vụ về lại đúng luồng UI chính
             if (this.InvokeRequired)
             {
                 this.Invoke(new Action(() => SocketClient_OnMessageReceived(message)));
                 return;
             }
 
-            // KIỂM TRA TIN NHẮN
             if (message == "RELOAD_TABLE_MAP")
             {
-                Console.WriteLine("[REALTIME] Admin vừa thay đổi bàn, đang tải lại...");
-                _ = LoadTablesFromServer(); // Gọi hàm tải danh sách và vẽ lại sơ đồ
+                Console.WriteLine("[REALTIME] Đã nhận lệnh làm mới sơ đồ bàn từ Server!");
+
+                // Gọi thẳng hàm ở đây, nó sẽ chạy an toàn trên luồng UI
+                await LoadTablesFromServer();
             }
         }
 
@@ -67,7 +68,21 @@ namespace CafeClient
             if (response.Contains("SUCCESS"))
             {
                 string json = response.Split('|')[1];
-                _allTables = JsonConvert.DeserializeObject<List<BanAn>>(json) ?? new List<BanAn>();
+
+                // THÊM CẤU HÌNH NÀY: Hướng dẫn Client cách đọc chuỗi ngày tháng của Việt Nam (dd/MM/yyyy)
+                var settings = new JsonSerializerSettings
+                {
+                    Culture = new System.Globalization.CultureInfo("vi-VN"),
+                    // Tùy chọn nâng cao: Bỏ qua các lỗi Parse ngày tháng nếu DB gửi giá trị rác
+                    Error = (sender, args) =>
+                    {
+                        if (args.ErrorContext.Member.ToString() == "NgayTao")
+                            args.ErrorContext.Handled = true;
+                    }
+                };
+
+                // Gắn settings vào hàm dịch JSON
+                _allTables = JsonConvert.DeserializeObject<List<BanAn>>(json, settings) ?? new List<BanAn>();
 
                 DrawTableMap(_allTables);
 
@@ -91,6 +106,7 @@ namespace CafeClient
                 DrawTableMap(_allTables);
             }
         }
+
 
         private async void Order_Ban_Load(object sender, EventArgs e)
         {
