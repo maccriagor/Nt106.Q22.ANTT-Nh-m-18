@@ -28,18 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle8 = new DataGridViewCellStyle();
             panel1 = new Panel();
             dgvDonHang = new DataGridView();
             panel2 = new Panel();
-            button2 = new Button();
-            btnThem = new Button();
+            btnHuyMon = new Button();
+            btnCapNhat = new Button();
             button1 = new Button();
             cbTenBan = new ComboBox();
             cbTenMon = new ComboBox();
             cbDauBep = new ComboBox();
             cbUuTien = new ComboBox();
             cbTrangThai = new ComboBox();
-            textBox9 = new TextBox();
+            txtGhiChuBep = new TextBox();
+            txtThoiGianDuKien = new TextBox();
             tbMaDonHang = new TextBox();
             label6 = new Label();
             label7 = new Label();
@@ -53,7 +58,6 @@
             label1 = new Label();
             panel9 = new Panel();
             lblTitle = new Label();
-            txtThoiGianDuKien = new TextBox();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvDonHang).BeginInit();
             panel2.SuspendLayout();
@@ -72,24 +76,56 @@
             // dgvDonHang
             // 
             dgvDonHang.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dgvDonHang.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvDonHang.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle5.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle5.ForeColor = Color.White;
+            dataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = DataGridViewTriState.True;
+            dgvDonHang.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dgvDonHang.ColumnHeadersHeight = 29;
+            dgvDonHang.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = SystemColors.Window;
+            dataGridViewCellStyle6.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle6.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle6.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = DataGridViewTriState.False;
+            dgvDonHang.DefaultCellStyle = dataGridViewCellStyle6;
             dgvDonHang.Location = new Point(0, 0);
             dgvDonHang.Name = "dgvDonHang";
+            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = Color.FromArgb(128, 64, 0);
+            dataGridViewCellStyle7.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle7.ForeColor = Color.White;
+            dataGridViewCellStyle7.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
+            dgvDonHang.RowHeadersDefaultCellStyle = dataGridViewCellStyle7;
             dgvDonHang.RowHeadersWidth = 51;
+            dataGridViewCellStyle8.Font = new Font("Calibri", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle8.ForeColor = Color.Black;
+            dataGridViewCellStyle8.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = Color.White;
+            dgvDonHang.RowsDefaultCellStyle = dataGridViewCellStyle8;
             dgvDonHang.Size = new Size(536, 526);
             dgvDonHang.TabIndex = 0;
+            dgvDonHang.CellClick += dgvDonHang_CellClick;
             // 
             // panel2
             // 
-            panel2.Controls.Add(button2);
-            panel2.Controls.Add(btnThem);
+            panel2.Controls.Add(btnHuyMon);
+            panel2.Controls.Add(btnCapNhat);
             panel2.Controls.Add(button1);
             panel2.Controls.Add(cbTenBan);
             panel2.Controls.Add(cbTenMon);
             panel2.Controls.Add(cbDauBep);
             panel2.Controls.Add(cbUuTien);
             panel2.Controls.Add(cbTrangThai);
-            panel2.Controls.Add(textBox9);
+            panel2.Controls.Add(txtGhiChuBep);
             panel2.Controls.Add(txtThoiGianDuKien);
             panel2.Controls.Add(tbMaDonHang);
             panel2.Controls.Add(label6);
@@ -108,32 +144,34 @@
             panel2.Size = new Size(313, 538);
             panel2.TabIndex = 1;
             // 
-            // button2
+            // btnHuyMon
             // 
-            button2.BackColor = Color.White;
-            button2.FlatStyle = FlatStyle.Flat;
-            button2.Font = new Font("Calibri", 12F, FontStyle.Bold);
-            button2.ForeColor = Color.FromArgb(128, 64, 0);
-            button2.Location = new Point(160, 428);
-            button2.Name = "button2";
-            button2.Size = new Size(141, 56);
-            button2.TabIndex = 2;
-            button2.Text = "Hủy món";
-            button2.UseVisualStyleBackColor = false;
+            btnHuyMon.BackColor = Color.White;
+            btnHuyMon.FlatStyle = FlatStyle.Flat;
+            btnHuyMon.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            btnHuyMon.ForeColor = Color.FromArgb(128, 64, 0);
+            btnHuyMon.Location = new Point(160, 428);
+            btnHuyMon.Name = "btnHuyMon";
+            btnHuyMon.Size = new Size(141, 56);
+            btnHuyMon.TabIndex = 2;
+            btnHuyMon.Text = "Hủy món";
+            btnHuyMon.UseVisualStyleBackColor = false;
+            btnHuyMon.Click += btnHuyMon_Click;
             // 
-            // btnThem
+            // btnCapNhat
             // 
-            btnThem.BackColor = Color.FromArgb(128, 64, 0);
-            btnThem.FlatAppearance.BorderSize = 0;
-            btnThem.FlatStyle = FlatStyle.Flat;
-            btnThem.Font = new Font("Calibri", 12F, FontStyle.Bold);
-            btnThem.ForeColor = Color.White;
-            btnThem.Location = new Point(12, 428);
-            btnThem.Name = "btnThem";
-            btnThem.Size = new Size(141, 56);
-            btnThem.TabIndex = 2;
-            btnThem.Text = "Cập nhật";
-            btnThem.UseVisualStyleBackColor = false;
+            btnCapNhat.BackColor = Color.FromArgb(128, 64, 0);
+            btnCapNhat.FlatAppearance.BorderSize = 0;
+            btnCapNhat.FlatStyle = FlatStyle.Flat;
+            btnCapNhat.Font = new Font("Calibri", 12F, FontStyle.Bold);
+            btnCapNhat.ForeColor = Color.White;
+            btnCapNhat.Location = new Point(12, 428);
+            btnCapNhat.Name = "btnCapNhat";
+            btnCapNhat.Size = new Size(141, 56);
+            btnCapNhat.TabIndex = 2;
+            btnCapNhat.Text = "Cập nhật";
+            btnCapNhat.UseVisualStyleBackColor = false;
+            btnCapNhat.Click += btnCapNhat_Click;
             // 
             // button1
             // 
@@ -184,12 +222,19 @@
             cbTrangThai.Size = new Size(189, 29);
             cbTrangThai.TabIndex = 2;
             // 
-            // textBox9
+            // txtGhiChuBep
             // 
-            textBox9.Location = new Point(8, 383);
-            textBox9.Name = "textBox9";
-            textBox9.Size = new Size(295, 28);
-            textBox9.TabIndex = 1;
+            txtGhiChuBep.Location = new Point(8, 383);
+            txtGhiChuBep.Name = "txtGhiChuBep";
+            txtGhiChuBep.Size = new Size(295, 28);
+            txtGhiChuBep.TabIndex = 1;
+            // 
+            // txtThoiGianDuKien
+            // 
+            txtThoiGianDuKien.Location = new Point(93, 296);
+            txtThoiGianDuKien.Name = "txtThoiGianDuKien";
+            txtThoiGianDuKien.Size = new Size(210, 28);
+            txtThoiGianDuKien.TabIndex = 1;
             // 
             // tbMaDonHang
             // 
@@ -328,13 +373,6 @@
             lblTitle.TabIndex = 11;
             lblTitle.Text = "Chi tiết đơn hàng";
             // 
-            // txtThoiGianDuKien
-            // 
-            txtThoiGianDuKien.Location = new Point(93, 297);
-            txtThoiGianDuKien.Name = "txtThoiGianDuKien";
-            txtThoiGianDuKien.Size = new Size(210, 28);
-            txtThoiGianDuKien.TabIndex = 1;
-            // 
             // ChiTietOrder_BEP
             // 
             AutoScaleDimensions = new SizeF(9F, 21F);
@@ -377,11 +415,11 @@
         private ComboBox cbDauBep;
         private ComboBox cbUuTien;
         private ComboBox cbTrangThai;
-        private TextBox textBox9;
+        private TextBox txtGhiChuBep;
         private TextBox tbMaDonHang;
         private Label lb_TenNV;
-        private Button button2;
-        private Button btnThem;
+        private Button btnHuyMon;
+        private Button btnCapNhat;
         private Button button1;
         private Panel panel9;
         private Label lblTitle;

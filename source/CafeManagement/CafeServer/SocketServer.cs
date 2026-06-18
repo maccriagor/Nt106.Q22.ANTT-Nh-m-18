@@ -796,6 +796,52 @@ namespace CafeServer
                         }
                         catch (Exception ex) { return $"ERROR|{ex.Message}"; }
                     }
+
+                case "GET_KITCHEN_ITEMS":
+                    {
+                        // 1. Kéo danh sách món ăn đang chờ/đang làm
+                        var items = await ServiceManager.Kitchen.GetPendingKitchenItemsAsync();
+
+                        // 2. Ép chuẩn thời gian ISO để không bị crash khi truyền qua mạng
+                        var settings = new JsonSerializerSettings { DateFormatString = "yyyy-MM-ddTHH:mm:ss" };
+
+                        // 3. Trả về Client kèm tiền tố SUCCESS|
+                        return "SUCCESS|" + JsonConvert.SerializeObject(items, settings);
+                    }
+
+                case "GET_KITCHEN_STAFF":
+                    {
+                        // Kéo danh sách đầu bếp đổ vào Combobox
+                        var staff = await ServiceManager.Kitchen.GetKitchenStaffAsync();
+                        return "SUCCESS|" + JsonConvert.SerializeObject(staff);
+                    }
+
+                case "UPDATE_KITCHEN_ITEM":
+                    {
+                        // Cú pháp kỳ vọng: UPDATE_KITCHEN_ITEM | MaCT | TrangThai | MaNhanVienCheBien | ThoiGianDuKien | GhiChuBep
+                        if (parts.Length < 6) return "FAIL|Thiếu tham số cập nhật món ăn bếp!";
+
+                        // 1. Bóc tách dữ liệu bắt buộc
+                        if (!int.TryParse(parts[1], out int maCT)) return "FAIL|Mã chi tiết món không hợp lệ!";
+                        if (!int.TryParse(parts[2], out int trangThaiMoi)) return "FAIL|Trạng thái không hợp lệ!";
+
+                        // 2. Bóc tách dữ liệu có thể Null (Đầu bếp, Thời gian dự kiến, Ghi chú)
+                        int? maDauBep = int.TryParse(parts[3], out int parsedDauBep) ? parsedDauBep : (int?)null;
+                        int? thoiGianDuKien = int.TryParse(parts[4], out int parsedThoiGian) ? parsedThoiGian : (int?)null;
+                        string ghiChu = parts[5].Trim(); // Có thể rỗng, sẽ được chặn validation ở Client
+
+                        // 3. Gọi "Bộ não" xử lý thời gian ở KitchenService
+                        string res = await ServiceManager.Kitchen.UpdateKitchenItemAsync(maCT, trangThaiMoi, maDauBep, thoiGianDuKien, ghiChu);
+
+                        if (res.Contains("SUCCESS"))
+                        {
+                            // Bắn tín hiệu Realtime cho toàn bộ các máy tính Bếp khác tải lại lưới (Làm mất món hoặc cập nhật trạng thái mới)
+                            await Broadcast("RELOAD_KITCHEN_MAP");
+                        }
+
+                        return res;
+                    }
+
                 default:
                     return "UNKNOWN_COMMAND";
             }
