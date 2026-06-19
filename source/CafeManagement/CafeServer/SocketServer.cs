@@ -811,9 +811,15 @@ namespace CafeServer
 
                 case "GET_KITCHEN_STAFF":
                     {
-                        // Kéo danh sách đầu bếp đổ vào Combobox
-                        var staff = await ServiceManager.Kitchen.GetKitchenStaffAsync();
-                        return "SUCCESS|" + JsonConvert.SerializeObject(staff);
+                        try
+                        {
+                            var kitchenStaff = await ServiceManager.Kitchen.GetKitchenStaffAsync();
+                            return "SUCCESS|" + JsonConvert.SerializeObject(kitchenStaff);
+                        }
+                        catch (Exception ex)
+                        {
+                            return "ERROR|" + ex.Message;
+                        }
                     }
 
                 case "UPDATE_KITCHEN_ITEM":
@@ -841,6 +847,29 @@ namespace CafeServer
 
                         return res;
                     }
+
+                case "GET_KITCHEN_REPORT_DATA":
+                    try
+                    {
+                        // Phân tách dữ liệu nhận được từ Client: "GET_KITCHEN_REPORT_DATA|tuNgay;denNgay;maDauBep"
+                        var dataParts = request.Split('|')[1].Split(';');
+                        DateTime tuNgay = DateTime.Parse(dataParts[0]);
+                        DateTime denNgay = DateTime.Parse(dataParts[1]);
+                        int maDauBep = int.Parse(dataParts[2]);
+
+                        var reportData2 = await ServiceManager.Kitchen.GetKitchenReportDataAsync(tuNgay, denNgay, maDauBep);
+                        return "SUCCESS|" + JsonConvert.SerializeObject(reportData2);
+                    }
+                    catch (Exception ex)
+                    {
+                        return "ERROR|" + ex.Message;
+                    }
+
+                
+                case "GET_LOAI_MON":
+                    // Nếu bạn chưa tạo LoaiMonService, có thể gọi trực tiếp DatabaseService.Client hoặc qua Service tương ứng
+                    var resLoaiMon = await DatabaseService.Client.From<LoaiMon>().Get();
+                    return "SUCCESS|" + JsonConvert.SerializeObject(resLoaiMon.Models);
 
                 default:
                     return "UNKNOWN_COMMAND";

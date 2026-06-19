@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
-            textBox4 = new TextBox();
-            textBox3 = new TextBox();
-            textBox2 = new TextBox();
-            textBox1 = new TextBox();
+            tbtrungbinh = new TextBox();
+            tbtile = new TextBox();
+            tbmon = new TextBox();
+            tbdon = new TextBox();
             btnXuatBaoCao = new Button();
             btnLamMoi = new Button();
-            comboBox1 = new ComboBox();
+            cbdaubep = new ComboBox();
             label6 = new Label();
             label7 = new Label();
             label5 = new Label();
@@ -46,9 +46,22 @@
             dtpDenNgay = new DateTimePicker();
             dtpTuNgay = new DateTimePicker();
             groupBox1 = new GroupBox();
-            listView2 = new ListView();
+            lvdaubep = new ListView();
+            colSTTChef = new ColumnHeader();
+            colTenDauBep = new ColumnHeader();
+            colTongSoDon = new ColumnHeader();
+            colDonHoanThanh = new ColumnHeader();
+            colTiLeHoanThanh = new ColumnHeader();
+            colTongSoMon = new ColumnHeader();
+            colMonHoanThanh = new ColumnHeader();
             groupBox2 = new GroupBox();
-            listView1 = new ListView();
+            lvseller = new ListView();
+            colSTTFood = new ColumnHeader();
+            colTenMon = new ColumnHeader();
+            colLoaiMon = new ColumnHeader();
+            colSoLuong = new ColumnHeader();
+            colSoDon = new ColumnHeader();
+            colTiLe = new ColumnHeader();
             panel9 = new Panel();
             lblTitle = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
@@ -61,13 +74,13 @@
             // 
             // panel1
             // 
-            panel1.Controls.Add(textBox4);
-            panel1.Controls.Add(textBox3);
-            panel1.Controls.Add(textBox2);
-            panel1.Controls.Add(textBox1);
+            panel1.Controls.Add(tbtrungbinh);
+            panel1.Controls.Add(tbtile);
+            panel1.Controls.Add(tbmon);
+            panel1.Controls.Add(tbdon);
             panel1.Controls.Add(btnXuatBaoCao);
             panel1.Controls.Add(btnLamMoi);
-            panel1.Controls.Add(comboBox1);
+            panel1.Controls.Add(cbdaubep);
             panel1.Controls.Add(label6);
             panel1.Controls.Add(label7);
             panel1.Controls.Add(label5);
@@ -83,33 +96,33 @@
             panel1.Size = new Size(336, 533);
             panel1.TabIndex = 0;
             // 
-            // textBox4
+            // tbtrungbinh
             // 
-            textBox4.Location = new Point(182, 249);
-            textBox4.Name = "textBox4";
-            textBox4.Size = new Size(146, 28);
-            textBox4.TabIndex = 9;
+            tbtrungbinh.Location = new Point(182, 249);
+            tbtrungbinh.Name = "tbtrungbinh";
+            tbtrungbinh.Size = new Size(146, 28);
+            tbtrungbinh.TabIndex = 9;
             // 
-            // textBox3
+            // tbtile
             // 
-            textBox3.Location = new Point(167, 215);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(161, 28);
-            textBox3.TabIndex = 9;
+            tbtile.Location = new Point(167, 215);
+            tbtile.Name = "tbtile";
+            tbtile.Size = new Size(161, 28);
+            tbtile.TabIndex = 9;
             // 
-            // textBox2
+            // tbmon
             // 
-            textBox2.Location = new Point(135, 181);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(193, 28);
-            textBox2.TabIndex = 9;
+            tbmon.Location = new Point(135, 181);
+            tbmon.Name = "tbmon";
+            tbmon.Size = new Size(193, 28);
+            tbmon.TabIndex = 9;
             // 
-            // textBox1
+            // tbdon
             // 
-            textBox1.Location = new Point(132, 146);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(196, 28);
-            textBox1.TabIndex = 9;
+            tbdon.Location = new Point(132, 146);
+            tbdon.Name = "tbdon";
+            tbdon.Size = new Size(196, 28);
+            tbdon.TabIndex = 9;
             // 
             // btnXuatBaoCao
             // 
@@ -124,6 +137,7 @@
             btnXuatBaoCao.TabIndex = 7;
             btnXuatBaoCao.Text = "📄 Xuất báo cáo";
             btnXuatBaoCao.UseVisualStyleBackColor = false;
+            btnXuatBaoCao.Click += btnXuatBaoCao_Click;
             // 
             // btnLamMoi
             // 
@@ -137,14 +151,16 @@
             btnLamMoi.TabIndex = 8;
             btnLamMoi.Text = "🔁 Làm mới";
             btnLamMoi.UseVisualStyleBackColor = false;
+            btnLamMoi.Click += btnLamMoi_Click;
             // 
-            // comboBox1
+            // cbdaubep
             // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(100, 89);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(226, 29);
-            comboBox1.TabIndex = 6;
+            cbdaubep.FormattingEnabled = true;
+            cbdaubep.Location = new Point(100, 89);
+            cbdaubep.Name = "cbdaubep";
+            cbdaubep.Size = new Size(226, 29);
+            cbdaubep.TabIndex = 6;
+            cbdaubep.SelectedIndexChanged += cbdaubep_SelectedIndexChanged;
             // 
             // label6
             // 
@@ -229,6 +245,7 @@
             dtpDenNgay.Name = "dtpDenNgay";
             dtpDenNgay.Size = new Size(275, 28);
             dtpDenNgay.TabIndex = 2;
+            dtpDenNgay.ValueChanged += dtpDenNgay_ValueChanged;
             // 
             // dtpTuNgay
             // 
@@ -236,10 +253,11 @@
             dtpTuNgay.Name = "dtpTuNgay";
             dtpTuNgay.Size = new Size(275, 28);
             dtpTuNgay.TabIndex = 3;
+            dtpTuNgay.ValueChanged += dtpTuNgay_ValueChanged;
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(listView2);
+            groupBox1.Controls.Add(lvdaubep);
             groupBox1.Dock = DockStyle.Fill;
             groupBox1.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
             groupBox1.ForeColor = Color.FromArgb(128, 64, 0);
@@ -250,18 +268,57 @@
             groupBox1.TabStop = false;
             groupBox1.Text = "TOP ĐẦU BẾP:";
             // 
-            // listView2
+            // lvdaubep
             // 
-            listView2.Dock = DockStyle.Fill;
-            listView2.Location = new Point(3, 24);
-            listView2.Name = "listView2";
-            listView2.Size = new Size(513, 233);
-            listView2.TabIndex = 0;
-            listView2.UseCompatibleStateImageBehavior = false;
+            lvdaubep.Columns.AddRange(new ColumnHeader[] { colSTTChef, colTenDauBep, colTongSoDon, colDonHoanThanh, colTiLeHoanThanh, colTongSoMon, colMonHoanThanh });
+            lvdaubep.Dock = DockStyle.Fill;
+            lvdaubep.FullRowSelect = true;
+            lvdaubep.GridLines = true;
+            lvdaubep.Location = new Point(3, 24);
+            lvdaubep.Name = "lvdaubep";
+            lvdaubep.Size = new Size(513, 233);
+            lvdaubep.TabIndex = 0;
+            lvdaubep.UseCompatibleStateImageBehavior = false;
+            lvdaubep.View = View.Details;
+            // 
+            // colSTTChef
+            // 
+            colSTTChef.Text = "STT";
+            colSTTChef.Width = 45;
+            // 
+            // colTenDauBep
+            // 
+            colTenDauBep.Text = "Tên đầu bếp";
+            colTenDauBep.Width = 140;
+            // 
+            // colTongSoDon
+            // 
+            colTongSoDon.Text = "Tổng số đơn";
+            colTongSoDon.Width = 130;
+            // 
+            // colDonHoanThanh
+            // 
+            colDonHoanThanh.Text = "Đơn hoàn thành";
+            colDonHoanThanh.Width = 140;
+            // 
+            // colTiLeHoanThanh
+            // 
+            colTiLeHoanThanh.Text = "Tỉ lệ hoàn thành";
+            colTiLeHoanThanh.Width = 140;
+            // 
+            // colTongSoMon
+            // 
+            colTongSoMon.Text = "Tổng số món";
+            colTongSoMon.Width = 120;
+            // 
+            // colMonHoanThanh
+            // 
+            colMonHoanThanh.Text = "Số món hoàn thành";
+            colMonHoanThanh.Width = 150;
             // 
             // groupBox2
             // 
-            groupBox2.Controls.Add(listView1);
+            groupBox2.Controls.Add(lvseller);
             groupBox2.Dock = DockStyle.Fill;
             groupBox2.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
             groupBox2.ForeColor = Color.FromArgb(128, 64, 0);
@@ -272,14 +329,48 @@
             groupBox2.TabStop = false;
             groupBox2.Text = "BEST SELLER";
             // 
-            // listView1
+            // lvseller
             // 
-            listView1.Dock = DockStyle.Fill;
-            listView1.Location = new Point(3, 24);
-            listView1.Name = "listView1";
-            listView1.Size = new Size(513, 234);
-            listView1.TabIndex = 0;
-            listView1.UseCompatibleStateImageBehavior = false;
+            lvseller.Columns.AddRange(new ColumnHeader[] { colSTTFood, colTenMon, colLoaiMon, colSoLuong, colSoDon, colTiLe });
+            lvseller.Dock = DockStyle.Fill;
+            lvseller.FullRowSelect = true;
+            lvseller.GridLines = true;
+            lvseller.Location = new Point(3, 24);
+            lvseller.Name = "lvseller";
+            lvseller.Size = new Size(513, 234);
+            lvseller.TabIndex = 0;
+            lvseller.UseCompatibleStateImageBehavior = false;
+            lvseller.View = View.Details;
+            // 
+            // colSTTFood
+            // 
+            colSTTFood.Text = "STT";
+            colSTTFood.Width = 45;
+            // 
+            // colTenMon
+            // 
+            colTenMon.Text = "Tên món";
+            colTenMon.Width = 150;
+            // 
+            // colLoaiMon
+            // 
+            colLoaiMon.Text = "Loại món";
+            colLoaiMon.Width = 90;
+            // 
+            // colSoLuong
+            // 
+            colSoLuong.Text = "Số lượng";
+            colSoLuong.Width = 80;
+            // 
+            // colSoDon
+            // 
+            colSoDon.Text = "Số đơn";
+            colSoDon.Width = 80;
+            // 
+            // colTiLe
+            // 
+            colTiLe.Text = "Tỉ lệ";
+            colTiLe.Width = 80;
             // 
             // panel9
             // 
@@ -344,20 +435,20 @@
         private Panel panel1;
         private GroupBox groupBox1;
         private GroupBox groupBox2;
-        private ListView listView2;
-        private ListView listView1;
+        private ListView lvdaubep;
+        private ListView lvseller;
         private Label label3;
         private Label label1;
         private DateTimePicker dtpDenNgay;
         private DateTimePicker dtpTuNgay;
-        private ComboBox comboBox1;
+        private ComboBox cbdaubep;
         private Label label2;
         private Button btnXuatBaoCao;
         private Button btnLamMoi;
-        private TextBox textBox4;
-        private TextBox textBox3;
-        private TextBox textBox2;
-        private TextBox textBox1;
+        private TextBox tbtrungbinh;
+        private TextBox tbtile;
+        private TextBox tbmon;
+        private TextBox tbdon;
         private Label label6;
         private Label label7;
         private Label label5;
@@ -365,5 +456,18 @@
         private Panel panel9;
         private Label lblTitle;
         private TableLayoutPanel tableLayoutPanel1;
+        private ColumnHeader colSTTChef;
+        private ColumnHeader colTenDauBep;
+        private ColumnHeader colTongSoDon;
+        private ColumnHeader colDonHoanThanh;
+        private ColumnHeader colTiLeHoanThanh;
+        private ColumnHeader colTongSoMon;
+        private ColumnHeader colMonHoanThanh;
+        private ColumnHeader colSTTFood;
+        private ColumnHeader colTenMon;
+        private ColumnHeader colLoaiMon;
+        private ColumnHeader colSoLuong;
+        private ColumnHeader colSoDon;
+        private ColumnHeader colTiLe;
     }
 }
