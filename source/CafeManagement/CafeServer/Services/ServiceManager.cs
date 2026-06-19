@@ -25,6 +25,8 @@ namespace CafeServer.Services
 
         public static CustomerService Customer = new CustomerService();
 
+        public static KitchenService Kitchen = new KitchenService();
+
         // public static FoodService Food = new FoodService();
 
         // public static TableService Table = new TableService();
