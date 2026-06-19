@@ -864,12 +864,13 @@ namespace CafeServer
                     {
                         return "ERROR|" + ex.Message;
                     }
-
                 
                 case "GET_LOAI_MON":
                     // Nếu bạn chưa tạo LoaiMonService, có thể gọi trực tiếp DatabaseService.Client hoặc qua Service tương ứng
                     var resLoaiMon = await DatabaseService.Client.From<LoaiMon>().Get();
                     return "SUCCESS|" + JsonConvert.SerializeObject(resLoaiMon.Models);
+
+
 
                 default:
                     return "UNKNOWN_COMMAND";
