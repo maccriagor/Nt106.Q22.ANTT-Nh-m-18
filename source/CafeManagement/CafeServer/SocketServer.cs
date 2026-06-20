@@ -796,6 +796,17 @@ namespace CafeServer
                         }
                         catch (Exception ex) { return $"ERROR|{ex.Message}"; }
                     }
+                case "GET_ALL_TABLE_NAMES":
+                    {
+                        var allTableNames = await ServiceManager.Order.GetUniqueTableNamesAsync();
+                        return "ALL_TABLE_NAMES_DATA|" + JsonConvert.SerializeObject(allTableNames);
+                    }
+
+                case "GET_BEP_ORDERS":
+                    {
+                        var bepOrders = await ServiceManager.Order.GetKitchenOrdersAsync();
+                        return "BEP_ORDERS_DATA|" + JsonConvert.SerializeObject(bepOrders);
+                    }
                 default:
                     return "UNKNOWN_COMMAND";
             }
