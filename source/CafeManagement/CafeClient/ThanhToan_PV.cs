@@ -281,15 +281,15 @@ namespace CafeClient
 
 
             // --- BẮT ĐẦU YÊU CẦU 1: XỬ LÝ THÔNG TIN KHÁCH HÀNG THÀNH VIÊN ---
-            string maKH = currentCustomer != null ? currentCustomer.MaKH.ToString() : "";
-            string tenKH = "";
+            string maKH = currentCustomer != null ? currentCustomer.MaKH.ToString() : "0";
+            string tenKH = "Khách vãng lai"; // Gán mặc định
             string sdtKH = "";
 
             // Nếu không phải khách vãng lai (có dữ liệu currentCustomer hợp lệ)
             if (currentCustomer != null && txtTenKH.Text != "Khách vãng lai")
             {
                 tenKH = currentCustomer.TenKH;
-                sdtKH = textBox4.Text.Trim(); // Lấy từ ô tìm kiếm số điện thoại của bạn
+                sdtKH = textBox4.Text.Trim();
             }
             // --- KẾT THÚC YÊU CẦU 1 ---
 
@@ -368,20 +368,51 @@ namespace CafeClient
 
         private async void btnTimKH_Click(object sender, EventArgs e)
         {
-            string sdt = textBox4.Text;
-            // Gọi lệnh GET_CUSTOMER_BY_PHONE lên server
+            string sdt = textBox4.Text.Trim(); // textBox4 là ô nhập số điện thoại
+
+            if (string.IsNullOrEmpty(sdt))
+            {
+                MessageBox.Show("Vui lòng nhập số điện thoại để tìm kiếm.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (selectedBill == null)
+            {
+                MessageBox.Show("Vui lòng chọn một hóa đơn từ danh sách trước khi gắn khách hàng.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Gọi lệnh GET_CUSTOMER_BY_PHONE lên server qua Socket
             string res = await SocketClient.SendRequestAsync("GET_CUSTOMER_BY_PHONE|" + sdt);
 
             if (res.StartsWith("SUCCESS|"))
             {
+                // TRƯỜNG HỢP 1: TÌM THẤY KHÁCH HÀNG
                 currentCustomer = JsonConvert.DeserializeObject<KhachHang>(res.Substring(8));
+
+                // Cập nhật thông tin khách hàng vào hóa đơn đang được chọn (selectedBill)
+                selectedBill.MaKH = currentCustomer.MaKH;
+                selectedBill.TenKH = currentCustomer.TenKH;
+
+                // Cập nhật hiển thị lên giao diện
                 txtTenKH.Text = currentCustomer.TenKH;
                 txtDiemTichLuy.Text = currentCustomer.DiemTichLuy.ToString("N1");
 
+                MessageBox.Show($"Tìm thấy khách hàng: {currentCustomer.TenKH}.\nĐã gắn khách hàng này vào hóa đơn!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                MessageBox.Show("Khách hàng chưa đăng ký thành viên!");
+                // TRƯỜNG HỢP 2: KHÔNG TÌM THẤY KHÁCH HÀNG
+                MessageBox.Show("Không tìm thấy khách hàng với số điện thoại này.\nHóa đơn sẽ được ghi nhận là Khách vãng lai.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Đặt lại trạng thái là khách vãng lai
+                currentCustomer = null;
+                selectedBill.MaKH = null; // Hoặc set bằng 0 tùy thuộc vào thiết kế DB của bạn
+                selectedBill.TenKH = "Khách vãng lai";
+
+                // Reset giao diện
+                txtTenKH.Text = "Khách vãng lai";
+                txtDiemTichLuy.Text = "0";
             }
         }
 

@@ -723,10 +723,9 @@ namespace CafeServer
                                 .Set(x => x.ThanhTien, soTien)
                                 .Set(x => x.PhuongThucThanhToan, phuongThuc);
 
-                            // Nếu có tên khách hàng thành viên thì cập nhật thêm vào HoaDon (sử dụng thuộc tính TenKH vừa thêm)
-                            if (!string.IsNullOrEmpty(tenKH))
+                            if (maKH.HasValue && maKH.Value > 0)
                             {
-                                updateBillQuery = updateBillQuery.Set(x => x.TenKH, tenKH);
+                                updateBillQuery = updateBillQuery.Set(x => x.MaKH, maKH.Value);
                             }
 
                             await updateBillQuery.Update();
@@ -741,12 +740,12 @@ namespace CafeServer
                                     await DatabaseService.Client.From<DonHang>()
                                         .Where(x => x.MaDonHang == maDonHangLienQuan)
                                         .Set(x => x.TenKH, tenKH)   // Sử dụng đúng thuộc tính TenKH trong DonHang.cs
-                                            .Set(x => x.SDTKH, sdtKH)   // Sử dụng đúng thuộc tính SDTKH trong DonHang.cs
-                                            .Update();
-                                        }
+                                        .Set(x => x.SDTKH, sdtKH)   // Sử dụng đúng thuộc tính SDTKH trong DonHang.cs
+                                        .Update();
+                                }
 
-                                        // Cập nhật trạng thái đơn hàng sang 2: Hoàn thành
-                                        await DatabaseService.Client.From<DonHang>()
+                                // Cập nhật trạng thái đơn hàng sang 2: Hoàn thành
+                                await DatabaseService.Client.From<DonHang>()
                                     .Where(x => x.MaDonHang == maDonHangLienQuan)
                                     .Set(x => x.TrangThai, 2)
                                     .Update();
