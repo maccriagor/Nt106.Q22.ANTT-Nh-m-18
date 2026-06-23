@@ -18,6 +18,12 @@ namespace CafeServer
             // 1. Khởi tạo kết nối Database
             Console.WriteLine("Đang kết nối Supabase...");
             await DatabaseService.InitializeAsync();
+            if (DatabaseService.Client == null)
+            {
+                Console.WriteLine("!!! KHÔNG THỂ KẾT NỐI DATABASE. SERVER DỪNG HOẠT ĐỘNG !!!");
+                Console.ReadLine(); // Dừng để đọc lỗi
+                return;
+            }
             Console.WriteLine("--- Kết nối Supabase thành công! ---");
 
             SocketServer server = new SocketServer();
@@ -25,7 +31,10 @@ namespace CafeServer
             Console.WriteLine("--- HỆ THỐNG ĐÃ SẴN SÀNG NHẬN KẾT NỐI ---");
 
             // 3. Giữ cho Console không bị đóng
-            Console.ReadLine();
+            while (true)
+            {
+                await Task.Delay(1000); // Tránh chiếm dụng CPU vô ích
+            }
         }
 
       

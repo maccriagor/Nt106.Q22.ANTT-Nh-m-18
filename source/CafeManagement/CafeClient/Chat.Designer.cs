@@ -28,20 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Chat));
             panel1 = new Panel();
             btnTimKiem = new Button();
             btnThongBao = new Button();
             btnLamMoi = new Button();
-            label1 = new Label();
             txtTimKiem = new TextBox();
-            lvNhanVIen = new ListView();
+            lvNhanVien = new ListView();
+            NhanVien = new ColumnHeader();
+            VaiTro = new ColumnHeader();
+            imgListStatus = new ImageList(components);
             panel2 = new Panel();
             btnSend = new Button();
-            textBox1 = new TextBox();
-            checkBox1 = new CheckBox();
+            txtMessage = new TextBox();
+            cbEveryone = new CheckBox();
             lbRole = new Label();
             lbUserName = new Label();
-            richTextBox1 = new RichTextBox();
+            rtbChat = new RichTextBox();
             lblTitle = new Label();
             panel3 = new Panel();
             panel1.SuspendLayout();
@@ -54,14 +58,14 @@
             panel1.Controls.Add(btnTimKiem);
             panel1.Controls.Add(btnThongBao);
             panel1.Controls.Add(btnLamMoi);
-            panel1.Controls.Add(label1);
             panel1.Controls.Add(txtTimKiem);
-            panel1.Controls.Add(lvNhanVIen);
+            panel1.Controls.Add(lvNhanVien);
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 67);
             panel1.Name = "panel1";
             panel1.Size = new Size(265, 539);
             panel1.TabIndex = 0;
+            panel1.Paint += panel1_Paint;
             // 
             // btnTimKiem
             // 
@@ -77,6 +81,7 @@
             btnTimKiem.TabIndex = 10;
             btnTimKiem.Text = "Tìm";
             btnTimKiem.UseVisualStyleBackColor = false;
+            btnTimKiem.Click += btnTimKiem_Click;
             // 
             // btnThongBao
             // 
@@ -107,18 +112,7 @@
             btnLamMoi.TabIndex = 10;
             btnLamMoi.Text = "🔁 Làm mới";
             btnLamMoi.UseVisualStyleBackColor = false;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.BackColor = Color.OldLace;
-            label1.Font = new Font("Calibri", 9F, FontStyle.Italic, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.FromArgb(128, 64, 0);
-            label1.Location = new Point(11, 74);
-            label1.Name = "label1";
-            label1.Size = new Size(54, 18);
-            label1.TabIndex = 1;
-            label1.Text = "Online: ";
+            btnLamMoi.Click += btnLamMoi_Click;
             // 
             // txtTimKiem
             // 
@@ -127,24 +121,48 @@
             txtTimKiem.Size = new Size(246, 28);
             txtTimKiem.TabIndex = 2;
             txtTimKiem.Text = "Tìm kiếm";
+            txtTimKiem.Enter += txtTimKiem_Enter;
+            txtTimKiem.KeyDown += txtTimKiem_KeyDown;
             // 
-            // lvNhanVIen
+            // lvNhanVien
             // 
-            lvNhanVIen.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lvNhanVIen.Location = new Point(8, 93);
-            lvNhanVIen.Name = "lvNhanVIen";
-            lvNhanVIen.Size = new Size(249, 360);
-            lvNhanVIen.TabIndex = 0;
-            lvNhanVIen.UseCompatibleStateImageBehavior = false;
+            lvNhanVien.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lvNhanVien.Columns.AddRange(new ColumnHeader[] { NhanVien, VaiTro });
+            lvNhanVien.Location = new Point(8, 93);
+            lvNhanVien.Name = "lvNhanVien";
+            lvNhanVien.Size = new Size(249, 360);
+            lvNhanVien.SmallImageList = imgListStatus;
+            lvNhanVien.TabIndex = 0;
+            lvNhanVien.UseCompatibleStateImageBehavior = false;
+            lvNhanVien.View = View.Details;
+            lvNhanVien.Click += lvNhanVien_Click;
+            // 
+            // NhanVien
+            // 
+            NhanVien.Text = "Nhân Viên";
+            NhanVien.Width = 180;
+            // 
+            // VaiTro
+            // 
+            VaiTro.Text = "Vai trò";
+            VaiTro.Width = 100;
+            // 
+            // imgListStatus
+            // 
+            imgListStatus.ColorDepth = ColorDepth.Depth32Bit;
+            imgListStatus.ImageStream = (ImageListStreamer)resources.GetObject("imgListStatus.ImageStream");
+            imgListStatus.TransparentColor = Color.Transparent;
+            imgListStatus.Images.SetKeyName(0, "Online");
+            imgListStatus.Images.SetKeyName(1, "Offline");
             // 
             // panel2
             // 
             panel2.Controls.Add(btnSend);
-            panel2.Controls.Add(textBox1);
-            panel2.Controls.Add(checkBox1);
+            panel2.Controls.Add(txtMessage);
+            panel2.Controls.Add(cbEveryone);
             panel2.Controls.Add(lbRole);
             panel2.Controls.Add(lbUserName);
-            panel2.Controls.Add(richTextBox1);
+            panel2.Controls.Add(rtbChat);
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(265, 67);
             panel2.Name = "panel2";
@@ -166,27 +184,28 @@
             btnSend.TabIndex = 10;
             btnSend.Text = "Gửi";
             btnSend.UseVisualStyleBackColor = false;
+            btnSend.Click += btnSend_Click;
             // 
-            // textBox1
+            // txtMessage
             // 
-            textBox1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            textBox1.Location = new Point(4, 461);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(469, 28);
-            textBox1.TabIndex = 9;
+            txtMessage.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            txtMessage.Location = new Point(4, 461);
+            txtMessage.Name = "txtMessage";
+            txtMessage.Size = new Size(469, 28);
+            txtMessage.TabIndex = 9;
             // 
-            // checkBox1
+            // cbEveryone
             // 
-            checkBox1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            checkBox1.AutoSize = true;
-            checkBox1.BackColor = Color.OldLace;
-            checkBox1.ForeColor = Color.FromArgb(128, 64, 0);
-            checkBox1.Location = new Point(4, 495);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(165, 25);
-            checkBox1.TabIndex = 8;
-            checkBox1.Text = "Gửi cho mọi người";
-            checkBox1.UseVisualStyleBackColor = false;
+            cbEveryone.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            cbEveryone.AutoSize = true;
+            cbEveryone.BackColor = Color.OldLace;
+            cbEveryone.ForeColor = Color.FromArgb(128, 64, 0);
+            cbEveryone.Location = new Point(4, 495);
+            cbEveryone.Name = "cbEveryone";
+            cbEveryone.Size = new Size(165, 25);
+            cbEveryone.TabIndex = 8;
+            cbEveryone.Text = "Gửi cho mọi người";
+            cbEveryone.UseVisualStyleBackColor = false;
             // 
             // lbRole
             // 
@@ -206,18 +225,19 @@
             lbUserName.ForeColor = Color.FromArgb(128, 64, 0);
             lbUserName.Location = new Point(14, 11);
             lbUserName.Name = "lbUserName";
-            lbUserName.Size = new Size(157, 21);
+            lbUserName.Size = new Size(166, 21);
             lbUserName.TabIndex = 1;
-            lbUserName.Text = "TÊN người đang chat";
+            lbUserName.Text = "TÊN người đang chat :";
             // 
-            // richTextBox1
+            // rtbChat
             // 
-            richTextBox1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            richTextBox1.Location = new Point(2, 93);
-            richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(586, 360);
-            richTextBox1.TabIndex = 0;
-            richTextBox1.Text = "";
+            rtbChat.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            rtbChat.Location = new Point(2, 93);
+            rtbChat.Name = "rtbChat";
+            rtbChat.ReadOnly = true;
+            rtbChat.Size = new Size(586, 360);
+            rtbChat.TabIndex = 0;
+            rtbChat.Text = "";
             // 
             // lblTitle
             // 
@@ -264,20 +284,22 @@
         #endregion
 
         private Panel panel1;
-        private ListView lvNhanVIen;
+        private ListView lvNhanVien;
         private Panel panel2;
         private TextBox txtTimKiem;
-        private RichTextBox richTextBox1;
+        private RichTextBox rtbChat;
         private Label lbRole;
         private Label lbUserName;
-        private Label label1;
         private Label lblTitle;
         private Button btnThongBao;
         private Button btnLamMoi;
         private Button btnSend;
-        private TextBox textBox1;
-        private CheckBox checkBox1;
+        private TextBox txtMessage;
+        private CheckBox cbEveryone;
         private Panel panel3;
         private Button btnTimKiem;
+        private ColumnHeader NhanVien;
+        private ImageList imgListStatus;
+        private ColumnHeader VaiTro;
     }
 }

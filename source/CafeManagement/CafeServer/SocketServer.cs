@@ -6,15 +6,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Collections.Concurrent;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using static QRCoder.PayloadGenerator;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CafeServer
 {
     public class SocketServer
     {
+        private static ConcurrentDictionary<int, NetworkStream> _activeClients = new ConcurrentDictionary<int, NetworkStream>();
         private TcpListener _listener;
         private int _port = 8888;
         private bool _isRunning;
@@ -47,6 +50,53 @@ namespace CafeServer
             });
         }
 
+        private async Task<string> HandleSendMessage(string[] parts, int senderId)
+        {
+            Console.WriteLine("!!!!!!!!!! ENTERED HandleSendMessage - THIS BUILD !!!!!!!!!!");
+            if (parts.Length < 3) return "ERROR|Invalid_Format";
+
+            string recipientStr = parts[1];
+            string msgJson = parts[2];
+
+            int? toUserId = (recipientStr == "null" || string.IsNullOrEmpty(recipientStr))
+                ? null
+                : int.Parse(recipientStr);
+
+            var msg = JsonConvert.DeserializeObject<TinNhan>(msgJson);
+            if (msg == null) return "ERROR|Invalid_Json";
+
+           
+
+            string normalizedJson = JsonConvert.SerializeObject(msg);
+            Console.WriteLine($"[DEBUG] About to save - RecipientId: {(msg.RecipientId.HasValue ? msg.RecipientId.Value.ToString() : "NULL")}");
+            await ServiceManager.User.SaveMessageToDatabase(msg);
+
+            if (!toUserId.HasValue) // Broadcast
+            {
+                foreach (var client in _activeClients)
+                {
+                    Console.WriteLine("[DEBUG] Đang thực hiện Broadcast cho mọi người...");
+                    if (client.Key != senderId)
+                    {
+                        byte[] data = Encoding.UTF8.GetBytes("NEW_MESSAGE|" + normalizedJson);
+                        await client.Value.WriteAsync(data, 0, data.Length);
+                    }
+                }
+                return "SUCCESS|Broadcasted";
+            }
+            else
+            {
+                if (_activeClients.TryGetValue(toUserId.Value, out var stream))
+                {
+                    byte[] data = Encoding.UTF8.GetBytes("NEW_MESSAGE|" + normalizedJson);
+                    await stream.WriteAsync(data, 0, data.Length);
+                    return "SUCCESS|Sent_Online";
+                }
+                return "SUCCESS|Sent_Saved_To_DB";
+            }
+        }
+
+
         private async void HandleClient(TcpClient client)
         {
             using NetworkStream stream = client.GetStream();
@@ -77,6 +127,7 @@ namespace CafeServer
                     {
                         string[] resParts = response.Split('|');
                         currentUserId = int.Parse(resParts[1]); // Lưu MaNguoiDung vào đây
+                        _activeClients.TryAdd(currentUserId, stream);
                     }
                     // Nếu lệnh LOGOUT thành công --> xóa ID đi
                     else if (response == "LOGOUT_SUCCESS")
@@ -101,6 +152,7 @@ namespace CafeServer
                 if (currentUserId != 0)
                 {
                     // cập nhật Offline cho ID đã ghi nhớ
+                    _activeClients.TryRemove(currentUserId, out _);
                     await ServiceManager.User.UpdateOnlineStatusAsync(currentUserId, false);
                     Console.WriteLine($"[STATUS] User ID {currentUserId} đã Offline.");
                 }
@@ -835,6 +887,30 @@ namespace CafeServer
                     // Nếu bạn chưa tạo LoaiMonService, có thể gọi trực tiếp DatabaseService.Client hoặc qua Service tương ứng
                     var resLoaiMon = await DatabaseService.Client.From<LoaiMon>().Get();
                     return "SUCCESS|" + JsonConvert.SerializeObject(resLoaiMon.Models);
+
+                case "GET_CHAT_USERS":
+                    try
+                    {
+                        // Gọi service để lấy danh sách từ Supabase
+                        var users = await ServiceManager.User.GetAllEmployeesAsync();
+
+                        // Trả về kết quả đã được Serialize sang JSON
+                        return "SUCCESS|" + JsonConvert.SerializeObject(users);
+                    }
+                    catch (Exception ex)
+                    {
+                        return "ERROR|" + ex.Message;
+                    }
+
+                case "SEND_MESSAGE":
+                    return await HandleSendMessage(parts, currentUserId);
+
+
+                case "SEARCH_USER":
+                    if (parts.Length < 2) return "ERROR|Missing parameter";
+
+                    var searchResult3 = await ServiceManager.User.SearchUsersByUsernameAsync(parts[1]);
+                    return "SUCCESS|" + JsonConvert.SerializeObject(searchResult3);
 
                 default:
                     return "UNKNOWN_COMMAND";

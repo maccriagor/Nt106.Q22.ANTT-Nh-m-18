@@ -34,6 +34,17 @@ namespace CafeServer.Services
             catch (Exception) { return null; }
         }
 
+        public async Task<List<UserAccount>> SearchUsersByUsernameAsync(string keyword)
+        {
+            var result = await DatabaseService.Client.From<UserAccount>()
+                // .ILike là toán tử tìm kiếm "contains" không phân biệt hoa thường
+                .Filter("tendangnhap", Supabase.Postgrest.Constants.Operator.ILike, $"%{keyword}%")
+                .Get();
+
+            return result.Models;
+        }
+
+
         //Hàm Register
         public async Task<string> RegisterAsync(string user, string pass, string email, string phone, string fullName, string role)
         {
@@ -114,6 +125,21 @@ namespace CafeServer.Services
             catch (Exception ex)
             {
                 Console.WriteLine($"[DB ERROR]: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SaveMessageToDatabase(TinNhan msg)
+        {
+            try
+            {
+                // Supabase sẽ tự động map các thuộc tính của object msg vào cột trong bảng
+                await DatabaseService.Client.From<TinNhan>().Insert(msg);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[DB ERROR SaveMessage]: {ex.Message}");
                 return false;
             }
         }

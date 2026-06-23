@@ -140,7 +140,7 @@ namespace CafeClient
                                 if (bytesRead > 0)
                                 {
                                     string message = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim('\0', '\r', '\n', '\uFEFF', '\u200B');
-
+                                    Console.WriteLine($"[SocketClient] StartListening received: {message}");
                                     // Kích hoạt sự kiện để Form giao diện cập nhật
                                     OnMessageReceived?.Invoke(message);
                                 }
