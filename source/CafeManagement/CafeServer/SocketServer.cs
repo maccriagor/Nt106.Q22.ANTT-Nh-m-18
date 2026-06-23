@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using static QRCoder.PayloadGenerator;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CafeServer
@@ -764,6 +765,7 @@ namespace CafeServer
                                 await DatabaseService.Client.From<BanAn>()
                                     .Where(x => x.MaBanAn == maBan.Value)
                                     .Set(x => x.TrangThai, "Trống")
+                                    .Set(x => x.MaNhanVien, null) // THÊM DÒNG NÀY ĐỂ XÓA NHÂN VIÊN PHỤ TRÁCH
                                     .Update();
                             }
 
