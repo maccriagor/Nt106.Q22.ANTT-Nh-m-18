@@ -804,7 +804,7 @@ namespace CafeServer
 
                 case "GET_BEP_ORDERS":
                     {
-                        var bepOrders = await ServiceManager.Order.GetKitchenOrdersAsync();
+                        var bepOrders = await ServiceManager.Kitchen.GetKitchenOrdersAsync();
                         return "BEP_ORDERS_DATA|" + JsonConvert.SerializeObject(bepOrders);
                     }
                 default:
