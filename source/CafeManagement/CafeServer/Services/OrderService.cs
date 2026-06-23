@@ -226,5 +226,56 @@ namespace CafeServer.Services
                 return new List<string>();
             }
         }
+
+        public async Task<List<BepOrderDTO>> GetKitchenOrdersAsync()
+        {
+            var result = new List<BepOrderDTO>();
+            try
+            {
+                // Kéo data thô
+                var dhRes = await DatabaseService.Client.From<DonHang>().Get();
+                var ctRes = await DatabaseService.Client.From<CTDonHang>().Get();
+                var banRes = await DatabaseService.Client.From<BanAn>().Get();
+
+                var dhList = dhRes.Models ?? new List<DonHang>();
+                var ctList = ctRes.Models ?? new List<CTDonHang>();
+                var banList = banRes.Models ?? new List<BanAn>();
+
+                // Lọc đơn hàng: 0 (Chờ xác nhận), 1 (Đang chế biến)
+                var activeOrders = dhList.Where(d => d.TrangThai == 0 || d.TrangThai == 1).ToList();
+
+                foreach (var dh in activeOrders)
+                {
+                    // Lấy Tên bàn
+                    var ban = banList.FirstOrDefault(b => b.MaBanAn == dh.MaBanAn);
+                    string tenBan = ban != null ? ban.TenBan : "Mang về";
+
+                    // Trạng thái
+                    string trangThaiStr = dh.TrangThai == 0 ? "Chờ xác nhận" : "Đang chế biến";
+
+                    // Cộng dồn món và kiểm tra món ưu tiên
+                    var ctCuaDon = ctList.Where(c => c.MaDonHang == dh.MaDonHang).ToList();
+                    int tongMon = ctCuaDon.Sum(c => c.SoLuong);
+                    bool coUuTien = ctCuaDon.Any(c => c.UuTien);
+
+                    result.Add(new BepOrderDTO
+                    {
+                        MaDonHang = dh.MaDonHang,
+                        TenBan = tenBan,
+                        ThoiGianDat = dh.NgayOrder,
+                        SoLuongMon = tongMon,
+                        TrangThai = trangThaiStr,
+                        UuTien = coUuTien ? 1 : 0
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("LỖI KHI LẤY ĐƠN BẾP: " + ex.Message);
+            }
+            return result;
+        }
+
+
     }
 }

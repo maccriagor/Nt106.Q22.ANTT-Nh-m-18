@@ -29,48 +29,48 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
-            dataGridView1 = new DataGridView();
+            dgvOrders = new DataGridView();
             panel2 = new Panel();
             btnLamMoi = new Button();
-            cbTrangThai = new ComboBox();
-            cbSapXepTheo = new ComboBox();
-            cbSoBan = new ComboBox();
+            cboTrangThai = new ComboBox();
+            cboSapXep = new ComboBox();
+            cboTimBan = new ComboBox();
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
             panel9 = new Panel();
             lblTitle = new Label();
             panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvOrders).BeginInit();
             panel2.SuspendLayout();
             panel9.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
             // 
-            panel1.Controls.Add(dataGridView1);
+            panel1.Controls.Add(dgvOrders);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 186);
             panel1.Name = "panel1";
             panel1.Size = new Size(861, 420);
             panel1.TabIndex = 0;
             // 
-            // dataGridView1
+            // dgvOrders
             // 
-            dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(11, 0);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(838, 408);
-            dataGridView1.TabIndex = 0;
+            dgvOrders.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvOrders.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvOrders.Location = new Point(11, 0);
+            dgvOrders.Name = "dgvOrders";
+            dgvOrders.RowHeadersWidth = 51;
+            dgvOrders.Size = new Size(838, 408);
+            dgvOrders.TabIndex = 0;
             // 
             // panel2
             // 
             panel2.Controls.Add(btnLamMoi);
-            panel2.Controls.Add(cbTrangThai);
-            panel2.Controls.Add(cbSapXepTheo);
-            panel2.Controls.Add(cbSoBan);
+            panel2.Controls.Add(cboTrangThai);
+            panel2.Controls.Add(cboSapXep);
+            panel2.Controls.Add(cboTimBan);
             panel2.Controls.Add(label3);
             panel2.Controls.Add(label2);
             panel2.Controls.Add(label1);
@@ -95,30 +95,30 @@
             btnLamMoi.Text = "🔁 Làm mới";
             btnLamMoi.UseVisualStyleBackColor = false;
             // 
-            // cbTrangThai
+            // cboTrangThai
             // 
-            cbTrangThai.FormattingEnabled = true;
-            cbTrangThai.Location = new Point(119, 5);
-            cbTrangThai.Name = "cbTrangThai";
-            cbTrangThai.Size = new Size(216, 29);
-            cbTrangThai.TabIndex = 6;
+            cboTrangThai.FormattingEnabled = true;
+            cboTrangThai.Location = new Point(119, 5);
+            cboTrangThai.Name = "cboTrangThai";
+            cboTrangThai.Size = new Size(216, 29);
+            cboTrangThai.TabIndex = 6;
             // 
-            // cbSapXepTheo
+            // cboSapXep
             // 
-            cbSapXepTheo.FormattingEnabled = true;
-            cbSapXepTheo.Items.AddRange(new object[] { "Thời gian", "Ưu tiên", "..." });
-            cbSapXepTheo.Location = new Point(119, 71);
-            cbSapXepTheo.Name = "cbSapXepTheo";
-            cbSapXepTheo.Size = new Size(216, 29);
-            cbSapXepTheo.TabIndex = 7;
+            cboSapXep.FormattingEnabled = true;
+            cboSapXep.Items.AddRange(new object[] { "Thời gian", "Ưu tiên", "..." });
+            cboSapXep.Location = new Point(119, 71);
+            cboSapXep.Name = "cboSapXep";
+            cboSapXep.Size = new Size(216, 29);
+            cboSapXep.TabIndex = 7;
             // 
-            // cbSoBan
+            // cboTimBan
             // 
-            cbSoBan.FormattingEnabled = true;
-            cbSoBan.Location = new Point(119, 38);
-            cbSoBan.Name = "cbSoBan";
-            cbSoBan.Size = new Size(216, 29);
-            cbSoBan.TabIndex = 7;
+            cboTimBan.FormattingEnabled = true;
+            cboTimBan.Location = new Point(119, 38);
+            cboTimBan.Name = "cboTimBan";
+            cboTimBan.Size = new Size(216, 29);
+            cboTimBan.TabIndex = 7;
             // 
             // label3
             // 
@@ -187,7 +187,7 @@
             Name = "QuanLyOrder_BEP";
             Text = "QuanLyOrder";
             panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvOrders).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             panel9.ResumeLayout(false);
@@ -199,11 +199,11 @@
 
         private Panel panel1;
         private Panel panel2;
-        private DataGridView dataGridView1;
+        private DataGridView dgvOrders;
         private Button btnLamMoi;
-        private ComboBox cbTrangThai;
-        private ComboBox cbSapXepTheo;
-        private ComboBox cbSoBan;
+        private ComboBox cboTrangThai;
+        private ComboBox cboSapXep;
+        private ComboBox cboTimBan;
         private Label label3;
         private Label label2;
         private Label label1;
