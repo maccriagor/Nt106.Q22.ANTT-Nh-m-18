@@ -267,7 +267,7 @@ namespace CafeServer
 
                 case "GET_ALL_MENU":
                     var allMenu = await ServiceManager.Menu.GetAllMenuAsync();
-                    return JsonConvert.SerializeObject(allMenu);
+                    return "SUCCESS|" + JsonConvert.SerializeObject(allMenu);
 
                 case "ADD_MENU":
                     // Định dạng: ADD_MENU|MaLoaiMon|TenMon|MoTa|Gia|TrangThai
@@ -380,24 +380,43 @@ namespace CafeServer
                                         .Set(x => x.TrangThai, "Đã hủy")
                                         .Update();
 
-                                    // 3. Cập nhật trạng thái Đơn hàng thành "Đã hủy"
+                                    // 3. Cập nhật trạng thái Đơn hàng thành "Đã hủy" (3)
                                     await DatabaseService.Client.From<DonHang>()
                                         .Where(x => x.MaDonHang == activeBill.MaDonHang)
-                                        .Set(x => x.TrangThai, 3) // Nếu cột TrangThai của bạn dạng số, bạn thay bằng "3" nhé
+                                        .Set(x => x.TrangThai, 3)
+                                        .Update();
+
+                                    // 4. [VÁ LỖI CỦA BẠN TẠI ĐÂY] Cập nhật TẤT CẢ món ăn trong đơn thành Đã hủy
+                                    await DatabaseService.Client.From<CTDonHang>()
+                                        .Where(x => x.MaDonHang == activeBill.MaDonHang)
+                                        .Set(x => x.TrangThaiItem, 3)
+                                        .Set(x => x.GhiChuBep, "Hủy nguyên bàn từ phía phục vụ") // Áp dụng ý tưởng tuyệt vời của bạn!
+                                        .Set(x => x.ThoiGianHoanThanh, DateTime.Now) // Chốt mốc thời gian kết thúc
                                         .Update();
                                 }
+
+                                // 5. [DỌN DẸP BÀN] Trả lại bàn trống hoàn toàn, xóa tên Nhân viên phục vụ cũ
+                                await DatabaseService.Client.From<BanAn>()
+                                    .Where(x => x.MaBanAn == tableId)
+                                    .Set(x => x.MaNhanVien, null)
+                                    .Update();
                             }
 
                             // =======================================================================
-                            // CẬP NHẬT TRẠNG THÁI BÀN ĂN
+                            // CẬP NHẬT TRẠNG THÁI BÀN ĂN VÀ BÁO CÁO REALTIME
                             // =======================================================================
-                            // Gọi hàm gộp thông minh trong TableService của bạn để đổi màu trạng thái bàn
                             bool isStatusUpdated = await ServiceManager.Table.UpdateStatusAsync(tableId, newStatus);
 
                             if (isStatusUpdated)
                             {
-                                // Phát tín hiệu Realtime cho tất cả máy khách đang mở App tải lại sơ đồ bàn ngay lập tức
-                                await Broadcast("RELOAD_TABLE_MAP");
+                                // Phát tín hiệu Realtime cho tất cả các máy
+                                await Broadcast("RELOAD_TABLE_MAP");   // Báo Phục vụ load lại màu bàn
+
+                                if (newStatus == "Trống")
+                                {
+                                    await Broadcast("RELOAD_KITCHEN_MAP"); // Báo Bếp dọn ngay các món vừa bị hủy khỏi màn hình!
+                                }
+
                                 return $"SUCCESS|Cập nhật trạng thái bàn sang '{newStatus}' thành công!";
                             }
                             return "FAIL|Lỗi hệ thống, không thể cập nhật trạng thái bàn!";
@@ -864,7 +883,11 @@ namespace CafeServer
                     {
                         return "ERROR|" + ex.Message;
                     }
-                
+
+                case "GET_MENU":
+                    var menuItems = await ServiceManager.Menu.GetAllMenuAsync(); // Giả định hàm lấy hết Menu trong MenuService
+                    return "SUCCESS|" + JsonConvert.SerializeObject(menuItems);
+
                 case "GET_LOAI_MON":
                     // Nếu bạn chưa tạo LoaiMonService, có thể gọi trực tiếp DatabaseService.Client hoặc qua Service tương ứng
                     var resLoaiMon = await DatabaseService.Client.From<LoaiMon>().Get();

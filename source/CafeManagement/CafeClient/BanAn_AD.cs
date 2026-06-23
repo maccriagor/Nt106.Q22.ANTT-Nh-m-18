@@ -28,7 +28,7 @@ namespace CafeClient
         private async Task LoadTables()
         {
             string response = await SocketClient.SendRequestAsync("GET_TABLES");
-            if (response.StartsWith("SUCCESS"))
+            if (response.Contains("SUCCESS"))
             {
                 string json = response.Split('|')[1];
                 fullTableList = JsonConvert.DeserializeObject<List<BanAn>>(json);

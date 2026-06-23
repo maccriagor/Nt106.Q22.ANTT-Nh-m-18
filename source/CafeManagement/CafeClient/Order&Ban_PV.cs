@@ -511,7 +511,7 @@ namespace CafeClient
                     SoLuong = qty,
                     DonGia = selectedMenu.Gia,
                     GhiChuKhach = txtGhiChu.Text.Trim(),
-                    MaNhanVienCheBien = UserSession.MaNguoiDung // Gán ID người dùng tiếp nhận order
+                    MaNhanVienCheBien = null // Gán ID người dùng tiếp nhận order
                 };
 
                 _cart.Add(newCartItem);

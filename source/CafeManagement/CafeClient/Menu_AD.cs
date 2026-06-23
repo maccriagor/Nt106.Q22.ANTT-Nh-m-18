@@ -30,16 +30,23 @@ namespace CafeClient
         {
             // Tải danh mục về làm "từ điển" (Bắt buộc phải có để tra tên từ mã)
             string catRes = await SocketClient.SendRequestAsync("GET_ALL_CATEGORY");
-            if (!catRes.StartsWith("ERROR"))
+            if (catRes.StartsWith("SUCCESS"))
             {
-                categoryList = JsonConvert.DeserializeObject<List<CafeCommon.LoaiMon>>(catRes);
+                // CẮT BỎ CHỮ "SUCCESS|" ĐỂ LẤY ĐÚNG PHẦN JSON CHUẨN (Phần tử số 1)
+                string jsonCat = catRes.Split('|')[1];
+                categoryList = JsonConvert.DeserializeObject<List<CafeCommon.LoaiMon>>(jsonCat) ?? new List<CafeCommon.LoaiMon>();
+            }
+            else
+            {
+                categoryList = new List<CafeCommon.LoaiMon>();
             }
 
             // 2. Tải Menu
             string res = await SocketClient.SendRequestAsync("GET_ALL_MENU");
-            if (!res.StartsWith("ERROR"))
+            if (res.StartsWith("SUCCESS"))
             {
-                var list = JsonConvert.DeserializeObject<List<CafeCommon.Menu>>(res);
+                string jsonMenu = res.Split('|')[1];
+                var list = JsonConvert.DeserializeObject<List<CafeCommon.Menu>>(jsonMenu) ?? new List<CafeCommon.Menu>();
 
                 if (dgvFood.Columns.Contains("colMoTa"))
                 {

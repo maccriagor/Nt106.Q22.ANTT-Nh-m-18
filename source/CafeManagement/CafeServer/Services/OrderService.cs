@@ -74,10 +74,11 @@ namespace CafeServer.Services
                     await DatabaseService.Client.From<HoaDon>().Insert(newBill);
 
                     step = 4;
-                    // Chuyển trạng thái bàn sang "Có khách"
+                    // Chuyển trạng thái bàn sang "Có khách" VÀ GÁN LUÔN NHÂN VIÊN PHỤC VỤ CHO BÀN NÀY
                     await DatabaseService.Client.From<BanAn>()
                         .Where(x => x.MaBanAn == order.MaBanAn)
                         .Set(x => x.TrangThai, "Có khách")
+                        .Set(x => x.MaNhanVien, order.MaNVOrder)
                         .Update();
                 }
                 else

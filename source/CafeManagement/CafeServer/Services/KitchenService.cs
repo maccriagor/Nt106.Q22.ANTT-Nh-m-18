@@ -124,6 +124,7 @@ namespace CafeServer.Services
                 }
                 else if (trangThaiMoi == 2) // HOÀN THÀNH
                 {
+                    updateQuery = updateQuery.Set(x => x.MaNhanVienCheBien, maDauBep);
                     updateQuery = updateQuery.Set(x => x.ThoiGianHoanThanh, now);
 
                     // Xử lý nhảy cóc: Nếu Bếp từ trạng thái 0 bấm Hoàn thành luôn
@@ -134,12 +135,66 @@ namespace CafeServer.Services
                 }
                 else if (trangThaiMoi == 3) // HỦY MÓN
                 {
+                    updateQuery = updateQuery.Set(x => x.MaNhanVienCheBien, maDauBep);
                     updateQuery = updateQuery.Set(x => x.GhiChuBep, ghiChu);
                     updateQuery = updateQuery.Set(x => x.ThoiGianHoanThanh, now); // Chốt ca để thống kê biết giờ bị hủy
                 }
 
                 // 4. Thực thi Update xuống Database
                 await updateQuery.Update();
+
+                // =====================================================================
+                // 5. [THÊM MỚI] TỰ ĐỘNG TÍNH TOÁN TRẠNG THÁI CHO ĐƠN HÀNG MẸ
+                // =====================================================================
+                if (currentItem.MaDonHang != null)
+                {
+                    int maDonHang = currentItem.MaDonHang.Value;
+
+                    // Kéo toàn bộ các món của đơn hàng này lên để "chấm điểm"
+                    var allItemsRes = await DatabaseService.Client.From<CTDonHang>()
+                        .Where(x => x.MaDonHang == maDonHang)
+                        .Get();
+                    var allItems = allItemsRes.Models;
+
+                    if (allItems.Any())
+                    {
+                        int totalItems = allItems.Count;
+                        int countHuy = allItems.Count(x => x.TrangThaiItem == 3);
+                        int countHoanThanh = allItems.Count(x => x.TrangThaiItem == 2);
+                        int countChoXacNhan = allItems.Count(x => x.TrangThaiItem == 0);
+
+                        int trangThaiDonHangMoi = 0;
+
+                        // Logic của Dũng:
+                        // 1. Nếu tất cả đều hủy -> Đơn hàng Đã Hủy (3)
+                        if (countHuy == totalItems)
+                        {
+                            trangThaiDonHangMoi = 3;
+                        }
+                        // 2. Nếu (Số món hoàn thành + Số món hủy) = Tổng số món -> Đơn hàng Hoàn Thành (2)
+                        // (Tức là không còn món nào Đang chờ (0) hay Đang làm (1))
+                        else if ((countHoanThanh + countHuy) == totalItems)
+                        {
+                            trangThaiDonHangMoi = 2;
+                        }
+                        // 3. Nếu tất cả là chờ xác nhận -> Đơn hàng Chờ xác nhận (0)
+                        else if (countChoXacNhan == totalItems)
+                        {
+                            trangThaiDonHangMoi = 0;
+                        }
+                        // 4. Các trường hợp còn lại (Có ít nhất 1 món đang làm, hoặc lộn xộn chờ/làm/xong) -> Đang làm (1)
+                        else
+                        {
+                            trangThaiDonHangMoi = 1;
+                        }
+
+                        // Cập nhật trạng thái mới cho bảng DonHang
+                        await DatabaseService.Client.From<DonHang>()
+                            .Where(x => x.MaDonHang == maDonHang)
+                            .Set(x => x.TrangThai, trangThaiDonHangMoi)
+                            .Update();
+                    }
+                }
 
                 return "SUCCESS|Cập nhật món ăn thành công!";
             }

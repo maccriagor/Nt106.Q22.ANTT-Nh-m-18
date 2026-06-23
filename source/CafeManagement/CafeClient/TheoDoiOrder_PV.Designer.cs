@@ -278,27 +278,27 @@
             // columnHeader1
             // 
             columnHeader1.Text = "Tên Món";
-            columnHeader1.Width = 200;
+            columnHeader1.Width = -2;
             // 
             // columnHeader2
             // 
             columnHeader2.Text = "Số Lượng";
-            columnHeader2.Width = 90;
+            columnHeader2.Width = -2;
             // 
             // columnHeader3
             // 
             columnHeader3.Text = "Ghi Chú Khách";
-            columnHeader3.Width = 120;
+            columnHeader3.Width = -2;
             // 
             // columnHeader4
             // 
             columnHeader4.Text = "Ghi Chú Bếp";
-            columnHeader4.Width = 120;
+            columnHeader4.Width = -2;
             // 
             // columnHeader5
             // 
             columnHeader5.Text = "Trạng Thái";
-            columnHeader5.Width = 90;
+            columnHeader5.Width = -2;
             // 
             // TheoDoiOrder_PV
             // 

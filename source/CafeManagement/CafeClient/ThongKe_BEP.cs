@@ -39,7 +39,7 @@ namespace CafeClient
 
                 // 2. Đồng loạt gửi request lên Server để lấy đủ 3 nguồn dữ liệu cần liên kết
                 string response = await SocketClient.SendRequestAsync($"GET_KITCHEN_REPORT_DATA|{requestPayload}");
-                string menuResponse = await SocketClient.SendRequestAsync("GET_ALL_MENU");
+                string menuResponse = await SocketClient.SendRequestAsync("GET_MENU");
                 string loaiMonResponse = await SocketClient.SendRequestAsync("GET_LOAI_MON");
 
                 if (response.StartsWith("SUCCESS") && menuResponse.StartsWith("SUCCESS") && loaiMonResponse.StartsWith("SUCCESS"))
@@ -334,7 +334,7 @@ namespace CafeClient
                 // Gửi đồng thời các request lên Server để lấy dữ liệu thô phục vụ tính toán
                 string response = await SocketClient.SendRequestAsync($"GET_KITCHEN_REPORT_DATA|{requestPayload}");
                 string staffResponse = await SocketClient.SendRequestAsync("GET_KITCHEN_STAFF");
-                string menuResponse = await SocketClient.SendRequestAsync("GET_ALL_MENU");
+                string menuResponse = await SocketClient.SendRequestAsync("GET_MENU");
                 string loaiMonResponse = await SocketClient.SendRequestAsync("GET_LOAI_MON");
 
                 if (!response.StartsWith("SUCCESS") || !staffResponse.StartsWith("SUCCESS") ||

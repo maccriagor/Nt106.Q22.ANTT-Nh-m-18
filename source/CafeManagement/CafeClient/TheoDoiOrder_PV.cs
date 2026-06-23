@@ -252,12 +252,16 @@ namespace CafeClient
                         "0" => "Chờ",
                         "1" => "Đang làm",
                         "2" => "Xong",
+                        "3" => "Đã hủy",
                         _ => "Không xác định"
                     };
                     lvi.SubItems.Add(readableItemStatus);
 
                     lvDonHang.Items.Add(lvi);
                 }
+
+                // Auto-resize columns to fill remaining space
+                AutoResizeListViewColumns();
             }
         }
 
@@ -310,6 +314,34 @@ namespace CafeClient
         private void lvDonHang_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void AutoResizeListViewColumns()
+        {
+            // Auto-resize columns to fit content
+            for (int i = 0; i < lvDonHang.Columns.Count; i++)
+            {
+                lvDonHang.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.ColumnContent);
+            }
+
+            // Calculate remaining width and distribute among columns
+            int totalWidth = lvDonHang.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
+            int usedWidth = 0;
+
+            foreach (ColumnHeader col in lvDonHang.Columns)
+            {
+                usedWidth += col.Width;
+            }
+
+            // If columns don't fill the entire width, expand them proportionally
+            if (usedWidth < totalWidth && lvDonHang.Columns.Count > 0)
+            {
+                double scaleFactor = (double)totalWidth / usedWidth;
+                foreach (ColumnHeader col in lvDonHang.Columns)
+                {
+                    col.Width = (int)(col.Width * scaleFactor);
+                }
+            }
         }
     }
 }

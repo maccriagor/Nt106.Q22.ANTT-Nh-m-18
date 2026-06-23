@@ -178,8 +178,8 @@ namespace CafeClient
             int trangThaiMoi = (int)cbTrangThai.SelectedValue;
             string maDauBep = "";
 
-            // Ràng buộc: Trạng thái = 1 (Đang làm) thì BẮT BUỘC phải chọn Đầu bếp
-            if (trangThaiMoi == 1)
+            // Ràng buộc: Trạng thái = 1 (Đang làm) HOẶC 2 (Hoàn thành) thì BẮT BUỘC phải chọn Đầu bếp
+            if (trangThaiMoi == 1 || trangThaiMoi == 2 || trangThaiMoi == 0)
             {
                 if (cbDauBep.SelectedValue == null)
                 {
@@ -242,6 +242,12 @@ namespace CafeClient
 
             string ghiChu = txtGhiChuBep.Text.Trim();
 
+            if (cbDauBep.SelectedValue == null)
+            {
+                MessageBox.Show("Vui lòng chọn Đầu bếp phụ trách để hệ thống ghi nhận", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             // Ràng buộc: Hủy thì BẮT BUỘC phải có lý do
             if (string.IsNullOrWhiteSpace(ghiChu))
             {
@@ -249,6 +255,8 @@ namespace CafeClient
                 txtGhiChuBep.Focus();
                 return;
             }
+
+
 
             int trangThaiMoi = 3; // 3 là Đã hủy
             string maDauBep = cbDauBep.SelectedValue?.ToString() ?? "";
