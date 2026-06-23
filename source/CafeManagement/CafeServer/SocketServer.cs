@@ -764,6 +764,7 @@ namespace CafeServer
                                 await DatabaseService.Client.From<BanAn>()
                                     .Where(x => x.MaBanAn == maBan.Value)
                                     .Set(x => x.TrangThai, "Trống")
+                                    .Set(x => x.MaNhanVien, null)
                                     .Update();
                             }
 
