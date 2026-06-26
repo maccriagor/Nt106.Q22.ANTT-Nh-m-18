@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Chat));
             panel1 = new Panel();
             btnTimKiem = new Button();
-            btnThongBao = new Button();
             btnLamMoi = new Button();
             txtTimKiem = new TextBox();
             lvNhanVien = new ListView();
@@ -56,14 +55,13 @@
             // panel1
             // 
             panel1.Controls.Add(btnTimKiem);
-            panel1.Controls.Add(btnThongBao);
             panel1.Controls.Add(btnLamMoi);
             panel1.Controls.Add(txtTimKiem);
             panel1.Controls.Add(lvNhanVien);
             panel1.Dock = DockStyle.Left;
             panel1.Location = new Point(0, 67);
             panel1.Name = "panel1";
-            panel1.Size = new Size(265, 539);
+            panel1.Size = new Size(308, 539);
             panel1.TabIndex = 0;
             panel1.Paint += panel1_Paint;
             // 
@@ -83,21 +81,6 @@
             btnTimKiem.UseVisualStyleBackColor = false;
             btnTimKiem.Click += btnTimKiem_Click;
             // 
-            // btnThongBao
-            // 
-            btnThongBao.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnThongBao.BackColor = Color.FromArgb(128, 64, 0);
-            btnThongBao.FlatAppearance.BorderSize = 0;
-            btnThongBao.FlatStyle = FlatStyle.Flat;
-            btnThongBao.Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnThongBao.ForeColor = Color.White;
-            btnThongBao.Location = new Point(136, 461);
-            btnThongBao.Name = "btnThongBao";
-            btnThongBao.Size = new Size(121, 44);
-            btnThongBao.TabIndex = 9;
-            btnThongBao.Text = "🔔 Thông báo";
-            btnThongBao.UseVisualStyleBackColor = false;
-            // 
             // btnLamMoi
             // 
             btnLamMoi.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
@@ -108,7 +91,7 @@
             btnLamMoi.ForeColor = Color.White;
             btnLamMoi.Location = new Point(8, 461);
             btnLamMoi.Name = "btnLamMoi";
-            btnLamMoi.Size = new Size(121, 44);
+            btnLamMoi.Size = new Size(142, 44);
             btnLamMoi.TabIndex = 10;
             btnLamMoi.Text = "🔁 Làm mới";
             btnLamMoi.UseVisualStyleBackColor = false;
@@ -130,7 +113,7 @@
             lvNhanVien.Columns.AddRange(new ColumnHeader[] { NhanVien, VaiTro });
             lvNhanVien.Location = new Point(8, 93);
             lvNhanVien.Name = "lvNhanVien";
-            lvNhanVien.Size = new Size(249, 360);
+            lvNhanVien.Size = new Size(292, 360);
             lvNhanVien.SmallImageList = imgListStatus;
             lvNhanVien.TabIndex = 0;
             lvNhanVien.UseCompatibleStateImageBehavior = false;
@@ -164,9 +147,9 @@
             panel2.Controls.Add(lbUserName);
             panel2.Controls.Add(rtbChat);
             panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(265, 67);
+            panel2.Location = new Point(308, 67);
             panel2.Name = "panel2";
-            panel2.Size = new Size(596, 539);
+            panel2.Size = new Size(553, 539);
             panel2.TabIndex = 0;
             // 
             // btnSend
@@ -178,7 +161,7 @@
             btnSend.FlatStyle = FlatStyle.Flat;
             btnSend.Font = new Font("Calibri", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSend.ForeColor = Color.White;
-            btnSend.Location = new Point(479, 461);
+            btnSend.Location = new Point(436, 461);
             btnSend.Name = "btnSend";
             btnSend.Size = new Size(109, 28);
             btnSend.TabIndex = 10;
@@ -188,19 +171,19 @@
             // 
             // txtMessage
             // 
-            txtMessage.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            txtMessage.Location = new Point(4, 461);
+            txtMessage.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            txtMessage.Location = new Point(3, 461);
             txtMessage.Name = "txtMessage";
-            txtMessage.Size = new Size(469, 28);
+            txtMessage.Size = new Size(427, 28);
             txtMessage.TabIndex = 9;
             // 
             // cbEveryone
             // 
-            cbEveryone.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            cbEveryone.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             cbEveryone.AutoSize = true;
             cbEveryone.BackColor = Color.OldLace;
             cbEveryone.ForeColor = Color.FromArgb(128, 64, 0);
-            cbEveryone.Location = new Point(4, 495);
+            cbEveryone.Location = new Point(6, 502);
             cbEveryone.Name = "cbEveryone";
             cbEveryone.Size = new Size(165, 25);
             cbEveryone.TabIndex = 8;
@@ -225,9 +208,9 @@
             lbUserName.ForeColor = Color.FromArgb(128, 64, 0);
             lbUserName.Location = new Point(14, 11);
             lbUserName.Name = "lbUserName";
-            lbUserName.Size = new Size(166, 21);
+            lbUserName.Size = new Size(112, 21);
             lbUserName.TabIndex = 1;
-            lbUserName.Text = "TÊN người đang chat :";
+            lbUserName.Text = "Đang chat với:";
             // 
             // rtbChat
             // 
@@ -235,7 +218,7 @@
             rtbChat.Location = new Point(2, 93);
             rtbChat.Name = "rtbChat";
             rtbChat.ReadOnly = true;
-            rtbChat.Size = new Size(586, 360);
+            rtbChat.Size = new Size(543, 360);
             rtbChat.TabIndex = 0;
             rtbChat.Text = "";
             // 
@@ -291,7 +274,6 @@
         private Label lbRole;
         private Label lbUserName;
         private Label lblTitle;
-        private Button btnThongBao;
         private Button btnLamMoi;
         private Button btnSend;
         private TextBox txtMessage;

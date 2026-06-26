@@ -288,5 +288,62 @@ namespace CafeServer.Services
             }
             return result;
         }
+
+        // Hàm quét ngầm kiểm tra món ăn quá giờ (SLA Tracker)
+        public async Task<bool> AutoScanPriorityItemsAsync(int maxMinutes)
+        {
+            try
+            {
+                bool hasChanges = false;
+                DateTime now = DateTime.Now;
+
+                // 1. Kéo các Đơn hàng đang mở (0 hoặc 1) để lấy gốc thời gian (NgayOrder)
+                var dhRes = await DatabaseService.Client.From<DonHang>()
+                    .Where(x => x.TrangThai == 0 || x.TrangThai == 1)
+                    .Get();
+                var activeOrders = dhRes.Models;
+
+                if (!activeOrders.Any()) return false;
+
+                // 2. Kéo các Chi tiết món đang Chờ (0) hoặc Đang làm (1) và CHƯA ƯU TIÊN
+                var ctRes = await DatabaseService.Client.From<CTDonHang>().Get();
+                var pendingItems = ctRes.Models
+                    .Where(x => (x.TrangThaiItem == 0 || x.TrangThaiItem == 1)
+                             && x.UuTien == false
+                             && x.MaDonHang != null)
+                    .ToList();
+
+                // 3. Quét và so sánh thời gian
+                foreach (var item in pendingItems)
+                {
+                    var parentOrder = activeOrders.FirstOrDefault(o => o.MaDonHang == item.MaDonHang);
+
+                    // Chỉ cần kiểm tra parentOrder khác null là đủ an toàn
+                    if (parentOrder != null)
+                    {
+                        // Vì NgayOrder là DateTime thường, ta dùng thẳng luôn không cần .Value
+                        double minutesWaited = (now - parentOrder.NgayOrder).TotalMinutes;
+
+                        // Nếu đợi lâu hơn mức quy định -> Ép thành Ưu Tiên
+                        if (minutesWaited >= maxMinutes)
+                        {
+                            await DatabaseService.Client.From<CTDonHang>()
+                                .Where(x => x.MaCT == item.MaCT)
+                                .Set(x => x.UuTien, true)
+                                .Update();
+
+                            hasChanges = true; // Bật cờ báo hiệu có sự thay đổi
+                        }
+                    }
+                }
+
+                return hasChanges;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[SLA Tracker Error]: {ex.Message}");
+                return false;
+            }
+        }
     }
 }

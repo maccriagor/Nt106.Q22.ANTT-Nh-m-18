@@ -48,6 +48,40 @@ namespace CafeServer
                     _ = Task.Run(() => HandleClient(client));
                 }
             });
+
+            // ==========================================================
+            // [THÊM MỚI] KÍCH HOẠT NHỊP TIM (HEARTBEAT) THEO DÕI THỜI GIAN
+            // ==========================================================
+            Task.Run(async () =>
+            {
+                Console.WriteLine("[SYSTEM] Hệ thống giám sát thời gian chờ món (SLA) đã khởi động.");
+
+                while (_isRunning)
+                {
+                    // Cứ 1 phút (60000 mili-giây) Server sẽ tự động quét 1 lần.
+                    // (Bạn có thể giảm xuống 30000 nếu muốn quét mỗi 30 giây)
+                    await Task.Delay(60000);
+
+                    try
+                    {
+                        // Quét các món đã đợi quá 15 phút (Bạn có thể đổi số 15 thành số phút bạn muốn)
+                        bool hasChanges = await ServiceManager.Kitchen.AutoScanPriorityItemsAsync(15);
+
+                        if (hasChanges)
+                        {
+                            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] BÁO ĐỘNG: Có món ăn quá giờ, tự động bật Ưu Tiên!");
+
+                            // Phát tín hiệu Realtime dội xuống toàn bộ màn hình Bếp để nhảy UI
+                            await Broadcast("RELOAD_KITCHEN_MAP");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[Heartbeat Error] {ex.Message}");
+                    }
+                }
+            });
+            // ==========================================================
         }
 
         private async Task<string> HandleSendMessage(string[] parts, int senderId)

@@ -66,7 +66,7 @@ namespace CafeClient
         {
             // Tìm trong danh sách toàn bộ nhân viên đã load vào app
             var user = allEmployees.FirstOrDefault(u => u.MaNguoiDung == id);
-            return user != null ? user.TenDangNhap : "Unknown";
+            return user != null ? user.HoTen : "Unknown";
         }
 
         private void HienThiTinNhan(TinNhan msg)
@@ -81,7 +81,7 @@ namespace CafeClient
             }
             string senderName = (msg.SenderId == UserSession.MaNguoiDung)
         ? "Tôi"
-        : (allEmployees.FirstOrDefault(u => u.MaNguoiDung == msg.SenderId)?.TenDangNhap ?? "Khách");
+        : (allEmployees.FirstOrDefault(u => u.MaNguoiDung == msg.SenderId)?.HoTen ?? "Khách");
 
             // 2. Logic căn lề và màu sắc
             bool isMyMessage = msg.SenderId == UserSession.MaNguoiDung;
@@ -120,10 +120,10 @@ namespace CafeClient
 
                 foreach (var user in listUser)
                 {
-                    if (user.TenDangNhap == UserSession.TenDangNhap) continue;
+                    if (user.HoTen == UserSession.HoTen) continue;
 
                     // 1. Tạo item (Cột 0: Tên đăng nhập)
-                    ListViewItem item = new ListViewItem(user.TenDangNhap);
+                    ListViewItem item = new ListViewItem(user.HoTen);
                     item.ImageIndex = user.TrangThaiOnline ? 0 : 1;
 
                     // 2. Thêm SubItem (Cột 1: Vai trò)
@@ -197,9 +197,9 @@ namespace CafeClient
                 lvNhanVien.Items.Clear();
                 foreach (var user in listUser)
                 {
-                    if (user.TenDangNhap == UserSession.TenDangNhap) continue;
+                    if (user.HoTen == UserSession.HoTen) continue;
 
-                    ListViewItem item = new ListViewItem(user.TenDangNhap);
+                    ListViewItem item = new ListViewItem(user.HoTen);
                     item.ImageIndex = user.TrangThaiOnline ? 0 : 1;
                     item.Tag = user;
                     lvNhanVien.Items.Add(item);
@@ -254,7 +254,7 @@ namespace CafeClient
             if (lvNhanVien.SelectedItems.Count > 0)
             {
                 selectedRecipient = (UserAccount)lvNhanVien.SelectedItems[0].Tag;
-                lbUserName.Text = $"Đang chat với: {selectedRecipient.TenDangNhap}";
+                lbUserName.Text = $"Đang chat với: {selectedRecipient.HoTen}";
 
                 rtbChat.Clear();
                 LoadLichSuTuDatabase(selectedRecipient.MaNguoiDung);
