@@ -245,7 +245,6 @@ namespace CafeServer.Services
             var result = new List<BepOrderDTO>();
             try
             {
-                // Kéo data thô
                 var dhRes = await DatabaseService.Client.From<DonHang>().Get();
                 var ctRes = await DatabaseService.Client.From<CTDonHang>().Get();
                 var banRes = await DatabaseService.Client.From<BanAn>().Get();
@@ -254,28 +253,32 @@ namespace CafeServer.Services
                 var ctList = ctRes.Models ?? new List<CTDonHang>();
                 var banList = banRes.Models ?? new List<BanAn>();
 
-                // Lọc đơn hàng: 0 (Chờ xác nhận), 1 (Đang chế biến)
-                var activeOrders = dhList.Where(d => d.TrangThai == 0 || d.TrangThai == 1).ToList();
+                // FIX LỖI 2: CHỈ LẤY CÁC ĐƠN ĐANG ACTIVE (0: Chờ xác nhận, 1: Đang chế biến, 2: Hoàn thành)
+                // Gạt bỏ hoàn toàn đơn Bị Hủy (thường là trạng thái 3, 4 hoặc -1) để không đẩy xuống Bếp.
+                // Đã thêm d.TrangThai == 3 để lấy cả các đơn bị hủy
+                var activeOrders = dhList.Where(d => d.TrangThai == 0 || d.TrangThai == 1 || d.TrangThai == 2 || d.TrangThai == 3).ToList();
 
                 foreach (var dh in activeOrders)
                 {
-                    // Lấy Tên bàn
                     var ban = banList.FirstOrDefault(b => b.MaBanAn == dh.MaBanAn);
                     string tenBan = ban != null ? ban.TenBan : "Mang về";
 
-                    // Trạng thái
-                    string trangThaiStr = dh.TrangThai == 0 ? "Chờ xác nhận" : "Đang chế biến";
+                    string trangThaiStr = dh.TrangThai == 0 ? "Chờ xác nhận" :
+                     (dh.TrangThai == 1 ? "Đang chế biến" :
+                     (dh.TrangThai == 2 ? "Hoàn thành" : "Đã hủy"));
 
-                    // Cộng dồn món và kiểm tra món ưu tiên
                     var ctCuaDon = ctList.Where(c => c.MaDonHang == dh.MaDonHang).ToList();
                     int tongMon = ctCuaDon.Sum(c => c.SoLuong);
                     bool coUuTien = ctCuaDon.Any(c => c.UuTien);
+
+                    // FIX LỖI 1: CHUYỂN GIỜ UTC CỦA SUPABASE SANG GIỜ VIỆT NAM TRƯỚC KHI GỬI XUỐNG CLIENT
+                    DateTime thoiGianSuaLoi = dh.NgayOrder.ToLocalTime();
 
                     result.Add(new BepOrderDTO
                     {
                         MaDonHang = dh.MaDonHang,
                         TenBan = tenBan,
-                        ThoiGianDat = dh.NgayOrder,
+                        ThoiGianDat = thoiGianSuaLoi, // Dùng biến đã convert giờ
                         SoLuongMon = tongMon,
                         TrangThai = trangThaiStr,
                         UuTien = coUuTien ? 1 : 0

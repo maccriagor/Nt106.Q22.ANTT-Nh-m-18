@@ -48,6 +48,13 @@ namespace CafeClient
             dgvDonHang.MultiSelect = false;
             dgvDonHang.ReadOnly = true;
 
+            dgvDonHang.BackgroundColor = Color.White;
+            dgvDonHang.DefaultCellStyle.BackColor = Color.White;
+            dgvDonHang.DefaultCellStyle.ForeColor = Color.Black;
+            dgvDonHang.DefaultCellStyle.SelectionBackColor = Color.LightSkyBlue;
+            dgvDonHang.DefaultCellStyle.SelectionForeColor = Color.Black;
+            dgvDonHang.DefaultCellStyle.Font = new Font("Calibri", 10.2f, FontStyle.Bold);
+
             dgvDonHang.Columns.Clear();
             dgvDonHang.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "TenMon", HeaderText = "Tên món", Width = 150 });
             dgvDonHang.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "TenBan", HeaderText = "Bàn", Width = 80 });
@@ -56,6 +63,55 @@ namespace CafeClient
             dgvDonHang.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "GioDatMon", HeaderText = "Giờ đặt", Width = 80 });
             dgvDonHang.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "ThoiGianDuKien", HeaderText = "Dự kiến (p)", Width = 90 });
             dgvDonHang.Columns.Add(new DataGridViewTextBoxColumn { DataPropertyName = "LoaiUuTien", HeaderText = "Ưu tiên", Width = 100 });
+
+            
+            dgvDonHang.CellFormatting -= dgvDonHang_CellFormatting; // Tránh gắn trùng nếu gọi nhiều lần
+            dgvDonHang.CellFormatting += dgvDonHang_CellFormatting;
+        }
+
+        // --- [THÊM MỚI TOÀN BỘ HÀM NÀY] Hàm chuyên trách tô màu chữ ---
+        private void dgvDonHang_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            // Kiểm tra an toàn dòng hiện tại
+            if (e.RowIndex < 0 || e.RowIndex >= dgvDonHang.Rows.Count) return;
+
+            // Ép kiểu dữ liệu ẩn dưới dòng để lấy ra Trạng Thái và Độ Ưu Tiên
+            var orderDetail = dgvDonHang.Rows[e.RowIndex].DataBoundItem as ChiTietOrderDTO;
+            if (orderDetail == null) return;
+
+            string propertyName = dgvDonHang.Columns[e.ColumnIndex].DataPropertyName;
+
+            // 1. Nếu cột đang vẽ là cột Trạng thái
+            if (propertyName == "TenTrangThai")
+            {
+                // 0: Chờ xác nhận, 1: Đang làm, 2: Hoàn thành, 3: Đã hủy
+                if (orderDetail.TrangThaiItem == 0) e.CellStyle.ForeColor = Color.OrangeRed;
+                else if (orderDetail.TrangThaiItem == 1) e.CellStyle.ForeColor = Color.Blue;
+                else if (orderDetail.TrangThaiItem == 2) e.CellStyle.ForeColor = Color.Green;
+                else if (orderDetail.TrangThaiItem == 3) // Hủy
+                {
+                    e.CellStyle.ForeColor = Color.Gray;
+                    e.CellStyle.Font = new Font(dgvDonHang.Font, FontStyle.Strikeout);
+                }
+
+                // Bôi đậm cho các món chưa hủy
+                if (orderDetail.TrangThaiItem != 3)
+                {
+                    e.CellStyle.Font = new Font(dgvDonHang.Font, FontStyle.Bold);
+                }
+
+                e.FormattingApplied = true;
+            }
+            // 2. Nếu cột đang vẽ là cột Ưu tiên
+            else if (propertyName == "LoaiUuTien")
+            {
+                if (orderDetail.UuTien == true) // Đang được đánh dấu ưu tiên/gấp
+                {
+                    e.CellStyle.ForeColor = Color.Red;
+                    e.CellStyle.Font = new Font(dgvDonHang.Font, FontStyle.Bold);
+                }
+                e.FormattingApplied = true;
+            }
         }
 
         // Khởi tạo các ComboBox cố định (Trạng thái)

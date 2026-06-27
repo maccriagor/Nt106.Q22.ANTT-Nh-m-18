@@ -68,7 +68,7 @@ namespace CafeClient
         {
             // Thiết lập giá trị các mục phân loại bộ lọc cố định
             cboTrangThai.Items.Clear();
-            cboTrangThai.Items.AddRange(new string[] { "Tất cả", "Chờ xác nhận", "Đang chế biến", "Hoàn thành" });
+            cboTrangThai.Items.AddRange(new string[] { "Tất cả", "Chờ xác nhận", "Đang chế biến", "Hoàn thành", "Đã hủy" });
             cboTrangThai.SelectedIndex = 0;
 
             cboSapXep.Items.Clear();
@@ -152,9 +152,13 @@ namespace CafeClient
             var query = _danhSachGoc.AsEnumerable();
 
             // 1. Phân loại theo Trạng thái
-            string locTrangThai = cboTrangThai.SelectedItem?.ToString();
-            if (!string.IsNullOrEmpty(locTrangThai) && locTrangThai != "Tất cả")
-                query = query.Where(x => x.TrangThai == locTrangThai);
+            string tt = cboTrangThai.SelectedItem?.ToString();
+
+            if (!string.IsNullOrEmpty(tt) && tt != "Tất cả")
+            {
+                // Chỉ lọc khi người dùng chọn đích danh một trạng thái cụ thể (VD: "Chờ xác nhận", "Đang chế biến", "Hoàn thành", "Đã hủy")
+                query = query.Where(x => x.TrangThai == tt);
+            }
 
             // 2. Phân loại theo Số Bàn Ăn
             string locBan = cboTimBan.SelectedItem?.ToString();
@@ -192,8 +196,18 @@ namespace CafeClient
                 if (order.TrangThai == "Chờ xác nhận") e.CellStyle.ForeColor = Color.OrangeRed;
                 else if (order.TrangThai == "Đang chế biến") e.CellStyle.ForeColor = Color.Blue;
                 else if (order.TrangThai == "Hoàn thành") e.CellStyle.ForeColor = Color.Green;
+                // Thêm đoạn này cho trạng thái hủy:
+                else if (order.TrangThai == "Đã hủy")
+                {
+                    e.CellStyle.ForeColor = Color.Gray;
+                    e.CellStyle.Font = new Font(dgvOrders.Font, FontStyle.Strikeout); // Gạch ngang chữ
+                }
 
-                e.CellStyle.Font = new Font(dgvOrders.Font, FontStyle.Bold);
+                if (order.TrangThai != "Đã hủy")
+                {
+                    e.CellStyle.Font = new Font(dgvOrders.Font, FontStyle.Bold);
+                }
+
                 e.FormattingApplied = true;
             }
             else if (colName == "UuTien")
