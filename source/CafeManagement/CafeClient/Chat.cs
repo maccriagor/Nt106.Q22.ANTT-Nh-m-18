@@ -69,31 +69,70 @@ namespace CafeClient
             return user != null ? user.HoTen : "Unknown";
         }
 
+        private DrawingColor GetRoleColor(string vaiTro, bool isMyMessage)
+        {
+            if (isMyMessage) return DrawingColor.DodgerBlue; // tin nhắn của mình giữ màu riêng
+
+            switch ((vaiTro ?? "").Trim().ToLower())
+            {
+                case "admin":
+                    return DrawingColor.Red;
+                case "kitchen":
+                    return DrawingColor.Green;
+                case "waiter":
+                    return DrawingColor.Blue;
+                default:
+                    return DrawingColor.DarkSlateGray;
+            }
+        }
+
+        private string GetRoleEmoji(string vaiTro, bool isMyMessage)
+        {
+            if (isMyMessage) return "🙂";
+
+            switch ((vaiTro ?? "").Trim().ToLower())
+            {
+                case "admin":
+                    return "👑";
+                case "kitchen":
+                    return "🍳";
+                case "waiter":
+                    return "🧑‍🍽️";
+                default:
+                    return "👤";
+            }
+        }
+
+
+
         private void HienThiTinNhan(TinNhan msg)
         {
             if (msg.Timestamp.Date != _lastDisplayDate.Date)
             {
                 rtbChat.SelectionAlignment = HorizontalAlignment.Center;
-                rtbChat.SelectionFont = new DrawingFont("Segoe UI", 8, FontStyle.Bold);
+                rtbChat.SelectionFont = new DrawingFont("Segoe UI", 12, FontStyle.Bold); // tăng size 8 -> 10
                 rtbChat.SelectionColor = DrawingColor.Gray;
-                rtbChat.AppendText($"\n--- {msg.Timestamp:dd/MM/yyyy} ---\n\n");
+                rtbChat.AppendText($"\n📅 --- {msg.Timestamp:dd/MM/yyyy} --- 📅\n\n");
                 _lastDisplayDate = msg.Timestamp.Date;
             }
-            string senderName = (msg.SenderId == UserSession.MaNguoiDung)
-        ? "Tôi"
-        : (allEmployees.FirstOrDefault(u => u.MaNguoiDung == msg.SenderId)?.HoTen ?? "Khách");
 
-            // 2. Logic căn lề và màu sắc
+
+            var senderUser = allEmployees.FirstOrDefault(u => u.MaNguoiDung == msg.SenderId);
             bool isMyMessage = msg.SenderId == UserSession.MaNguoiDung;
+            string senderName = isMyMessage ? "Tôi" : (senderUser?.HoTen ?? "Khách");
+
+            // 2. Logic căn lề
             rtbChat.SelectionAlignment = isMyMessage ? HorizontalAlignment.Right : HorizontalAlignment.Left;
 
-            // 3. Tên và Giờ
-            rtbChat.SelectionFont = new DrawingFont("Segoe UI", 8, FontStyle.Bold);
-            rtbChat.SelectionColor = isMyMessage ? DrawingColor.DodgerBlue : DrawingColor.DarkSlateGray;
-            rtbChat.AppendText($"{senderName} ");
+            // 3. Tên (màu theo vai trò) và Giờ
+            rtbChat.SelectionFont = new DrawingFont("Segoe UI", 13, FontStyle.Bold); // tăng size 8 -> 11
+            rtbChat.SelectionColor = GetRoleColor(senderUser?.VaiTro, isMyMessage);
+            string roleEmoji = GetRoleEmoji(senderUser?.VaiTro, isMyMessage);
+            rtbChat.AppendText($"{roleEmoji} {senderName} ");
 
-            rtbChat.SelectionFont = new DrawingFont("Segoe UI", 7, FontStyle.Italic);
-            rtbChat.AppendText($"{msg.Timestamp:HH:mm}\n");
+            rtbChat.SelectionFont = new DrawingFont("Segoe UI", 12, FontStyle.Italic); // tăng size 7 -> 9
+            rtbChat.SelectionColor = DrawingColor.Gray;
+            rtbChat.AppendText($"🕒 {msg.Timestamp:HH:mm}\n");
 
             // 4. Nội dung
             rtbChat.SelectionAlignment = isMyMessage ? HorizontalAlignment.Right : HorizontalAlignment.Left;
@@ -112,8 +151,9 @@ namespace CafeClient
 
             if (parts[0] == "SUCCESS")
             {
-                allEmployees = JsonConvert.DeserializeObject<List<UserAccount>>(parts[1]);
-                var listUser = JsonConvert.DeserializeObject<List<UserAccount>>(parts[1]);
+                var fullList = JsonConvert.DeserializeObject<List<UserAccount>>(parts[1]);
+                allEmployees = fullList; // giữ full list để tra cứu tên/role cho mọi tin nhắn (kể cả người đã nghỉ)
+                var listUser = fullList.Where(u => u.TrangThai).ToList(); // chỉ hiển thị nhân viên đang hoạt động
 
                 lvNhanVien.Items.Clear();
                 lvNhanVien.BeginUpdate(); // Tối ưu: Ngừng vẽ khi đang thêm hàng loạt
@@ -191,7 +231,9 @@ namespace CafeClient
 
             if (parts[0] == "SUCCESS")
             {
-                var listUser = JsonConvert.DeserializeObject<List<UserAccount>>(parts[1]);
+                var listUser = JsonConvert.DeserializeObject<List<UserAccount>>(parts[1])
+                    .Where(u => u.TrangThai)
+                    .ToList();
 
                 // Cập nhật lại ListView với danh sách đã lọc
                 lvNhanVien.Items.Clear();
