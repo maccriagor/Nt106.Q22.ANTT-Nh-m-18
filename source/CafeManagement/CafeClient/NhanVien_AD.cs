@@ -23,6 +23,13 @@ namespace CafeClient
         public NhanVien_AD()
         {
             InitializeComponent();
+
+            dgvNhanVien.CellFormatting += dgvNhanVien_CellFormatting;
+
+            this.Load += async (s, e) =>
+            {
+                await LoadEmployees();
+            };
         }
         //Hàm up danh sách nhân viên
         private async Task LoadEmployees()
@@ -34,6 +41,19 @@ namespace CafeClient
                 var list = JsonConvert.DeserializeObject<List<UserAccount>>(res);
 
                 dgvNhanVien.AutoGenerateColumns = false;
+
+                if (dgvNhanVien.Columns["colTrangThai"] == null)
+                {
+                    dgvNhanVien.Columns.Add(new DataGridViewTextBoxColumn
+                    {
+                        Name = "colTrangThai",
+                        DataPropertyName = "TrangThai", // Tên thuộc tính trong UserAccount
+                        HeaderText = "TrangThai",
+                        Width = 90,
+                        DefaultCellStyle = new DataGridViewCellStyle { Alignment = DataGridViewContentAlignment.MiddleCenter }
+                    });
+                }
+
                 dgvNhanVien.DataSource = list;
 
                 if (list != null && list.Count > 0)
@@ -188,14 +208,14 @@ namespace CafeClient
                 return;
             }
 
-            var confirmResult = MessageBox.Show("Bạn có chắc chắn muốn xóa nhân viên này?", "Xác nhận xóa", MessageBoxButtons.YesNo);
+            var confirmResult = MessageBox.Show("Bạn có chắc chắn muốn KHÓA nhân viên này?", "Xác nhận KHÓA", MessageBoxButtons.YesNo);
             if (confirmResult == DialogResult.Yes)
             {
                 string res = await SocketClient.SendRequestAsync($"DELETE_EMPLOYEE|{selectedUserId}");
 
                 if (res == "SUCCESS")
                 {
-                    MessageBox.Show("Xóa nhân viên thành công!");
+                    MessageBox.Show("Khóa tài khoản nhân viên thành công!");
                     selectedUserId = 0;
                     await LoadEmployees();
                 }
@@ -236,6 +256,41 @@ namespace CafeClient
                 }
             }
         }
-        
+
+        private void dgvNhanVien_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            // Đảm bảo không format trúng dòng tiêu đề (Header) hoặc dòng trống
+            if (e.RowIndex >= 0 && e.RowIndex < dgvNhanVien.Rows.Count)
+            {
+                // Lấy toàn bộ dữ liệu của dòng hiện tại (ép kiểu về UserAccount)
+                var user = dgvNhanVien.Rows[e.RowIndex].DataBoundItem as UserAccount;
+
+                if (user != null)
+                {
+                    // ==========================================================
+                    // BƯỚC 1: TÔ MÀU NỀN CHO MỌI Ô TRÊN DÒNG NÀY
+                    // ==========================================================
+                    if (user.TrangThai) // True: Đang hoạt động
+                    {
+                        e.CellStyle.BackColor = Color.LightGreen;
+                        e.CellStyle.ForeColor = Color.Black;
+                    }
+                    else // False: Đã bị khóa/xóa
+                    {
+                        e.CellStyle.BackColor = Color.LightPink;
+                        e.CellStyle.ForeColor = Color.Black;
+                    }
+
+                    // ==========================================================
+                    // BƯỚC 2: CHỈ VẼ ICON "✔️/✖️" VÀO ĐÚNG CỘT TRẠNG THÁI
+                    // ==========================================================
+                    if (dgvNhanVien.Columns[e.ColumnIndex].DataPropertyName == "TrangThai")
+                    {
+                        e.Value = user.TrangThai ? "✔️" : "✖️";
+                        e.FormattingApplied = true; // Báo cho Grid biết mình đã vẽ xong Text
+                    }
+                }
+            }
+        }
     }
 }

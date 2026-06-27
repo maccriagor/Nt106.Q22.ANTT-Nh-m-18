@@ -190,12 +190,34 @@ namespace CafeClient
 
         private void DgvMenu_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (dgvMenu.Columns[e.ColumnIndex].Name == "Gia" && e.Value != null)
+            // Đảm bảo không format trúng dòng tiêu đề hoặc dòng mới
+            if (e.RowIndex >= 0 && e.RowIndex < dgvMenu.Rows.Count)
             {
-                if (decimal.TryParse(e.Value.ToString(), out decimal v))
+                // 1. TÔ MÀU TOÀN BỘ DÒNG DỰA VÀO TRẠNG THÁI
+                var monAn = dgvMenu.Rows[e.RowIndex].DataBoundItem as CafeCommon.Menu;
+
+                if (monAn != null)
                 {
-                    e.Value = v.ToString("N0");
-                    e.FormattingApplied = true;
+                    if (monAn.TrangThai == "Còn hàng")
+                    {
+                        e.CellStyle.BackColor = Color.LightGreen;
+                        e.CellStyle.ForeColor = Color.Black;
+                    }
+                    else if (monAn.TrangThai == "Hết hàng")
+                    {
+                        e.CellStyle.BackColor = Color.LightPink;
+                        e.CellStyle.ForeColor = Color.Black;
+                    }
+                }
+
+                // 2. FORMAT ĐỊNH DẠNG SỐ CHO CỘT GIÁ (Giữ nguyên logic cũ của bạn)
+                if (dgvMenu.Columns[e.ColumnIndex].Name == "Gia" && e.Value != null)
+                {
+                    if (decimal.TryParse(e.Value.ToString(), out decimal v))
+                    {
+                        e.Value = v.ToString("N0");
+                        e.FormattingApplied = true;
+                    }
                 }
             }
         }

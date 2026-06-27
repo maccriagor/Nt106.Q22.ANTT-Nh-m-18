@@ -19,6 +19,10 @@ namespace CafeClient
         public MaGiamGia_AD()
         {
             InitializeComponent();
+            this.Load += async (s, e) =>
+            {
+                await LoadDiscounts();
+            };
         }
 
 
@@ -295,12 +299,12 @@ namespace CafeClient
                     if (status) 
                     {
                         row.DefaultCellStyle.BackColor = Color.LightGreen;
-                        row.DefaultCellStyle.ForeColor = Color.DarkGreen;
+                        row.DefaultCellStyle.ForeColor = Color.Black;
                     }
                     else
                     {
-                        row.DefaultCellStyle.BackColor = Color.MistyRose;
-                        row.DefaultCellStyle.ForeColor = Color.Red;
+                        row.DefaultCellStyle.BackColor = Color.LightPink;
+                        row.DefaultCellStyle.ForeColor = Color.Black;
                     }
                 }
             }

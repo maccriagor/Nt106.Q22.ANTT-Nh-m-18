@@ -19,6 +19,23 @@ namespace CafeClient
         public Menu()
         {
             InitializeComponent();
+
+            InitStaticComboBoxes();
+
+            this.Load += async (s, e) =>
+            {
+                await LoadMenuData();
+            };
+        }
+
+        private void InitStaticComboBoxes()
+        {
+            cbTrangThai.Items.Clear();
+            cbTrangThai.Items.Add("Còn hàng");
+            cbTrangThai.Items.Add("Hết hàng");
+
+            // Tùy chọn thêm: Khóa không cho người dùng gõ linh tinh vào ô này, bắt buộc phải chọn từ danh sách
+            cbTrangThai.DropDownStyle = ComboBoxStyle.DropDownList;
         }
 
         private async void Menu_Load(object sender, EventArgs e)
@@ -230,6 +247,31 @@ namespace CafeClient
         private void tbTimKiem_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void dgvFood_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            // Đảm bảo không format trúng dòng tiêu đề (Header) hoặc dòng trống
+            if (e.RowIndex >= 0 && e.RowIndex < dgvFood.Rows.Count)
+            {
+                // Lấy toàn bộ dữ liệu của dòng hiện tại (Ép kiểu về CafeCommon.Menu)
+                var monAn = dgvFood.Rows[e.RowIndex].DataBoundItem as CafeCommon.Menu;
+
+                if (monAn != null)
+                {
+                    // Tô màu nền cho MỌI Ô trên dòng này dựa vào Trạng thái của món ăn
+                    if (monAn.TrangThai == "Còn hàng")
+                    {
+                        e.CellStyle.BackColor = Color.LightGreen;
+                        e.CellStyle.ForeColor = Color.Black;
+                    }
+                    else if (monAn.TrangThai == "Hết hàng")
+                    {
+                        e.CellStyle.BackColor = Color.LightPink; // Hoặc bạn có thể dùng Color.MistyRose cho dịu mắt hơn
+                        e.CellStyle.ForeColor = Color.Black;
+                    }
+                }
+            }
         }
     }
 }

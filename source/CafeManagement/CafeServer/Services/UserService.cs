@@ -176,10 +176,17 @@ namespace CafeServer.Services
         {
             try
             {
-                await DatabaseService.Client.From<UserAccount>().Where(x => x.MaNguoiDung == id).Delete();
+                await DatabaseService.Client.From<UserAccount>()
+                    .Where(x => x.MaNguoiDung == id)
+                    .Set(x => x.TrangThai, false) // Ẩn/Khóa tài khoản thay vì xóa hẳn
+                    .Update();
                 return true;
             }
-            catch { return false; }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Lỗi Xóa nhân viên]: {ex.Message}");
+                return false;
+            }
         }
         //Hàm update thông tin của nhân viên
         public async Task<bool> UpdateEmployeeBasicAsync(int id, string user, string name, string email, string pass, string role)

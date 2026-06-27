@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             panel3 = new Panel();
             btnLamMoi = new Button();
             btnXoa = new Button();
@@ -192,15 +194,32 @@
             // 
             // dgvDonHang
             // 
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvDonHang.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvDonHang.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDonHang.Columns.AddRange(new DataGridViewColumn[] { Column1, Column2, Column3, Column4, Column5, Column6 });
             dgvDonHang.Dock = DockStyle.Fill;
             dgvDonHang.Location = new Point(3, 24);
             dgvDonHang.Name = "dgvDonHang";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Control;
+            dataGridViewCellStyle2.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgvDonHang.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             dgvDonHang.RowHeadersWidth = 51;
             dgvDonHang.Size = new Size(514, 236);
             dgvDonHang.TabIndex = 0;
             dgvDonHang.CellClick += dgvDonHang_CellClick;
+            dgvDonHang.CellFormatting += dgvDonHang_CellFormatting;
             // 
             // Column1
             // 
@@ -278,27 +297,27 @@
             // columnHeader1
             // 
             columnHeader1.Text = "Tên Món";
-            columnHeader1.Width = -2;
+            columnHeader1.Width = 70;
             // 
             // columnHeader2
             // 
             columnHeader2.Text = "Số Lượng";
-            columnHeader2.Width = -2;
+            columnHeader2.Width = 75;
             // 
             // columnHeader3
             // 
             columnHeader3.Text = "Ghi Chú Khách";
-            columnHeader3.Width = -2;
+            columnHeader3.Width = 107;
             // 
             // columnHeader4
             // 
             columnHeader4.Text = "Ghi Chú Bếp";
-            columnHeader4.Width = -2;
+            columnHeader4.Width = 93;
             // 
             // columnHeader5
             // 
             columnHeader5.Text = "Trạng Thái";
-            columnHeader5.Width = -2;
+            columnHeader5.Width = 165;
             // 
             // TheoDoiOrder_PV
             // 

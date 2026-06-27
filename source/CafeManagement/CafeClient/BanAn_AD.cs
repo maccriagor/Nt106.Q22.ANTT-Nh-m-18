@@ -18,11 +18,15 @@ namespace CafeClient
         public BanAn_AD()
         {
             InitializeComponent();
+            this.Load += async (s, e) =>
+            {
+                await LoadTables();
+            };
         }
 
         private async void BanAn_AD_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         private async Task LoadTables()
@@ -85,7 +89,7 @@ namespace CafeClient
                     TenBan = tbTenBan.Text.Trim(),
                     SoChoNgoi = (int)numSoChoNgoi.Value,
                     TrangThai = "Trống", // Mặc định luôn là Trống khi thêm mới
-                    MaNhanVien = null,     
+                    MaNhanVien = null,
                     NgayTao = dtpNgayTao.Value // Lấy theo ngày người dùng chọn ở DateTimePicker
                 };
 
@@ -232,6 +236,36 @@ namespace CafeClient
 
                 if (row.Cells["NgayTao"].Value != null)
                     dtpNgayTao.Value = Convert.ToDateTime(row.Cells["NgayTao"].Value);
+            }
+        }
+
+        private void dgvBanAn_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            // Đảm bảo không format trúng dòng tiêu đề (Header) hoặc dòng mới chưa có dữ liệu
+            if (e.RowIndex >= 0 && e.RowIndex < dgvBanAn.Rows.Count)
+            {
+                // Lấy toàn bộ dữ liệu của dòng hiện tại (Ép kiểu về CafeCommon.BanAn)
+                var banAn = dgvBanAn.Rows[e.RowIndex].DataBoundItem as CafeCommon.BanAn;
+
+                if (banAn != null)
+                {
+                    // Tô màu nền cho MỌI Ô trên dòng này dựa vào Trạng thái của bàn
+                    switch (banAn.TrangThai)
+                    {
+                        case "Trống":
+                            e.CellStyle.BackColor = Color.LightGreen;
+                            e.CellStyle.ForeColor = Color.Black;
+                            break;
+                        case "Có khách":
+                            e.CellStyle.BackColor = Color.LightPink;
+                            e.CellStyle.ForeColor = Color.Black;
+                            break;
+                        case "Đã đặt":
+                            e.CellStyle.BackColor = Color.LightGray;
+                            e.CellStyle.ForeColor = Color.Black;
+                            break;
+                    }
+                }
             }
         }
     }

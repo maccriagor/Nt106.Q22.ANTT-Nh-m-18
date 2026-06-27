@@ -535,5 +535,46 @@ namespace CafeClient
                 btnThanhToan.Enabled = true; // <-- MỞ KHÓA NÚT THANH TOÁN
             }
         }
+
+        private void dgvHoaDon_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            // Đảm bảo không format trúng dòng tiêu đề (Header) hoặc dòng mới chưa có dữ liệu
+            if (e.RowIndex >= 0 && e.RowIndex < dgvHoaDon.Rows.Count)
+            {
+                var rowItem = dgvHoaDon.Rows[e.RowIndex].DataBoundItem;
+                if (rowItem == null) return;
+
+                string trangThai = "";
+
+                // TRƯỜNG HỢP 1: Nếu dữ liệu đổ vào từ DataTable (như hiện tại của bạn)
+                if (rowItem is System.Data.DataRowView rowView)
+                {
+                    trangThai = rowView["TrangThai"]?.ToString() ?? "";
+                }
+                // TRƯỜNG HỢP 2: Nếu dữ liệu đổ vào từ List<HoaDonDTO> hoặc List<Object>
+                else
+                {
+                    dynamic dynObj = rowItem;
+                    try { trangThai = dynObj.TrangThai?.ToString() ?? ""; } catch { }
+                }
+
+                // Tiến hành đổ màu dựa vào trạng thái đã lấy được
+                switch (trangThai)
+                {
+                    case "Đã thanh toán":
+                        e.CellStyle.BackColor = Color.LightGreen;
+                        e.CellStyle.ForeColor = Color.Black;
+                        break;
+                    case "Chưa thanh toán":
+                        e.CellStyle.BackColor = Color.LightPink; // Đỏ nhạt
+                        e.CellStyle.ForeColor = Color.Black;
+                        break;
+                    case "Đã hủy":
+                        e.CellStyle.BackColor = Color.LightGray; // Xám nhạt
+                        e.CellStyle.ForeColor = Color.Black;
+                        break;
+                }
+            }
+        }
     }
 }

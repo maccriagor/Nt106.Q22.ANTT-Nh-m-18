@@ -59,9 +59,6 @@
             panel11 = new Panel();
             lblTitle = new Label();
             panel4 = new Panel();
-            label10 = new Label();
-            label9 = new Label();
-            label4 = new Label();
             tableLayoutPanel1 = new TableLayoutPanel();
             groupBox2 = new GroupBox();
             dgvGioHang = new DataGridView();
@@ -104,30 +101,33 @@
             // label7
             // 
             label7.AutoSize = true;
+            label7.Font = new Font("Calibri", 10.8F, FontStyle.Bold);
             label7.ForeColor = Color.FromArgb(128, 64, 0);
             label7.Location = new Point(274, 9);
             label7.Name = "label7";
-            label7.Size = new Size(79, 21);
+            label7.Size = new Size(84, 22);
             label7.TabIndex = 3;
             label7.Text = "Số lượng:";
             // 
             // label5
             // 
             label5.AutoSize = true;
+            label5.Font = new Font("Calibri", 10.8F, FontStyle.Bold);
             label5.ForeColor = Color.FromArgb(128, 64, 0);
             label5.Location = new Point(14, 43);
             label5.Name = "label5";
-            label5.Size = new Size(117, 21);
+            label5.Size = new Size(126, 22);
             label5.TabIndex = 3;
             label5.Text = "Ghi chú khách: ";
             // 
             // label6
             // 
             label6.AutoSize = true;
+            label6.Font = new Font("Calibri", 10.8F, FontStyle.Bold);
             label6.ForeColor = Color.FromArgb(128, 64, 0);
             label6.Location = new Point(14, 9);
             label6.Name = "label6";
-            label6.Size = new Size(79, 21);
+            label6.Size = new Size(85, 22);
             label6.TabIndex = 3;
             label6.Text = "Loại món:";
             // 
@@ -189,30 +189,30 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
+            label3.Font = new Font("Calibri", 10.8F, FontStyle.Bold);
             label3.Location = new Point(6, 76);
             label3.Name = "label3";
-            label3.Size = new Size(114, 21);
+            label3.Size = new Size(123, 22);
             label3.TabIndex = 2;
             label3.Text = "Trạng thái bàn:";
             // 
             // lbTrangThaiBan
             // 
             lbTrangThaiBan.AutoSize = true;
-            lbTrangThaiBan.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
+            lbTrangThaiBan.Font = new Font("Calibri", 10.8F, FontStyle.Bold);
             lbTrangThaiBan.Location = new Point(126, 76);
             lbTrangThaiBan.Name = "lbTrangThaiBan";
-            lbTrangThaiBan.Size = new Size(78, 21);
+            lbTrangThaiBan.Size = new Size(83, 22);
             lbTrangThaiBan.TabIndex = 3;
             lbTrangThaiBan.Text = "trạng thái";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
+            label2.Font = new Font("Calibri", 10.8F, FontStyle.Bold);
             label2.Location = new Point(6, 37);
             label2.Name = "label2";
-            label2.Size = new Size(81, 21);
+            label2.Size = new Size(88, 22);
             label2.TabIndex = 1;
             label2.Text = "Chọn bàn:";
             label2.Click += label2_Click;
@@ -359,9 +359,6 @@
             // 
             panel4.Controls.Add(btnChuyenBan);
             panel4.Controls.Add(cbBanMuonChuyenDen);
-            panel4.Controls.Add(label10);
-            panel4.Controls.Add(label9);
-            panel4.Controls.Add(label4);
             panel4.Controls.Add(btnGuiOrder);
             panel4.Controls.Add(btnThem);
             panel4.Controls.Add(btnXoa);
@@ -370,39 +367,6 @@
             panel4.Name = "panel4";
             panel4.Size = new Size(861, 78);
             panel4.TabIndex = 12;
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
-            label10.Location = new Point(183, 57);
-            label10.Name = "label10";
-            label10.Size = new Size(99, 21);
-            label10.TabIndex = 1;
-            label10.Text = "xám - đã đặt";
-            label10.Click += label2_Click;
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
-            label9.Location = new Point(183, 36);
-            label9.Name = "label9";
-            label9.Size = new Size(103, 21);
-            label9.TabIndex = 1;
-            label9.Text = "đỏ - có khách";
-            label9.Click += label2_Click;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Calibri", 10.2F, FontStyle.Bold);
-            label4.Location = new Point(183, 13);
-            label4.Name = "label4";
-            label4.Size = new Size(95, 21);
-            label4.TabIndex = 1;
-            label4.Text = "xanh - trống";
-            label4.Click += label2_Click;
             // 
             // tableLayoutPanel1
             // 
@@ -536,7 +500,6 @@
             panel11.ResumeLayout(false);
             panel11.PerformLayout();
             panel4.ResumeLayout(false);
-            panel4.PerformLayout();
             tableLayoutPanel1.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dgvGioHang).EndInit();
@@ -574,9 +537,6 @@
         private TableLayoutPanel tableLayoutPanel1;
         private GroupBox groupBox2;
         private DataGridView dgvGioHang;
-        private Label label9;
-        private Label label4;
-        private Label label10;
         private GroupBox groupBox3;
         private DataGridView dgvMenu;
         private TextBox txtGhiChu;

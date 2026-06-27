@@ -198,6 +198,7 @@
             dgvHoaDon.Size = new Size(531, 436);
             dgvHoaDon.TabIndex = 0;
             dgvHoaDon.CellClick += dgvHoaDon_CellClick;
+            dgvHoaDon.CellFormatting += dgvHoaDon_CellFormatting;
             // 
             // txtMaHoaDon
             // 

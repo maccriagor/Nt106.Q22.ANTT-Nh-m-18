@@ -18,6 +18,10 @@ namespace CafeClient
         public HoaDon_AD()
         {
             InitializeComponent();
+            this.Load += async (s, e) =>
+            {
+                await LoadBills();
+            };
         }
 
         private async Task LoadBills()
@@ -32,7 +36,7 @@ namespace CafeClient
                 dgvHoaDon.DataSource = fullBillList;
 
                 // Ẩn các cột không cần thiết
-                string[] hiddenCols = { "MaDonHang", "MaKH", "PhuongThucThanhToan", "GhiChu", "BaseUrl", "RequestClient", "TableName", "PrimaryKey", "RequestClientOptions" };
+                string[] hiddenCols = { "MaDonHang", "TenBan", "banan", "TenKH", "MaKH", "PhuongThucThanhToan", "GhiChu", "BaseUrl", "RequestClient", "TableName", "PrimaryKey", "RequestClientOptions" };
                 foreach (var col in hiddenCols)
                     if (dgvHoaDon.Columns.Contains(col)) dgvHoaDon.Columns[col].Visible = false;
 
@@ -41,7 +45,7 @@ namespace CafeClient
                 if (dgvHoaDon.Columns.Contains("ThanhTien")) dgvHoaDon.Columns["ThanhTien"].DefaultCellStyle.Format = "N0";
 
                 dgvHoaDon.Columns["MaHD"].HeaderText = "Mã HD";
-                dgvHoaDon.Columns["MaBanAn"].HeaderText = "Bàn";
+                dgvHoaDon.Columns["MaBanAn"].HeaderText = "Mã Bàn";
                 dgvHoaDon.Columns["MaNV"].HeaderText = "Nhân Viên";
                 dgvHoaDon.Columns["NgayTao"].HeaderText = "Ngày Tạo";
             }
@@ -94,6 +98,36 @@ namespace CafeClient
                 txtMaNhanVien.Text = row.Cells["MaNV"].Value?.ToString();
                 txtMaBanAn.Text = row.Cells["MaBanAn"].Value?.ToString() ?? "Mang về";
                 txtNgayXuatHD.Text = Convert.ToDateTime(row.Cells["NgayTao"].Value).ToString("dd/MM/yyyy HH:mm");
+            }
+        }
+
+        private void dgvHoaDon_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            // Đảm bảo không format trúng dòng tiêu đề (Header) hoặc dòng mới chưa có dữ liệu
+            if (e.RowIndex >= 0 && e.RowIndex < dgvHoaDon.Rows.Count)
+            {
+                // Lấy toàn bộ dữ liệu của dòng hiện tại (Ép kiểu về CafeCommon.HoaDon)
+                var hoaDon = dgvHoaDon.Rows[e.RowIndex].DataBoundItem as CafeCommon.HoaDon;
+
+                if (hoaDon != null)
+                {
+                    // Tô màu nền cho MỌI Ô trên dòng này dựa vào Trạng thái của hóa đơn
+                    switch (hoaDon.TrangThai)
+                    {
+                        case "Đã thanh toán":
+                            e.CellStyle.BackColor = Color.LightGreen;
+                            e.CellStyle.ForeColor = Color.Black;
+                            break;
+                        case "Chưa thanh toán":
+                            e.CellStyle.BackColor = Color.LightPink; // Dùng LightPink cho màu đỏ nhạt dịu mắt
+                            e.CellStyle.ForeColor = Color.Black;
+                            break;
+                        case "Đã hủy":
+                            e.CellStyle.BackColor = Color.LightGray;
+                            e.CellStyle.ForeColor = Color.Black;
+                            break;
+                    }
+                }
             }
         }
     }

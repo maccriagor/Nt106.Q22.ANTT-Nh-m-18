@@ -112,7 +112,7 @@
             // 
             panel7.Controls.Add(dtpNgayVaoLam);
             panel7.Controls.Add(label4);
-            panel7.Location = new Point(6, 362);
+            panel7.Location = new Point(6, 345);
             panel7.Name = "panel7";
             panel7.Size = new Size(309, 62);
             panel7.TabIndex = 0;
@@ -139,7 +139,7 @@
             // 
             panel6.Controls.Add(cbVaiTro);
             panel6.Controls.Add(label3);
-            panel6.Location = new Point(8, 294);
+            panel6.Location = new Point(8, 277);
             panel6.Name = "panel6";
             panel6.Size = new Size(307, 62);
             panel6.TabIndex = 0;
@@ -169,7 +169,7 @@
             // 
             panel8.Controls.Add(tbPass);
             panel8.Controls.Add(label5);
-            panel8.Location = new Point(8, 226);
+            panel8.Location = new Point(8, 209);
             panel8.Name = "panel8";
             panel8.Size = new Size(307, 62);
             panel8.TabIndex = 0;
@@ -196,7 +196,7 @@
             // 
             panel5.Controls.Add(tbEmail);
             panel5.Controls.Add(label2);
-            panel5.Location = new Point(8, 158);
+            panel5.Location = new Point(8, 141);
             panel5.Name = "panel5";
             panel5.Size = new Size(307, 62);
             panel5.TabIndex = 0;
@@ -216,7 +216,7 @@
             // 
             panel9.Controls.Add(txtUserName);
             panel9.Controls.Add(label6);
-            panel9.Location = new Point(6, 22);
+            panel9.Location = new Point(6, 5);
             panel9.Name = "panel9";
             panel9.Size = new Size(309, 62);
             panel9.TabIndex = 0;
@@ -243,7 +243,7 @@
             // 
             panel4.Controls.Add(tbTenNhanVien);
             panel4.Controls.Add(label1);
-            panel4.Location = new Point(8, 90);
+            panel4.Location = new Point(8, 73);
             panel4.Name = "panel4";
             panel4.Size = new Size(307, 62);
             panel4.TabIndex = 0;
@@ -420,6 +420,7 @@
             dgvNhanVien.Size = new Size(527, 437);
             dgvNhanVien.TabIndex = 0;
             dgvNhanVien.CellClick += dgvNhanVien_CellClick;
+            dgvNhanVien.CellFormatting += dgvNhanVien_CellFormatting;
             // 
             // MaNguoiDung
             // 

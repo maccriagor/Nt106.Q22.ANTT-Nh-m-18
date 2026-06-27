@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             panel3 = new Panel();
             tbTimKiem = new TextBox();
             btnTimKiem = new Button();
@@ -55,8 +57,8 @@
             colMaHD = new DataGridViewTextBoxColumn();
             colMaBanAn = new DataGridViewTextBoxColumn();
             colTongTien = new DataGridViewTextBoxColumn();
-            colNgayTao = new DataGridViewTextBoxColumn();
             colTrangThai = new DataGridViewTextBoxColumn();
+            colNgayTao = new DataGridViewTextBoxColumn();
             panel1 = new Panel();
             panel11 = new Panel();
             lblTitle = new Label();
@@ -321,14 +323,31 @@
             // 
             dgvHoaDon.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvHoaDon.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgvHoaDon.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvHoaDon.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvHoaDon.Columns.AddRange(new DataGridViewColumn[] { colMaHD, colMaBanAn, colTongTien, colTrangThai, colNgayTao });
             dgvHoaDon.Location = new Point(12, 3);
             dgvHoaDon.Name = "dgvHoaDon";
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Control;
+            dataGridViewCellStyle2.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgvHoaDon.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             dgvHoaDon.RowHeadersWidth = 51;
             dgvHoaDon.Size = new Size(522, 290);
             dgvHoaDon.TabIndex = 0;
             dgvHoaDon.CellClick += dgvHoaDon_CellClick;
+            dgvHoaDon.CellFormatting += dgvHoaDon_CellFormatting;
             // 
             // colMaHD
             // 
@@ -348,18 +367,19 @@
             colTongTien.MinimumWidth = 6;
             colTongTien.Name = "colTongTien";
             // 
+            // colTrangThai
+            // 
+            colTrangThai.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            colTrangThai.HeaderText = "Trạng Thái";
+            colTrangThai.MinimumWidth = 6;
+            colTrangThai.Name = "colTrangThai";
+            colTrangThai.Width = 116;
+            // 
             // colNgayTao
             // 
             colNgayTao.HeaderText = "Ngày Tạo";
             colNgayTao.MinimumWidth = 6;
             colNgayTao.Name = "colNgayTao";
-            // 
-            // colTrangThai
-            // 
-            colTrangThai.HeaderText = "Trạng Thái";
-            colTrangThai.MinimumWidth = 6;
-            colTrangThai.Name = "colTrangThai";
-            colTrangThai.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
             // 
             // panel1
             // 

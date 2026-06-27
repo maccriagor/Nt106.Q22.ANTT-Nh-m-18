@@ -139,7 +139,7 @@
             txtusername.Multiline = true;
             txtusername.Name = "txtusername";
             txtusername.Size = new Size(290, 26);
-            txtusername.TabIndex = 45;
+            txtusername.TabIndex = 0;
             // 
             // label3
             // 

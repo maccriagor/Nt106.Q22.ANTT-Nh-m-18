@@ -141,11 +141,21 @@ namespace CafeClient
             if (data == null) return;
             dgvDonHang.AutoGenerateColumns = false;
 
-            var displayList = data.Select(x =>
+            // 1. TẠO CẤU TRÚC DATATABLE ĐỂ HỖ TRỢ CLICK HEADER SẮP XẾP
+            System.Data.DataTable dt = new System.Data.DataTable();
+            dt.Columns.Add("MaDonHang", typeof(int));
+            dt.Columns.Add("MaHD", typeof(string));
+            dt.Columns.Add("TenBan", typeof(string));
+            dt.Columns.Add("SoLuong", typeof(int)); // Kiểu int để xếp số chuẩn (VD: 2 xếp trước 10)
+            dt.Columns.Add("TrangThai", typeof(string));
+            dt.Columns.Add("NgayOrder", typeof(DateTime)); // Kiểu DateTime để xếp ngày tháng chuẩn
+
+            // 2. DUYỆT DỮ LIỆU VÀ ĐỔ VÀO DATATABLE
+            foreach (var x in data)
             {
                 int totalQty = 0;
 
-                // Calculate total items ordered
+                // Tính tổng số lượng
                 if (x.ctdonhang is Newtonsoft.Json.Linq.JArray items)
                 {
                     foreach (var item in items)
@@ -154,7 +164,7 @@ namespace CafeClient
                     }
                 }
 
-                // --- Convert numeric status to readable text ---
+                // Chuyển đổi trạng thái sang Tiếng Việt
                 string rawStatus = x.trangthai?.ToString() ?? "";
                 string readableStatus = rawStatus switch
                 {
@@ -162,25 +172,34 @@ namespace CafeClient
                     "1" => "Đang chế biến",
                     "2" => "Hoàn thành",
                     "3" => "Đã hủy",
-                    _ => "Không xác định" // Fallback case if something unexpected comes from DB
+                    _ => "Không xác định"
                 };
 
-                return new
+                // Lấy các thông tin còn lại
+                int maDonHang = (int)x.madonhang;
+                string maHD = GetMaHD(x);
+                string tenBan = (string)(x.banan is Newtonsoft.Json.Linq.JArray ? x.banan[0]?.tenban : x.banan?.tenban ?? "N/A");
+
+                // Xử lý ngày tháng an toàn
+                DateTime ngayOrder = DateTime.Now;
+                if (x.ngayorder != null)
                 {
-                    MaDonHang = (int)x.madonhang,
-                    MaHD = GetMaHD(x),
+                    // Tách riêng ra một biến string để ép C# hiểu đây không còn là dynamic nữa
+                    string dateStr = x.ngayorder.ToString();
 
-                    // Safe array/object check for table name
-                    TenBan = x.banan is Newtonsoft.Json.Linq.JArray ? x.banan[0]?.tenban : x.banan?.tenban ?? "N/A",
+                    if (DateTime.TryParse(dateStr, out DateTime parsedDate))
+                    {
+                        ngayOrder = parsedDate;
+                    }
+                }
 
-                    SoLuong = totalQty.ToString(),
-                    TrangThai = readableStatus, // <--- Now uses the clean Vietnamese text!
-                    NgayOrder = x.ngayorder
-                };
-            }).ToList();
+                // Thêm thành 1 dòng vào DataTable
+                dt.Rows.Add(maDonHang, maHD, tenBan, totalQty, readableStatus, ngayOrder);
+            }
 
+            // 3. ĐẨY LÊN LƯỚI (Tính năng Sorting sẽ tự động được mở khóa)
             dgvDonHang.DataSource = null;
-            dgvDonHang.DataSource = displayList;
+            dgvDonHang.DataSource = dt;
         }
 
 
@@ -256,6 +275,32 @@ namespace CafeClient
                         _ => "Không xác định"
                     };
                     lvi.SubItems.Add(readableItemStatus);
+
+                    // =======================================================
+                    // [THÊM MỚI] ĐỔ MÀU CHO TỪNG DÒNG LISTVIEW TẠI ĐÂY
+                    // =======================================================
+                    lvi.UseItemStyleForSubItems = true; // Bắt buộc bật dòng này để nó tô màu full cả dòng (không chỉ cột đầu)
+
+                    switch (readableItemStatus)
+                    {
+                        case "Xong":
+                            lvi.BackColor = Color.LightGreen;
+                            lvi.ForeColor = Color.Black;
+                            break;
+                        case "Đang làm":
+                            lvi.BackColor = Color.LightPink;
+                            lvi.ForeColor = Color.Black;
+                            break;
+                        case "Chờ":
+                            lvi.BackColor = Color.LightYellow;
+                            lvi.ForeColor = Color.Black;
+                            break;
+                        case "Đã hủy":
+                            lvi.BackColor = Color.LightGray;
+                            lvi.ForeColor = Color.Black;
+                            break;
+                    }
+                    // =======================================================
 
                     lvDonHang.Items.Add(lvi);
                 }
@@ -340,6 +385,45 @@ namespace CafeClient
                 foreach (ColumnHeader col in lvDonHang.Columns)
                 {
                     col.Width = (int)(col.Width * scaleFactor);
+                }
+            }
+        }
+
+        private void dgvDonHang_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            // Đảm bảo không format trúng dòng tiêu đề
+            if (e.RowIndex >= 0 && e.RowIndex < dgvDonHang.Rows.Count)
+            {
+                var rowItem = dgvDonHang.Rows[e.RowIndex].DataBoundItem;
+                if (rowItem == null) return;
+
+                string trangThai = "";
+
+                // Trích xuất trạng thái an toàn từ DataRowView (của DataTable)
+                if (rowItem is System.Data.DataRowView rowView)
+                {
+                    trangThai = rowView["TrangThai"]?.ToString() ?? "";
+                }
+
+                // Tô màu nền cho MỌI Ô trên dòng này dựa vào Trạng thái của đơn hàng
+                switch (trangThai)
+                {
+                    case "Hoàn thành":
+                        e.CellStyle.BackColor = Color.LightGreen;
+                        e.CellStyle.ForeColor = Color.Black;
+                        break;
+                    case "Đang chế biến":
+                        e.CellStyle.BackColor = Color.LightPink; // Đỏ nhạt
+                        e.CellStyle.ForeColor = Color.Black;
+                        break;
+                    case "Chờ xác nhận":
+                        e.CellStyle.BackColor = Color.LightYellow; // Vàng nhạt
+                        e.CellStyle.ForeColor = Color.Black;
+                        break;
+                    case "Đã hủy":
+                        e.CellStyle.BackColor = Color.LightGray; // Xám nhạt
+                        e.CellStyle.ForeColor = Color.Black;
+                        break;
                 }
             }
         }
