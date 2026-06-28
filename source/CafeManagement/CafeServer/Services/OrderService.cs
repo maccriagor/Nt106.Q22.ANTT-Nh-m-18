@@ -137,6 +137,57 @@ namespace CafeServer.Services
                     .Set(x => x.ThanhTien, totalOrderAmount)
                     .Update();
 
+                // =====================================================================
+                // 7. [THÊM MỚI] GỬI TIN NHẮN THÔNG BÁO CHO TẤT CẢ NHÂN VIÊN
+                // =====================================================================
+                try
+                {
+                    // 7.1 Lấy Tên Bàn
+                    var banAnRes = await DatabaseService.Client.From<BanAn>()
+                        .Where(x => x.MaBanAn == order.MaBanAn).Get();
+                    string tenBan = banAnRes.Models.FirstOrDefault()?.TenBan ?? $"Bàn {order.MaBanAn}";
+
+                    // 7.2 Lấy Tên Nhân viên Order
+                    var nvRes = await DatabaseService.Client.From<UserAccount>()
+                        .Where(x => x.MaNguoiDung == order.MaNVOrder).Get();
+                    string tenNV = nvRes.Models.FirstOrDefault()?.HoTen ?? $"NV {order.MaNVOrder}";
+
+                    // 7.3 Tính tổng số lượng món vừa gửi
+                    int tongSoMon = details.Sum(d => d.SoLuong);
+
+                    // 7.4 Định dạng giá tiền (Ví dụ: 150,000đ)
+                    string giaTien = totalOrderAmount.ToString("N0") + "đ";
+
+                    // 7.5 Phân loại thông minh: Là Đơn mới hay Gọi thêm món?
+                    string loaiDon = activeBill == null ? "ĐƠN MỚI" : "GỌI THÊM MÓN";
+
+                    // 7.6 Ghép chuỗi theo đúng Format bạn yêu cầu: [thời gian]Tên: ĐƠN MỚI [Bàn 4]: 3 món - (Giá tiền)
+                    string timeString = DateTime.Now.ToString("HH:mm");
+                    string content = $"🔔 [{timeString}] {tenNV}: {loaiDon} [{tenBan}] - {tongSoMon} món {giaTien}";
+
+                    // 7.7 Khởi tạo và Lưu tin nhắn
+                    var systemMsg = new TinNhan
+                    {
+                        SenderId = order.MaNVOrder,
+                        RecipientId = null, // Gửi Broadcast cho tất cả mọi người
+                        Content = content,
+                        Timestamp = DateTime.Now,
+                        IsRead = false
+                    };
+
+                    await ServiceManager.User.SaveMessageToDatabase(systemMsg);
+
+                    // 7.8 Bắn tín hiệu Realtime qua Socket
+                    string normalizedJson = Newtonsoft.Json.JsonConvert.SerializeObject(systemMsg);
+
+                    // Dùng hàm Broadcast của SocketServer để đẩy cho tất cả Client
+                    await SocketServer.Broadcast("NEW_MESSAGE|" + normalizedJson);
+                }
+                catch (Exception notifyEx)
+                {
+                    Console.WriteLine($"[OrderService.Notify] Lỗi gửi thông báo Đơn mới: {notifyEx.Message}");
+                }
+
                 return true;
             }
             catch (Exception ex)

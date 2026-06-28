@@ -1,9 +1,10 @@
-﻿using System;
+﻿using CafeCommon;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CafeCommon;
 using static Supabase.Postgrest.Constants;
 
 namespace CafeServer.Services
@@ -189,10 +190,73 @@ namespace CafeServer.Services
                         }
 
                         // Cập nhật trạng thái mới cho bảng DonHang
+                        // Cập nhật trạng thái mới cho bảng DonHang
                         await DatabaseService.Client.From<DonHang>()
                             .Where(x => x.MaDonHang == maDonHang)
                             .Set(x => x.TrangThai, trangThaiDonHangMoi)
                             .Update();
+
+                        // =====================================================================
+                        // 6. [THÊM MỚI] GỬI TIN NHẮN THÔNG BÁO KHI ĐƠN HÀNG VỪA HOÀN THÀNH
+                        // Chỉ bắn 1 lần duy nhất tại thời điểm CHUYỂN sang trạng thái Hoàn thành (2),
+                        // tránh bắn lại nếu món này gọi update lại trong khi đơn đã hoàn thành từ trước.
+                        // =====================================================================
+                        if (trangThaiMoi == 2 && currentItem.TrangThaiItem != 2)
+                        {
+                            try
+                            {
+                                // 6.1 Lấy tên bàn (DonHang -> BanAn)
+                                var donHangRes = await DatabaseService.Client.From<DonHang>()
+                                    .Where(x => x.MaDonHang == maDonHang)
+                                    .Get();
+                                var donHang = donHangRes.Models.FirstOrDefault();
+
+                                string tenBan = "Không xác định";
+                                if (donHang != null)
+                                {
+                                    var banAnRes = await DatabaseService.Client.From<BanAn>()
+                                        .Where(x => x.MaBanAn == donHang.MaBanAn)
+                                        .Get();
+                                    var banAn = banAnRes.Models.FirstOrDefault();
+                                    if (banAn != null) tenBan = banAn.TenBan;
+                                }
+
+                                // 6.2 Lấy tên của ĐÚNG CÁI MÓN vừa nấu xong (Menu)
+                                var menuRes = await DatabaseService.Client.From<Menu>()
+                                    .Where(x => x.MaMon == currentItem.MaMon)
+                                    .Get();
+                                var menu = menuRes.Models.FirstOrDefault();
+                                string tenMon = menu != null ? menu.TenMon : "Món không xác định";
+
+                                // 6.3 Tạo nội dung tin nhắn báo từng món (VD: 🔔 [Bàn 12] Tiramisu (x2) : ✅ Đã lên mâm!)
+                                string content = $"🔔 [{tenBan}] {tenMon} (x{currentItem.SoLuong}) : ✅ HOÀN THÀNH!";
+
+                                // 6.4 Tạo và lưu tin nhắn hệ thống (sender = đầu bếp vừa hoàn thành món)
+                                var systemMsg = new TinNhan
+                                {
+                                    SenderId = maDauBep ?? 0, // ID Đầu bếp
+                                    RecipientId = null,       // Broadcast cho mọi người (Phục vụ sẽ thấy)
+                                    Content = content,
+                                    Timestamp = DateTime.Now,
+                                    IsRead = false
+                                };
+
+                                // 6.5 Phát tin nhắn realtime cho mọi client đang kết nối (ĐẨY VÀO LUỒNG NGẦM)
+                                string normalizedJson = JsonConvert.SerializeObject(systemMsg);
+
+                                // Dùng Task.Run để chạy ngầm, không làm kẹt luồng trả kết quả SUCCESS
+                                Task.Run(async () =>
+                                {
+                                    await Task.Delay(200); // Nhường đường cho lệnh SUCCESS về đích trước
+                                    await SocketServer.Broadcast("NEW_MESSAGE|" + normalizedJson);
+                                });
+                            }
+                            catch (Exception notifyEx)
+                            {
+                                // Không để lỗi gửi thông báo làm hỏng luồng cập nhật món ăn chính
+                                Console.WriteLine($"[KitchenService.Notify] Lỗi khi gửi tin nhắn hoàn thành đơn: {notifyEx.Message}");
+                            }
+                        }
                     }
                 }
 

@@ -216,8 +216,7 @@ namespace CafeClient
                                 MonHoanThanh = monHoanThanhNhanVien
                             };
                         })
-                        .OrderByDescending(x => x.TongSoDon) // Sắp xếp giảm dần theo tổng số đơn hàng làm được
-                        .Take(3) // Chỉ lấy ra đúng Top 3 người đứng đầu
+                        .OrderByDescending(x => x.TongSoDon) // Sắp xếp giảm dan
                         .ToList();
 
                     // Đổ dữ liệu đã xử lý vào ListView
