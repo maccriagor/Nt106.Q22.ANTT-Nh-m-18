@@ -137,8 +137,6 @@ namespace CafeServer.Services
                     .Set(x => x.ThanhTien, totalOrderAmount)
                     .Update();
 
-<<<<<<< HEAD
-=======
                 // =====================================================================
                 // 7. [THÊM MỚI] GỬI TIN NHẮN THÔNG BÁO CHO TẤT CẢ NHÂN VIÊN
                 // =====================================================================
@@ -190,7 +188,6 @@ namespace CafeServer.Services
                     Console.WriteLine($"[OrderService.Notify] Lỗi gửi thông báo Đơn mới: {notifyEx.Message}");
                 }
 
->>>>>>> origin/loi_bep_chat
                 return true;
             }
             catch (Exception ex)
