@@ -107,8 +107,16 @@ namespace CafeClient
             {
                 if (orderDetail.UuTien == true) // Đang được đánh dấu ưu tiên/gấp
                 {
+                    // THAY ĐỔI TEXT HIỂN THỊ TẠI ĐÂY
+                    e.Value = "🔥 Gấp";
+
                     e.CellStyle.ForeColor = Color.Red;
                     e.CellStyle.Font = new Font(dgvDonHang.Font, FontStyle.Bold);
+                }
+                else
+                {
+                    // Nếu không ưu tiên thì để trống (hoặc bạn có thể để chữ "Bình thường" tùy ý)
+                    e.Value = "";
                 }
                 e.FormattingApplied = true;
             }
