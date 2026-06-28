@@ -26,6 +26,17 @@ namespace CafeServer.Services
                 // Kiểm tra mật khẩu bằng BCrypt
                 if (account != null && SercurityHelper.VerifyPassword(password, account.MatKhau))
                 {
+
+                    // =========================================================
+                    // [THÊM MỚI] RÀNG BUỘC KIỂM TRA TRẠNG THÁI TÀI KHOẢN
+                    // =========================================================
+                    if (account.TrangThai == false)
+                    {
+                        // Ném ra ngoại lệ mang theo câu thông báo cụ thể
+                        throw new Exception("Tài khoản của bạn đã bị khóa hoặc vô hiệu hóa!\nVui lòng liên hệ Admin.");
+                    }
+                    // =========================================================
+
                     await UpdateOnlineStatusAsync(account.MaNguoiDung, true); // Chuyển sang Online
                     return account;
                 }

@@ -18,6 +18,11 @@ namespace CafeClient
         public KhachHang_PV()
         {
             InitializeComponent();
+
+            this.Load += async (s, e) =>
+            {
+                await LoadCustomers();
+            };
         }
         private async Task LoadCustomers()
         {

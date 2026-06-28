@@ -106,9 +106,30 @@ namespace CafeClient
                         item.SubItems.Add(food.SoDon.ToString());                   // Số đơn
                         item.SubItems.Add($"{food.TiLe:F1}%");                      // Tỉ lệ %
 
+                        // ==========================================
+                        // [THÊM MỚI] TÔ MÀU CHO TOP 3 BEST SELLER
+                        // ==========================================
+                        item.UseItemStyleForSubItems = true; // Bắt buộc dòng này để nó tô full cả dòng
+                        if (stt == 1)
+                        {
+                            item.BackColor = Color.LightYellow; // Top 1: Vàng nhạt
+                            item.Font = new Font(lvseller.Font, FontStyle.Bold); // Khuyến mãi thêm bôi đậm cho Top 1
+                        }
+                        else if (stt == 2)
+                        {
+                            item.BackColor = Color.LightGray;   // Top 2: Xám nhạt
+                        }
+                        else if (stt == 3)
+                        {
+                            item.BackColor = Color.PeachPuff;   // Top 3: Cam nhạt (PeachPuff là màu cam pastel rất đẹp trong C#)
+                        }
+
                         lvseller.Items.Add(item);
                         stt++;
                     }
+
+                    AutoResizeListViewColumns(lvseller);
+
                 }
                 else
                 {
@@ -231,9 +252,30 @@ namespace CafeClient
                         item.SubItems.Add(chef.TongSoMon.ToString());           // Tổng số món
                         item.SubItems.Add(chef.MonHoanThanh.ToString());        // Số món hoàn thành
 
+                        // ==========================================
+                        // [THÊM MỚI] TÔ MÀU CHO TOP 3 ĐẦU BẾP XUẤT SẮC
+                        // ==========================================
+                        item.UseItemStyleForSubItems = true;
+                        if (stt == 1)
+                        {
+                            item.BackColor = Color.LightYellow; // Top 1: Vàng nhạt
+                            item.Font = new Font(lvdaubep.Font, FontStyle.Bold);
+                        }
+                        else if (stt == 2)
+                        {
+                            item.BackColor = Color.LightGray;   // Top 2: Xám nhạt
+                        }
+                        else if (stt == 3)
+                        {
+                            item.BackColor = Color.PeachPuff;   // Top 3: Cam nhạt
+                        }
+
                         lvdaubep.Items.Add(item);
                         stt++;
                     }
+
+                    AutoResizeListViewColumns(lvdaubep);
+
                 }
                 else
                 {
@@ -439,30 +481,85 @@ namespace CafeClient
                     }
                     worksheet2.Columns().AdjustToContents(); // Thiết lập AutoFit căn chỉnh độ rộng cột tự động
 
-                    // 3. Thực hiện lưu tệp tin Excel vào thư mục tạm thời của hệ thống
-                    string folderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Reports");
-                    if (!Directory.Exists(folderPath))
+                    // =====================================================================
+                    // 3. [THAY ĐỔI] DÙNG SAVEFILEDIALOG ĐỂ NGƯỜI DÙNG TỰ CHỌN VỊ TRÍ LƯU FILE
+                    // =====================================================================
+                    using (SaveFileDialog sfd = new SaveFileDialog())
                     {
-                        Directory.CreateDirectory(folderPath); // Tạo thư mục nếu chưa tồn tại
+                        // Chỉ định đuôi file mặc định là Excel
+                        sfd.Filter = "Excel Workbook (*.xlsx)|*.xlsx|All Files (*.*)|*.*";
+                        sfd.FilterIndex = 1;
+
+                        // Tự động gợi ý một cái tên file chuẩn theo mốc thời gian lọc
+                        sfd.FileName = $"BaoCao_NhaBep_{tuNgay:yyyyMMdd}_To_{denNgay:yyyyMMdd}.xlsx";
+                        sfd.Title = "Chọn nơi lưu báo cáo thống kê nhà bếp";
+
+                        // Nếu người dùng bấm [Save] (OK) trên hộp thoại
+                        if (sfd.ShowDialog() == DialogResult.OK)
+                        {
+                            string filePath = sfd.FileName; // Lấy đường dẫn tuyệt đối mà user vừa chọn
+
+                            // Tiến hành lưu file thực tế xuống ổ đĩa
+                            workbook.SaveAs(filePath);
+
+                            // 4. Hỏi xem người dùng có muốn mở trực tiếp file vừa lưu lên không
+                            var confirmOpen = MessageBox.Show("Xuất báo cáo Excel thành công!\nBạn có muốn mở tệp tin này ngay bây giờ không?",
+                                                              "Thành công", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                            if (confirmOpen == DialogResult.Yes)
+                            {
+                                ProcessStartInfo startInfo = new ProcessStartInfo
+                                {
+                                    FileName = filePath,
+                                    UseShellExecute = true // Kích hoạt ứng dụng Excel mặc định của máy tính
+                                };
+                                Process.Start(startInfo);
+                            }
+                        }
+                        else
+                        {
+                            // Người dùng bấm [Cancel], hủy không xuất file nữa
+                            MessageBox.Show("Thao tác xuất báo cáo đã bị hủy bởi người dùng.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
                     }
-
-                    string fileName = $"BaoCao_NhaBep_{tuNgay:yyyyMMdd}_To_{denNgay:yyyyMMdd}.xlsx";
-                    string filePath = Path.Combine(folderPath, fileName);
-
-                    workbook.SaveAs(filePath); // Lưu file dữ liệu
-
-                    // 4. Mở luôn tệp tin đó lên cho người dùng xem bằng Process.Start
-                    ProcessStartInfo startInfo = new ProcessStartInfo
-                    {
-                        FileName = filePath,
-                        UseShellExecute = true // Cần thiết lập True để chạy ứng dụng mặc định xử lý file hệ thống (.xlsx)
-                    };
-                    Process.Start(startInfo);
-                }
+                } // Khối kết thúc của using (XLWorkbook workbook)
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Đã xảy ra lỗi khi tạo hoặc mở báo cáo Excel: {ex.Message}", "Thông báo lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void AutoResizeListViewColumns(ListView lv)
+        {
+            if (lv.Columns.Count == 0) return;
+
+            // 1. Ép tất cả các cột tự động co giãn vừa khít với nội dung chữ của nó trước
+            for (int i = 0; i < lv.Columns.Count; i++)
+            {
+                lv.AutoResizeColumn(i, ColumnHeaderAutoResizeStyle.ColumnContent);
+
+                // Tránh việc cột có tiêu đề dài mà nội dung ngắn bị che khuất tiêu đề
+                if (lv.Columns[i].Width < 80) lv.Columns[i].Width = 80;
+            }
+
+            // 2. Tính toán xem tổng các cột đang chiếm bao nhiêu diện tích
+            int totalWidth = lv.ClientSize.Width - 2; // Trừ hao 2 pixel để không bị xuất hiện thanh cuộn ngang
+            int usedWidth = 0;
+
+            foreach (ColumnHeader col in lv.Columns)
+            {
+                usedWidth += col.Width;
+            }
+
+            // 3. Nếu vẫn còn trống chỗ, chia đều tỷ lệ dư thừa để kéo giãn tất cả các cột ra
+            if (usedWidth < totalWidth && usedWidth > 0)
+            {
+                double scaleFactor = (double)totalWidth / usedWidth;
+                foreach (ColumnHeader col in lv.Columns)
+                {
+                    col.Width = (int)(col.Width * scaleFactor);
+                }
             }
         }
     }

@@ -487,6 +487,16 @@ namespace CafeClient
             var selectedMenu = dgvMenu.CurrentRow.DataBoundItem as CafeCommon.Menu;
             if (selectedMenu == null) return;
 
+            // =================================================================
+            // [THÊM MỚI] Ràng buộc 1.5: Chặn không cho thêm món đã Hết hàng
+            // =================================================================
+            if (selectedMenu.TrangThai == "Hết hàng")
+            {
+                MessageBox.Show($"Món '{selectedMenu.TenMon}' hiện đang hết nguyên liệu!\nVui lòng báo khách chọn món khác.", "Món hết hàng", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                return;
+            }
+            // =================================================================
+
             int qty = (int)nmSoLuong.Value;
 
             // Ràng buộc 2: Chặn việc thêm số lượng bằng 0
