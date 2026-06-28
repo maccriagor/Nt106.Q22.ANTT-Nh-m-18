@@ -201,7 +201,7 @@ namespace CafeServer.Services
                         // Chỉ bắn 1 lần duy nhất tại thời điểm CHUYỂN sang trạng thái Hoàn thành (2),
                         // tránh bắn lại nếu món này gọi update lại trong khi đơn đã hoàn thành từ trước.
                         // =====================================================================
-                        if (trangThaiDonHangMoi == 2 && currentItem.TrangThaiItem != 2)
+                        if (trangThaiMoi == 2 && currentItem.TrangThaiItem != 2)
                         {
                             try
                             {
@@ -221,45 +221,35 @@ namespace CafeServer.Services
                                     if (banAn != null) tenBan = banAn.TenBan;
                                 }
 
-                                // 6.2 Tính tổng số lượng theo từng món (gộp các dòng trùng MaMon, dùng lại allItems đã fetch ở trên)
-                                var soLuongTheoMon = allItems
-                                    .GroupBy(x => x.MaMon)
-                                    .Select(g => new { MaMon = g.Key, TongSoLuong = g.Sum(x => x.SoLuong) })
-                                    .ToList();
-
-                                // 6.3 Lấy tên món tương ứng (Menu)
-                                var maMonList = soLuongTheoMon.Select(x => x.MaMon).ToList();
+                                // 6.2 Lấy tên của ĐÚNG CÁI MÓN vừa nấu xong (Menu)
                                 var menuRes = await DatabaseService.Client.From<Menu>()
-                                    .Filter("mamon", Supabase.Postgrest.Constants.Operator.In, maMonList)
+                                    .Where(x => x.MaMon == currentItem.MaMon)
                                     .Get();
-                                var menuDict = menuRes.Models.ToDictionary(m => m.MaMon, m => m.TenMon);
+                                var menu = menuRes.Models.FirstOrDefault();
+                                string tenMon = menu != null ? menu.TenMon : "Món không xác định";
 
-                                // 6.4 Ghép chuỗi "pizza x2 coca x1"
-                                var orderDetailsParts = soLuongTheoMon.Select(x =>
-                                {
-                                    string tenMon = menuDict.TryGetValue(x.MaMon, out var tm) ? tm : "Món không xác định";
-                                    return $"{tenMon} x{x.TongSoLuong}";
-                                });
-                                string orderDetails = string.Join(" ", orderDetailsParts);
+                                // 6.3 Tạo nội dung tin nhắn báo từng món (VD: 🔔 [Bàn 12] Tiramisu (x2) : ✅ Đã lên mâm!)
+                                string content = $"🔔 [{tenBan}] {tenMon} (x{currentItem.SoLuong}) : ✅ HOÀN THÀNH!";
 
-                                // 6.5 Tạo nội dung tin nhắn theo format yêu cầu
-                                string content = $"🔔 [{tenBan}] {orderDetails} : ✅ Hoàn thành.";
-
-                                // 6.6 Tạo và lưu tin nhắn hệ thống (sender = đầu bếp vừa hoàn thành món)
+                                // 6.4 Tạo và lưu tin nhắn hệ thống (sender = đầu bếp vừa hoàn thành món)
                                 var systemMsg = new TinNhan
                                 {
-                                    SenderId = maDauBep ?? 0,
-                                    RecipientId = null, // Broadcast cho mọi người
+                                    SenderId = maDauBep ?? 0, // ID Đầu bếp
+                                    RecipientId = null,       // Broadcast cho mọi người (Phục vụ sẽ thấy)
                                     Content = content,
                                     Timestamp = DateTime.Now,
                                     IsRead = false
                                 };
 
-                                await ServiceManager.User.SaveMessageToDatabase(systemMsg);
-
-                                // 6.7 Phát tin nhắn realtime cho mọi client đang kết nối
+                                // 6.5 Phát tin nhắn realtime cho mọi client đang kết nối (ĐẨY VÀO LUỒNG NGẦM)
                                 string normalizedJson = JsonConvert.SerializeObject(systemMsg);
-                                await SocketServer.Broadcast("NEW_MESSAGE|" + normalizedJson);
+
+                                // Dùng Task.Run để chạy ngầm, không làm kẹt luồng trả kết quả SUCCESS
+                                Task.Run(async () =>
+                                {
+                                    await Task.Delay(200); // Nhường đường cho lệnh SUCCESS về đích trước
+                                    await SocketServer.Broadcast("NEW_MESSAGE|" + normalizedJson);
+                                });
                             }
                             catch (Exception notifyEx)
                             {

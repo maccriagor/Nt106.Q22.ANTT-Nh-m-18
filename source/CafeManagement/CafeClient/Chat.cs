@@ -110,7 +110,7 @@ namespace CafeClient
             if (msg.Timestamp.Date != _lastDisplayDate.Date)
             {
                 rtbChat.SelectionAlignment = HorizontalAlignment.Center;
-                rtbChat.SelectionFont = new DrawingFont("Segoe UI", 12, FontStyle.Bold); // tăng size 8 -> 10
+                rtbChat.SelectionFont = new DrawingFont("Segoe UI", 11, FontStyle.Bold); // tăng size 8 -> 10
                 rtbChat.SelectionColor = DrawingColor.Gray;
                 rtbChat.AppendText($"\n📅 --- {msg.Timestamp:dd/MM/yyyy} --- 📅\n\n");
                 _lastDisplayDate = msg.Timestamp.Date;
@@ -125,20 +125,20 @@ namespace CafeClient
             rtbChat.SelectionAlignment = isMyMessage ? HorizontalAlignment.Right : HorizontalAlignment.Left;
 
             // 3. Tên (màu theo vai trò) và Giờ
-            rtbChat.SelectionFont = new DrawingFont("Segoe UI", 13, FontStyle.Bold); // tăng size 8 -> 11
+            rtbChat.SelectionFont = new DrawingFont("Segoe UI", 11, FontStyle.Bold); // tăng size 8 -> 11
             rtbChat.SelectionColor = GetRoleColor(senderUser?.VaiTro, isMyMessage);
             string roleEmoji = GetRoleEmoji(senderUser?.VaiTro, isMyMessage);
             rtbChat.AppendText($"{roleEmoji} {senderName} ");
 
-            rtbChat.SelectionFont = new DrawingFont("Segoe UI", 12, FontStyle.Italic); // tăng size 7 -> 9
+            rtbChat.SelectionFont = new DrawingFont("Segoe UI", 11, FontStyle.Italic); // tăng size 7 -> 9
             rtbChat.SelectionColor = DrawingColor.Gray;
-            rtbChat.AppendText($"🕒 {msg.Timestamp:HH:mm}\n");
+            rtbChat.AppendText($"🕒 {msg.Timestamp:HH:mm} ");
 
             // 4. Nội dung
             rtbChat.SelectionAlignment = isMyMessage ? HorizontalAlignment.Right : HorizontalAlignment.Left;
-            rtbChat.SelectionFont = new DrawingFont("Segoe UI", 10, FontStyle.Regular);
+            rtbChat.SelectionFont = new DrawingFont("Segoe UI", 11, FontStyle.Regular);
             rtbChat.SelectionColor = DrawingColor.Black;
-            rtbChat.AppendText($"{msg.Content}\n\n");
+            rtbChat.AppendText($"{msg.Content}\n");
 
             rtbChat.ScrollToCaret();
         }
