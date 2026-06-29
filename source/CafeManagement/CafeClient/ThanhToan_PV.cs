@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Extensions.Configuration;
 
 namespace CafeClient
 {
@@ -97,7 +98,7 @@ namespace CafeClient
 
                     if (table != null)
                     {
-                        dgvHoaDon.DataSource = null;
+                        //dgvHoaDon.DataSource = null;
                         dgvHoaDon.DataSource = table;
                         dgvHoaDon.Refresh();
 
@@ -123,11 +124,10 @@ namespace CafeClient
 
         }
 
-        private void chkChuyenKhoan_CheckedChanged_1(object sender, EventArgs e)
+        private async void chkChuyenKhoan_CheckedChanged_1(object sender, EventArgs e)
         {
             if (chkChuyenKhoan.Checked)
             {
-                // 1. Kiểm tra xem người dùng đã chọn hóa đơn dưới bảng chưa
                 if (selectedBill == null)
                 {
                     MessageBox.Show("Vui lòng chọn một hóa đơn từ danh sách trước!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -136,31 +136,43 @@ namespace CafeClient
                 }
 
                 checkBox1.Checked = false;
-                picQR.Visible = true;
 
-                // 2. Cấu hình thông tin tài khoản ngân hàng
-                string bankBin = "970422"; // 970422 là mã BIN của MBBank. (Bạn có thể đổi mã khác nếu cần)
-                string bankAcc = "0909701503"; // Số tài khoản ngân hàng của quán
-                string accountName = "HUYNH DANG KHOA";
+                // Vừa check vào là gọi Server hỏi thông tin ngân hàng ngay
+                string res = await SocketClient.SendRequestAsync("GET_BANK_INFO");
 
-                // 3. Lấy đúng MaHD và Thành tiền (finalThanhTien) đã được tính toán từ hóa đơn
-                string maHoaDon = selectedBill.MaHD.ToString();
-                // Dùng finalThanhTien đã tính ở nút btnTinhThanhTien_Click, hoặc lấy từ selectedBill tùy thiết kế form của bạn
-                decimal soTienThanhToan = finalThanhTien > 0 ? finalThanhTien : selectedBill.TongTien;
+                if (res.StartsWith("SUCCESS|"))
+                {
+                    string[] parts = res.Split('|');
+                    string bankBin = parts[1];
+                    string bankAcc = parts[2];
+                    string accountName = parts[3];
 
-                // NỘI DUNG CHUYỂN KHOẢN BẮT BUỘC: phải chứa cú pháp HD + Mã hóa đơn (Ví dụ: HD123)
-                string addInfo = $"HD{maHoaDon}";
+                    string maHoaDon = selectedBill.MaHD.ToString();
+                    decimal soTienThanhToan = finalThanhTien > 0 ? finalThanhTien : selectedBill.TongTien;
 
-                // URL gọi API trực tiếp trả về ảnh QR từ VietQR
-                string qrUrl = $"https://img.vietqr.io/image/{bankBin}-{bankAcc}-compact2.png?amount={soTienThanhToan}&addInfo={addInfo}&accountName={accountName}";
+                    // --- FIX LỖI KHÔNG QUÉT ĐƯỢC ---
+                    // Ép kiểu số tiền về số nguyên để triệt tiêu hoàn toàn các dấu phẩy/chấm thập phân gây lỗi API
+                    string strSoTien = Convert.ToInt32(soTienThanhToan).ToString();
+                    string addInfo = $"HD{maHoaDon}";
 
-                // Gán thẳng đường link vào PictureBox (Dùng .LoadAsync để không bị đơ UI)
-                picQR.LoadAsync(qrUrl);
+                    // --- FIX LỖI GIAO DIỆN ---
+                    // Đổi 'qr_only.png' thành 'compact2.png' để lấy lại khung viền ngân hàng
+                    string qrUrl = $"https://img.vietqr.io/image/{bankBin}-{bankAcc}-compact2.png?amount={strSoTien}&addInfo={addInfo}&accountName={Uri.EscapeDataString(accountName)}";
+
+                    // Hiển thị mã QR lên giao diện
+                    picQR.LoadAsync(qrUrl);
+                    picQR.Visible = true;
+                }
+                else
+                {
+                    MessageBox.Show("Không thể lấy thông tin ngân hàng từ Server. Vui lòng thử lại!", "Lỗi mạng", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    chkChuyenKhoan.Checked = false;
+                }
             }
             else
             {
                 picQR.Visible = false;
-                picQR.Image = null; // Xóa ảnh QR khi bỏ chọn
+                picQR.Image = null;
             }
         }
 
@@ -559,23 +571,21 @@ namespace CafeClient
 
         private async void HandleAutoPaid(string paidMaHD)
         {
-            // Kiểm tra xem hóa đơn vừa nhận tiền có khớp với hóa đơn đang mở trên màn hình không
             if (selectedBill != null && selectedBill.MaHD.ToString() == paidMaHD)
             {
-                // Kiểm tra an toàn luồng (Cross-thread)
+                // Khóa an toàn Threading trong lập trình mạng WinForms
                 if (this.InvokeRequired)
                 {
                     this.Invoke(new Action(() => HandleAutoPaid(paidMaHD)));
                     return;
                 }
 
-                // 1. CHUẨN BỊ DỮ LIỆU (Đề phòng trường hợp thu ngân chưa kịp bấm nút 'Tính thành tiền')
+                // Gom thông tin hóa đơn hiện tại để gửi lệnh chốt đơn tự động lên máy chủ
                 decimal tienThanhToan = finalThanhTien > 0 ? finalThanhTien : selectedBill.TongTien;
-
                 string maKH = currentCustomer != null ? currentCustomer.MaKH.ToString() : "0";
                 string tenKH = currentCustomer != null && txtTenKH.Text != "Khách vãng lai" ? currentCustomer.TenKH : "Khách vãng lai";
                 string sdtKH = currentCustomer != null && txtTenKH.Text != "Khách vãng lai" ? textBox4.Text.Trim() : "";
-                string hinhThucThanhToan = "Chuyển khoản (Auto)"; // Đánh dấu lưu DB là thanh toán tự động
+                string hinhThucThanhToan = "Chuyển khoản (Auto)";
 
                 float diemDaDung = 0f;
                 if (cbDiemTichLuy.SelectedIndex == 1 && currentCustomer != null)
@@ -586,24 +596,49 @@ namespace CafeClient
                 string soTienGui = tienThanhToan.ToString("F1", System.Globalization.CultureInfo.InvariantCulture);
                 string stringDiemDung = diemDaDung.ToString("F1", System.Globalization.CultureInfo.InvariantCulture);
 
-                // 2. GỬI LỆNH CHỐT ĐƠN LÊN SERVER (Tự động kích hoạt toàn bộ quy trình giải phóng bàn, lưu điểm...)
+                // Gửi gói tin hoàn tất giao dịch lên hệ thống Server
                 string req = $"CONFIRM_PAYMENT|{selectedBill.MaHD}|{selectedBill.MaBanAn}|{maKH}|{soTienGui}|{hinhThucThanhToan}|{stringDiemDung}|{tenKH}|{sdtKH}";
                 string res = await SocketClient.SendRequestAsync(req);
 
                 if (res.Contains("PAYMENT_SUCCESS"))
                 {
-                    // 3. XUẤT THÔNG BÁO CHO NHÂN VIÊN VÀ ĐÓNG FORM
-                    MessageBox.Show($"Khách hàng đã chuyển khoản thành công {tienThanhToan.ToString("N0")}đ!\nĐơn hàng {paidMaHD} đã được tự động hoàn thành và bàn ăn đã được chuyển về trạng thái Trống.",
-                                    "Thanh toán Webhook Thành Công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    // Xuất thông báo trực quan ngay trên Form Thanh toán
+                    MessageBox.Show($"[Hệ thống VietQR] Xác nhận đơn hàng HD{paidMaHD} đã nhận đủ số tiền {tienThanhToan.ToString("N0")}đ!\nDữ liệu đã được cập nhật hoàn tất.",
+                                    "Ting Ting Ngân Hàng", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // Đóng form thanh toán, trả kết quả về form mẹ (Order&Ban_PV) để nó tự Reload lại sơ đồ bàn
-                    this.DialogResult = DialogResult.OK;
-                    this.Hide();
-                    this.Close();
+                    // Xóa điểm tích lũy giao diện nếu có áp dụng
+                    if (diemDaDung > 0)
+                    {
+                        txtDiemTichLuy.Text = "0.0";
+                        if (currentCustomer != null) currentCustomer.DiemTichLuy = 0f;
+                    }
+
+                    // Xóa sạch các ô nhập liệu cũ để thu ngân sẵn sàng xử lý đơn tiếp theo
+                    txtMaHD.Clear();
+                    txtMaBanAn.Clear();
+                    txtTongTien.Clear();
+                    txtNgayXuatHD.Clear();
+                    txtTenKH.Clear();
+                    txtDiemTichLuy.Clear();
+                    txtThanhTien.Clear();
+                    if (tbMaGiamGia != null) tbMaGiamGia.Clear();
+                    picQR.Image = null;
+
+                    // Hủy liên kết biến tạm để làm sạch trạng thái bộ nhớ form
+                    selectedBill = null;
+                    currentCustomer = null;
+                    finalThanhTien = 0;
+
+                    chkChuyenKhoan.Checked = false;
+                    checkBox1.Checked = false;
+                    btnThanhToan.Enabled = false;
+
+                    // Nạp lại danh sách hóa đơn mới một cách an toàn, giữ nguyên Form tại chỗ
+                    LoadDSHoaDon();
                 }
                 else
                 {
-                    MessageBox.Show("Tiền đã vào tài khoản nhưng gặp lỗi khi cập nhật dữ liệu: " + res, "Lỗi Hệ Thống", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Gặp lỗi đồng bộ dữ liệu hóa đơn lên Server: " + res, "Lỗi cập nhật", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

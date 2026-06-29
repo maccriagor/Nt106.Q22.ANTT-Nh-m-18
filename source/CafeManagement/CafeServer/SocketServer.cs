@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static QRCoder.PayloadGenerator;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.Extensions.Configuration;
 
 namespace CafeServer
 {
@@ -1015,7 +1016,26 @@ namespace CafeServer
                     var searchResult3 = await ServiceManager.User.SearchUsersByUsernameAsync(parts[1]);
                     return "SUCCESS|" + JsonConvert.SerializeObject(searchResult3);
 
+                case "GET_BANK_INFO":
+                    try
+                    {
+                        // Khởi tạo bộ đọc file JSON
+                        var config = new ConfigurationBuilder()
+                            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                            .Build();
 
+                        string bankBin = config["BankSettings:BankBin"] ?? "970422";
+                        string bankAcc = config["BankSettings:BankAccount"] ?? "0909701503";
+                        string accName = config["BankSettings:AccountName"] ?? "HUYNH DANG KHOA";
+
+                        // Gửi trả lại cho Client theo cú pháp: SUCCESS|BankBin|BankAcc|AccountName
+                        return $"SUCCESS|{bankBin}|{bankAcc}|{accName}";
+                    }
+                    catch
+                    {
+                        return "ERROR|Lỗi đọc cấu hình ngân hàng trên Server";
+                    }
                 default:
                     return "UNKNOWN_COMMAND";
             }

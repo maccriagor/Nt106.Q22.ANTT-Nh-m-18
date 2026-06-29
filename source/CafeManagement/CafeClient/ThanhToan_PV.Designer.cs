@@ -373,11 +373,8 @@
             colTrangThai.HeaderText = "Trạng Thái";
             colTrangThai.MinimumWidth = 6;
             colTrangThai.Name = "colTrangThai";
-<<<<<<< Updated upstream
             colTrangThai.Width = 116;
-=======
             colTrangThai.Width = 110;
->>>>>>> Stashed changes
             // 
             // colNgayTao
             // 
