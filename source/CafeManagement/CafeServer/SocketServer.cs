@@ -816,6 +816,9 @@ namespace CafeServer
                             string tenKH = parts.Length > 7 ? parts[7] : "";
                             string sdtKH = parts.Length > 8 ? parts[8] : "";
 
+                            string maGiaoDich = parts.Length > 9 ? parts[9] : "";
+                            string qrCodeUrl = parts.Length > 10 ? parts[10] : "";
+
                             // Lấy thông tin hóa đơn hiện tại để biết mã đơn hàng (MaDonHang) liên quan
                             var resBillCur = await DatabaseService.Client.From<HoaDon>().Where(x => x.MaHD == maHD).Get();
                             var currentBillObj = resBillCur.Models.FirstOrDefault();
@@ -827,7 +830,10 @@ namespace CafeServer
                                 .Where(x => x.MaHD == maHD)
                                 .Set(x => x.TrangThai, "Đã thanh toán")
                                 .Set(x => x.ThanhTien, soTien)
-                                .Set(x => x.PhuongThucThanhToan, phuongThuc);
+                                .Set(x => x.PhuongThucThanhToan, phuongThuc)
+                                .Set(x => x.MaGiaoDichNganHang, maGiaoDich)          // Lưu mã giao dịch thật từ SePay/Ngân hàng
+                                .Set(x => x.QrCodeUrl, qrCodeUrl)            // Lưu đường link ảnh QR động đã dùng quét tiền
+                                .Set(x => x.ThoiGianThanhToan, DateTime.UtcNow);
 
                             if (maKH.HasValue && maKH.Value > 0)
                             {

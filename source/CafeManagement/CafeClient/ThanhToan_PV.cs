@@ -49,6 +49,7 @@ namespace CafeClient
         private KhachHang currentCustomer = null;
         private HoaDon selectedBill = null;
         private decimal finalThanhTien = 0;
+        private string currentQrUrl = "";
 
 
         // 1. Lấy danh sách hóa đơn hiện lên bảng bên phải
@@ -159,7 +160,7 @@ namespace CafeClient
                     // Đổi 'qr_only.png' thành 'compact2.png' để lấy lại khung viền ngân hàng
                     string qrUrl = $"https://img.vietqr.io/image/{bankBin}-{bankAcc}-compact2.png?amount={strSoTien}&addInfo={addInfo}&accountName={Uri.EscapeDataString(accountName)}";
 
-                    // Hiển thị mã QR lên giao diện
+                    currentQrUrl = qrUrl; // Lưu lại URL để dành khi nào thanh toán thành công thì đưa lên Server
                     picQR.LoadAsync(qrUrl);
                     picQR.Visible = true;
                 }
@@ -342,10 +343,12 @@ namespace CafeClient
             // Định dạng số liệu sang chuỗi InvariantCulture để tránh xung đột hệ thống dấu chấm/phẩy
             string soTienGui = finalThanhTien.ToString("F1", System.Globalization.CultureInfo.InvariantCulture);
             string stringDiemDung = diemDaDung.ToString("F1", System.Globalization.CultureInfo.InvariantCulture);
+            string maGiaoDich = ""; // Rỗng vì trả tiền mặt
+            string linkQR = "";     // Rỗng vì trả tiền mặt
 
             // Gửi thêm thông tin tên và SĐT qua chuỗi Request lên Server (bổ sung tham số vào cuối giao thức cũ)
             // Cấu trúc chuỗi mới: CONFIRM_PAYMENT|MaHD|MaBanAn|MaKH|SoTien|HinhThuc|DiemDung|TenKH|SdtKH
-            string req = $"CONFIRM_PAYMENT|{selectedBill.MaHD}|{selectedBill.MaBanAn}|{maKH}|{soTienGui}|{hinhThucThanhToan}|{stringDiemDung}|{tenKH}|{sdtKH}";
+            string req = $"CONFIRM_PAYMENT|{selectedBill.MaHD}|{selectedBill.MaBanAn}|{maKH}|{soTienGui}|{hinhThucThanhToan}|{stringDiemDung}|{tenKH}|{sdtKH}|{maGiaoDich}|{linkQR}";
             string res = await SocketClient.SendRequestAsync(req);
 
             if (res.Contains("PAYMENT_SUCCESS"))
@@ -569,14 +572,19 @@ namespace CafeClient
                 btnThanhToan.Enabled = true; // <-- MỞ KHÓA NÚT THANH TOÁN
         }
 
-        private async void HandleAutoPaid(string paidMaHD)
+        private async void HandleAutoPaid(string autoPaidMsg)
         {
+            string[] msgParts = autoPaidMsg.Split('|');
+            if (msgParts.Length < 3) return;
+
+            string paidMaHD = msgParts[1];
+            string maGiaoDich = msgParts[2]; // Lấy được mã giao dịch!
+
             if (selectedBill != null && selectedBill.MaHD.ToString() == paidMaHD)
             {
-                // Khóa an toàn Threading trong lập trình mạng WinForms
                 if (this.InvokeRequired)
                 {
-                    this.Invoke(new Action(() => HandleAutoPaid(paidMaHD)));
+                    this.Invoke(new Action(() => HandleAutoPaid(autoPaidMsg)));
                     return;
                 }
 
@@ -597,7 +605,7 @@ namespace CafeClient
                 string stringDiemDung = diemDaDung.ToString("F1", System.Globalization.CultureInfo.InvariantCulture);
 
                 // Gửi gói tin hoàn tất giao dịch lên hệ thống Server
-                string req = $"CONFIRM_PAYMENT|{selectedBill.MaHD}|{selectedBill.MaBanAn}|{maKH}|{soTienGui}|{hinhThucThanhToan}|{stringDiemDung}|{tenKH}|{sdtKH}";
+                string req = $"CONFIRM_PAYMENT|{selectedBill.MaHD}|{selectedBill.MaBanAn}|{maKH}|{soTienGui}|{hinhThucThanhToan}|{stringDiemDung}|{tenKH}|{sdtKH}|{maGiaoDich}|{currentQrUrl}";
                 string res = await SocketClient.SendRequestAsync(req);
 
                 if (res.Contains("PAYMENT_SUCCESS"))
@@ -623,6 +631,7 @@ namespace CafeClient
                     txtThanhTien.Clear();
                     if (tbMaGiamGia != null) tbMaGiamGia.Clear();
                     picQR.Image = null;
+                    currentQrUrl = "";
 
                     // Hủy liên kết biến tạm để làm sạch trạng thái bộ nhớ form
                     selectedBill = null;

@@ -148,14 +148,7 @@ namespace CafeClient
 
                                     if (message.StartsWith("AUTO_PAID|"))
                                     {
-                                        // Cấu trúc thông điệp: "AUTO_PAID|MaHD"
-                                        string[] parts = message.Split('|');
-                                        if (parts.Length > 1)
-                                        {
-                                            string maHD = parts[1];
-                                            // Kích hoạt sự kiện riêng cho tính năng tự động thanh toán
-                                            OnAutoPaidReceived?.Invoke(maHD);
-                                        }
+                                        OnAutoPaidReceived?.Invoke(message);
                                     }
                                 }
                                 else

@@ -50,24 +50,32 @@ namespace CafeServer.Services
         {
             try
             {
-                JObject data = JObject.Parse(jsonPayload);
-                string content = data["content"]?.ToString().ToUpper() ?? "";
+                Console.WriteLine($"\n=== CÓ BIẾN ĐỘNG SỐ DƯ TỪ SEPAY ===");
+                Console.WriteLine(jsonPayload);
 
-                // Tìm nội dung chuyển khoản có chữ HD...
-                Match match = Regex.Match(content, @"HD\s*(\d+)");
+                Match match = Regex.Match(jsonPayload.ToUpper(), @"HD\s*(\d+)");
+
                 if (match.Success)
                 {
                     int maHD = int.Parse(match.Groups[1].Value);
 
-                    // BỎ PHẦN UPDATE DATABASE Ở ĐÂY.
-                    // Chỉ phát tín hiệu về cho màn hình Thu Ngân để Thu Ngân tự chốt đơn
-                    SocketServer.Broadcast($"AUTO_PAID|{maHD}");
-                    Console.WriteLine($"[Webhook] Nhận được tiền cho HD {maHD}, đã báo về Client để chốt đơn...");
+                    // Đã đổi tên biến thành jsonParsed để không bị lỗi gạch đỏ trùng tên
+                    Newtonsoft.Json.Linq.JObject jsonParsed = Newtonsoft.Json.Linq.JObject.Parse(jsonPayload);
+                    string maGiaoDich = jsonParsed["referenceCode"]?.ToString() ?? jsonParsed["id"]?.ToString() ?? "N/A";
+
+                    // Phát lệnh có kèm Mã Giao Dịch
+                    SocketServer.Broadcast($"AUTO_PAID|{maHD}|{maGiaoDich}");
+                    Console.WriteLine($"[Thành công] Đã phát lệnh chốt HD: {maHD} - Mã GD: {maGiaoDich}");
                 }
+                else
+                {
+                    Console.WriteLine("[Thất bại] Giao dịch không chứa mã hóa đơn (VD: HD123) hợp lệ!");
+                }
+                Console.WriteLine($"===================================\n");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[Webhook Parser Error] {ex.Message}");
+                Console.WriteLine($"[Lỗi xử lý Webhook] {ex.Message}");
             }
         }
     }
