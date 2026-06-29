@@ -373,7 +373,11 @@
             colTrangThai.HeaderText = "Trạng Thái";
             colTrangThai.MinimumWidth = 6;
             colTrangThai.Name = "colTrangThai";
+<<<<<<< Updated upstream
             colTrangThai.Width = 116;
+=======
+            colTrangThai.Width = 110;
+>>>>>>> Stashed changes
             // 
             // colNgayTao
             // 
@@ -513,16 +517,16 @@
             // 
             panel8.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             panel8.Controls.Add(picQR);
-            panel8.Location = new Point(289, 61);
+            panel8.Location = new Point(289, 52);
             panel8.Name = "panel8";
-            panel8.Size = new Size(224, 175);
+            panel8.Size = new Size(232, 184);
             panel8.TabIndex = 24;
             // 
             // picQR
             // 
-            picQR.Location = new Point(3, 6);
+            picQR.Location = new Point(0, 0);
             picQR.Name = "picQR";
-            picQR.Size = new Size(218, 169);
+            picQR.Size = new Size(239, 202);
             picQR.TabIndex = 0;
             picQR.TabStop = false;
             picQR.Click += picQR_Click;

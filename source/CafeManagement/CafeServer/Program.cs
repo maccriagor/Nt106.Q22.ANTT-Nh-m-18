@@ -1,11 +1,12 @@
 ﻿using CafeCommon;
+using CafeServer.Services;
+using Supabase.Postgrest;
 using System;
 using System.Collections.Concurrent; // Required for ConcurrentDictionary
 using System.Net;
 using System.Net.Sockets;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Supabase.Postgrest;
 
 namespace CafeServer
 {
@@ -14,7 +15,9 @@ namespace CafeServer
         static async Task Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-
+            // Khởi động Webhook HTTP Listener
+            WebhookService webhook = new WebhookService();
+            webhook.StartListener();
             // 1. Khởi tạo kết nối Database
             Console.WriteLine("Đang kết nối Supabase...");
             await DatabaseService.InitializeAsync();

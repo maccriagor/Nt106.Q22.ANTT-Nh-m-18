@@ -11,6 +11,8 @@ namespace CafeClient
 {
     public static class SocketClient
     {
+        // Thêm dòng này vào đầu class SocketClient
+        public static event Action<string> OnAutoPaidReceived;
         private static TcpClient _client;
         private static NetworkStream _stream;
         private static string _ip = "127.0.0.1"; // IP của máy chạy Server
@@ -143,6 +145,18 @@ namespace CafeClient
                                     Console.WriteLine($"[SocketClient] StartListening received: {message}");
                                     // Kích hoạt sự kiện để Form giao diện cập nhật
                                     OnMessageReceived?.Invoke(message);
+
+                                    if (message.StartsWith("AUTO_PAID|"))
+                                    {
+                                        // Cấu trúc thông điệp: "AUTO_PAID|MaHD"
+                                        string[] parts = message.Split('|');
+                                        if (parts.Length > 1)
+                                        {
+                                            string maHD = parts[1];
+                                            // Kích hoạt sự kiện riêng cho tính năng tự động thanh toán
+                                            OnAutoPaidReceived?.Invoke(maHD);
+                                        }
+                                    }
                                 }
                                 else
                                 {
