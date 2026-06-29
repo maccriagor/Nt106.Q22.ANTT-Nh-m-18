@@ -109,20 +109,11 @@ CREATE TABLE HoaDon (
     TongTien NUMERIC(12, 2) NOT NULL, -- Tiền trước giảm giá
     SoTienGiam NUMERIC(12, 2) DEFAULT 0,
     ThanhTien NUMERIC(12, 2) NOT NULL, -- Tiền thực tế khách phải trả
-    TrangThai VARCHAR(20) DEFAULT 'Chưa thanh toán',
+    TrangThai VARCHAR(20) DEFAULT 'Chưa thanh toán', -- Gồm: 'Chưa thanh toán', 'Đã thanh toán', 'Đã hủy'
     PhuongThucThanhToan TEXT,
-    GhiChu TEXT
-);
-
-CREATE TABLE ThanhToan (
-    MaGiaoDich SERIAL PRIMARY KEY,
-    MaHD INT NOT NULL REFERENCES HoaDon(MaHD),
-    MaNhanVien INT NOT NULL REFERENCES UserAccount(MaNguoiDung),
-    SoTienNhan NUMERIC(12, 2) NOT NULL,
-    SoTienThua NUMERIC(12, 2) DEFAULT 0,
-    MaGiaoDichNganHang TEXT, -- Nếu chuyển khoản
-    ThoiGianThanhToan TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    QRCodeURL TEXT, -- URL QR thanh toán
+    MaGiaoDichNganHang TEXT,       -- Mã tham chiếu từ ngân hàng
+    ThoiGianThanhToan TIMESTAMP,   -- Mốc thời gian tiền thực sự vào tài khoản
+    QrCodeUrl TEXT,                -- Link ảnh QR code động để khách quét
     GhiChu TEXT
 );
 

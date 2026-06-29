@@ -49,15 +49,9 @@
             panel2 = new Panel();
             txtTimKiem = new TextBox();
             btn_TimKiem = new Button();
-            txtTim = new TextBox();
-            btnTim = new Button();
-            tbTimKiem = new TextBox();
-            btnTimKiem = new Button();
             lblTitle = new Label();
             btnXem = new Button();
-            textBox1 = new TextBox();
             btnSua = new Button();
-            button3 = new Button();
             btnXoa = new Button();
             btnThem = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvKhachHang).BeginInit();
@@ -243,15 +237,9 @@
             // 
             panel2.Controls.Add(txtTimKiem);
             panel2.Controls.Add(btn_TimKiem);
-            panel2.Controls.Add(txtTim);
-            panel2.Controls.Add(btnTim);
-            panel2.Controls.Add(tbTimKiem);
-            panel2.Controls.Add(btnTimKiem);
             panel2.Controls.Add(lblTitle);
             panel2.Controls.Add(btnXem);
-            panel2.Controls.Add(textBox1);
             panel2.Controls.Add(btnSua);
-            panel2.Controls.Add(button3);
             panel2.Controls.Add(btnXoa);
             panel2.Controls.Add(btnThem);
             panel2.Dock = DockStyle.Top;
@@ -284,52 +272,6 @@
             btn_TimKiem.UseVisualStyleBackColor = false;
             btn_TimKiem.Click += btnTimKiem_Click;
             // 
-            // txtTim
-            // 
-            txtTim.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            txtTim.Location = new Point(1209, 149);
-            txtTim.Name = "txtTim";
-            txtTim.Size = new Size(201, 28);
-            txtTim.TabIndex = 14;
-            // 
-            // btnTim
-            // 
-            btnTim.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnTim.BackColor = Color.FromArgb(128, 64, 0);
-            btnTim.FlatAppearance.BorderSize = 0;
-            btnTim.FlatStyle = FlatStyle.Flat;
-            btnTim.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnTim.ForeColor = Color.White;
-            btnTim.Location = new Point(1418, 134);
-            btnTim.Name = "btnTim";
-            btnTim.Size = new Size(92, 57);
-            btnTim.TabIndex = 15;
-            btnTim.Text = "🔍 Tìm";
-            btnTim.UseVisualStyleBackColor = false;
-            // 
-            // tbTimKiem
-            // 
-            tbTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            tbTimKiem.Location = new Point(1870, 200);
-            tbTimKiem.Name = "tbTimKiem";
-            tbTimKiem.Size = new Size(201, 28);
-            tbTimKiem.TabIndex = 12;
-            // 
-            // btnTimKiem
-            // 
-            btnTimKiem.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnTimKiem.BackColor = Color.FromArgb(128, 64, 0);
-            btnTimKiem.FlatAppearance.BorderSize = 0;
-            btnTimKiem.FlatStyle = FlatStyle.Flat;
-            btnTimKiem.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnTimKiem.ForeColor = Color.White;
-            btnTimKiem.Location = new Point(2079, 185);
-            btnTimKiem.Name = "btnTimKiem";
-            btnTimKiem.Size = new Size(92, 57);
-            btnTimKiem.TabIndex = 13;
-            btnTimKiem.Text = "🔍 Tìm";
-            btnTimKiem.UseVisualStyleBackColor = false;
-            // 
             // lblTitle
             // 
             lblTitle.AutoSize = true;
@@ -356,14 +298,6 @@
             btnXem.UseVisualStyleBackColor = false;
             btnXem.Click += btnXem_Click;
             // 
-            // textBox1
-            // 
-            textBox1.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            textBox1.Location = new Point(2530, 251);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(201, 28);
-            textBox1.TabIndex = 0;
-            // 
             // btnSua
             // 
             btnSua.BackColor = Color.FromArgb(128, 64, 0);
@@ -378,21 +312,6 @@
             btnSua.Text = "✏️ Sửa";
             btnSua.UseVisualStyleBackColor = false;
             btnSua.Click += btnSua_Click;
-            // 
-            // button3
-            // 
-            button3.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            button3.BackColor = Color.FromArgb(128, 64, 0);
-            button3.FlatAppearance.BorderSize = 0;
-            button3.FlatStyle = FlatStyle.Flat;
-            button3.Font = new Font("Calibri", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button3.ForeColor = Color.White;
-            button3.Location = new Point(2739, 236);
-            button3.Name = "button3";
-            button3.Size = new Size(92, 57);
-            button3.TabIndex = 1;
-            button3.Text = "🔍 Tìm";
-            button3.UseVisualStyleBackColor = false;
             // 
             // btnXoa
             // 
@@ -476,15 +395,9 @@
         private Panel panel5;
         private Label label2;
         private Panel panel2;
-        private TextBox txtTim;
-        private Button btnTim;
-        private TextBox tbTimKiem;
-        private Button btnTimKiem;
         private Label lblTitle;
         private Button btnXem;
-        private TextBox textBox1;
         private Button btnSua;
-        private Button button3;
         private Button btnXoa;
         private Button btnThem;
         private TextBox txtTimKiem;

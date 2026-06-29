@@ -47,6 +47,15 @@ namespace CafeCommon
         [Column("ghichu")]
         public string GhiChu { get; set; }
 
+        [Column("magiaodichnganhang")]
+        public string MaGiaoDichNganHang { get; set; }
+
+        [Column("thoigianthanhtoan")]
+        public DateTime? ThoiGianThanhToan { get; set; }
+
+        [Column("qrcodeurl")]
+        public string QrCodeUrl { get; set; }
+
         // TenBan is a UI convenience field and not a real DB column, ignore it during Supabase operations
         [Newtonsoft.Json.JsonIgnore]
         [System.Text.Json.Serialization.JsonIgnore]

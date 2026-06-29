@@ -51,3 +51,4 @@ namespace CafeCommon
         public bool TrangThai { get; set; } = true;
     }
 }
+
