@@ -1025,9 +1025,9 @@ namespace CafeServer
                             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                             .Build();
 
-                        string bankBin = config["BankSettings:BankBin"] ?? "970422";
-                        string bankAcc = config["BankSettings:BankAccount"] ?? "0909701503";
-                        string accName = config["BankSettings:AccountName"] ?? "HUYNH DANG KHOA";
+                        string bankBin = config["BankSettings:BankBin"];
+                        string bankAcc = config["BankSettings:BankAccount"];
+                        string accName = config["BankSettings:AccountName"];
 
                         // Gửi trả lại cho Client theo cú pháp: SUCCESS|BankBin|BankAcc|AccountName
                         return $"SUCCESS|{bankBin}|{bankAcc}|{accName}";
