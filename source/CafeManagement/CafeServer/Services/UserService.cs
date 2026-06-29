@@ -103,13 +103,32 @@ namespace CafeServer.Services
         {
             try
             {
-                await DatabaseService.Client.From<UserAccount>()
+                // 1. Khởi tạo câu lệnh cập nhật trạng thái online như cũ
+                var updateQuery = DatabaseService.Client.From<UserAccount>()
                     .Where(x => x.MaNguoiDung == userId)
-                    .Set(x => x.TrangThaiOnline, isOnline)
-                    .Update();
+                    .Set(x => x.TrangThaiOnline, isOnline);
+
+                // 2. Phân luồng để cập nhật mốc thời gian tương ứng
+                if (isOnline)
+                {
+                    // Nếu chuyển sang trạng thái Online (Đăng nhập) -> Ghi nhận thời gian đăng nhập
+                    updateQuery = updateQuery.Set(x => x.ThoiGianDangNhap, DateTime.Now);
+                }
+                else
+                {
+                    // Nếu chuyển sang trạng thái Offline (Đăng xuất) -> Ghi nhận thời gian đăng xuất
+                    updateQuery = updateQuery.Set(x => x.ThoiGianDangXuat, DateTime.Now);
+                }
+
+                // 3. Thực thi cập nhật đồng thời xuống database
+                await updateQuery.Update();
                 return true;
             }
-            catch (Exception) { return false; }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[LỖI CẬP NHẬT TIMESTAMP LOG]: {ex.Message}");
+                return false;
+            }
         }
 
         //Kiểm tra email đã đki

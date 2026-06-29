@@ -41,6 +41,12 @@ namespace CafeCommon
         [Column("ngaytao")]
         public DateTime? NgayTao { get; set; }
 
+        [Column("thoigiandangnhap")]
+        public DateTime? ThoiGianDangNhap { get; set; }
+
+        [Column("thoigiandangxuat")]
+        public DateTime? ThoiGianDangXuat { get; set; }
+
         [Column("trangthai")]
         public bool TrangThai { get; set; } = true;
     }
