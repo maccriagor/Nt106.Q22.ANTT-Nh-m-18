@@ -51,7 +51,7 @@ namespace CafeServer
             });
 
             // ==========================================================
-            // [THÊM MỚI] KÍCH HOẠT NHỊP TIM (HEARTBEAT) THEO DÕI THỜI GIAN
+            // [THÊM MỚI] KÍCH HOẠT NHỊP TIM (HEARTBEAT) THEO DÕI THỜI GIAN VA KHUYEN MAII
             // ==========================================================
             Task.Run(async () =>
             {
@@ -66,6 +66,9 @@ namespace CafeServer
                     try
                     {
                         // Quét các món đã đợi quá 15 phút (Bạn có thể đổi số 15 thành số phút bạn muốn)
+                        // =======================================================
+                        // 1. QUÉT MÓN ĂN QUÁ GIỜ CHO BẾP
+                        // =======================================================
                         bool hasChanges = await ServiceManager.Kitchen.AutoScanPriorityItemsAsync(15);
 
                         if (hasChanges)
@@ -74,6 +77,19 @@ namespace CafeServer
 
                             // Phát tín hiệu Realtime dội xuống toàn bộ màn hình Bếp để nhảy UI
                             await Broadcast("RELOAD_KITCHEN_MAP");
+                        }
+
+                        // =======================================================
+                        // 2. QUÉT MÃ GIẢM GIÁ HẾT HẠN (Code mới thêm vào)
+                        // =======================================================
+                        bool hasDiscountChanges = await ServiceManager.Discount.AutoDisableExpiredDiscountsAsync();
+
+                        if (hasDiscountChanges)
+                        {
+                            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] HỆ THỐNG: Đã tự động tắt các mã giảm giá hết hạn!");
+
+                            // Phát lệnh Realtime để Form Admin (nếu đang mở) tự động tải lại bảng
+                            await Broadcast("RELOAD_DISCOUNT_LIST");
                         }
                     }
                     catch (Exception ex)

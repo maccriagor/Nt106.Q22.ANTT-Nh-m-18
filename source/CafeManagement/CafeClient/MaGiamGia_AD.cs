@@ -23,8 +23,29 @@ namespace CafeClient
             {
                 await LoadDiscounts();
             };
+
+            // ĐĂNG KÝ Khi Socket nhận tin, hãy gọi hàm xử lý của tôi
+            SocketClient.OnMessageReceived += SocketClient_OnMessageReceived;
         }
 
+
+        // Hàm xử lý tin nhắn Real-time
+        private async void SocketClient_OnMessageReceived(string message)
+        {
+            // Đảm bảo đưa tác vụ về lại đúng luồng UI chính
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() => SocketClient_OnMessageReceived(message)));
+                return;
+            }
+
+            if (message == "RELOAD_DISCOUNT_LIST")
+            {
+                Console.WriteLine("[REALTIME] Đã nhận lệnh làm mới danh sách Mã giảm giá từ Server!");
+                // Gọi thẳng hàm ở đây, nó sẽ chạy an toàn trên luồng UI
+                await LoadDiscounts();
+            }
+        }
 
         private async Task LoadDiscounts()
         {

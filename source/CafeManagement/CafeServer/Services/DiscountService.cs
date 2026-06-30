@@ -69,5 +69,51 @@ namespace CafeServer.Services
             }
             catch { return false; }
         }
+        // ========================================================
+        // TÍNH NĂNG CHẠY NGẦM: Tự động tắt mã giảm giá đã hết hạn
+        // ========================================================
+        public async Task<bool> AutoDisableExpiredDiscountsAsync()
+        {
+            try
+            {
+                bool hasChanges = false;
+                DateTime now = DateTime.Now;
+
+                // 1. Kéo danh sách các mã đang còn hiệu lực (TrangThai = true)
+                var result = await DatabaseService.Client.From<KhuyenMai>()
+                    .Where(x => x.TrangThai == true)
+                    .Get();
+
+                var activeDiscounts = result.Models;
+
+                // Nếu không có mã nào đang bật, thoát hàm luôn cho nhẹ máy
+                if (activeDiscounts == null || !activeDiscounts.Any()) return false;
+
+                // 2. Quét kiểm tra thời hạn
+                foreach (var km in activeDiscounts)
+                {
+                    // Nếu ngày hết hạn nhỏ hơn thời điểm hiện tại -> Đã quá hạn
+                    if (km.NgayHetHan < now)
+                    {
+                        // Update tắt trạng thái
+                        await DatabaseService.Client.From<KhuyenMai>()
+                            .Where(x => x.MaKM == km.MaKM)
+                            .Set(x => x.TrangThai, false)
+                            .Update();
+
+                        hasChanges = true; // Bật cờ báo hiệu đã có mã bị tắt
+                    }
+                }
+
+                return hasChanges;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Discount Scanner Error]: {ex.Message}");
+                return false;
+            }
+        }
+
     }
+    
 }

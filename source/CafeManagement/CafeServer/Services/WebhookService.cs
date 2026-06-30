@@ -18,8 +18,10 @@ namespace CafeServer.Services
                 {
                     HttpListener listener = new HttpListener();
                     // Lắng nghe ở port 8080
-                    listener.Prefixes.Add("http://127.0.0.1:8080/");
-                    listener.Prefixes.Add("http://localhost:8080/");
+                    // SỬA Ở ĐÂY: Dùng dấu + để cho phép cả localhost lẫn link Ngrok đi vào
+                    // Đồng thời thêm "/webhook/" để khớp với đường dẫn bạn đã thiết lập trên SePay
+                    listener.Prefixes.Add("http://+:8080/");
+                    listener.Prefixes.Add("http://+:8080/webhook/");
                     listener.Start();
                     Console.WriteLine("[Webhook] Đang lắng nghe giao dịch ngân hàng tại port 8080...");
 
