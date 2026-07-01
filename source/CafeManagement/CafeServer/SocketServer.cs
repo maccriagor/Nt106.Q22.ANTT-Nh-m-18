@@ -20,7 +20,7 @@ namespace CafeServer
     {
         private static ConcurrentDictionary<int, NetworkStream> _activeClients = new ConcurrentDictionary<int, NetworkStream>();
         private TcpListener _listener;
-        private int _port = 8888;
+        private int _port = 7000;
         private bool _isRunning;
 
         // Danh sách này lưu các Stream của tất cả Client đang mở App
@@ -1057,6 +1057,43 @@ namespace CafeServer
                     catch
                     {
                         return "ERROR|Lỗi đọc cấu hình ngân hàng trên Server";
+                    }
+
+                case "GET_CHAT_HISTORY":
+                    try
+                    {
+                        int fId = int.Parse(parts[1]); // ID của người bạn (Recipient)
+                        int mId = int.Parse(parts[2]); // ID của mình (Sender)
+
+                        // 1. Kéo dữ liệu từ Database (Y chang logic cũ của bạn bè bạn, nhưng giờ nằm ở Server)
+                        var res1 = await DatabaseService.Client.From<TinNhan>().Where(m => m.SenderId == mId).Get();
+                        var res2 = await DatabaseService.Client.From<TinNhan>().Where(m => m.RecipientId == mId).Get();
+                        var res3 = await DatabaseService.Client.From<TinNhan>().Where(m => m.RecipientId == null).Get();
+
+                        // 2. Gộp danh sách và loại bỏ trùng lặp
+                        var allMessages = res1.Models
+                            .Concat(res2.Models)
+                            .Concat(res3.Models)
+                            .GroupBy(m => m.MaTinNhan)
+                            .Select(g => g.First())
+                            .ToList();
+
+                        // 3. Lọc đúng cuộc hội thoại giữa 2 người hoặc tin nhắn hệ thống (null)
+                        var filteredMessages = allMessages
+                            .Where(m => (m.SenderId == mId && m.RecipientId == fId) ||
+                                        (m.SenderId == fId && m.RecipientId == mId) ||
+                                        (m.RecipientId == null && m.SenderId != mId))
+                            .OrderBy(m => m.Timestamp) // Sắp xếp theo thời gian cũ -> mới
+                            .ToList();
+
+                        // 4. Trả về cho Client
+                        string jsonHistory = Newtonsoft.Json.JsonConvert.SerializeObject(filteredMessages);
+                        return $"SUCCESS|{jsonHistory}";
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[Lỗi GET_CHAT_HISTORY]: {ex.Message}");
+                        return "ERROR|Lỗi khi tải lịch sử tin nhắn từ cơ sở dữ liệu.";
                     }
                 default:
                     return "UNKNOWN_COMMAND";

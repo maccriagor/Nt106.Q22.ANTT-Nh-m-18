@@ -1,9 +1,6 @@
 ﻿using CafeCommon;
-using CafeServer;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
-using Org.BouncyCastle.Tls;
-using Supabase.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -252,43 +249,33 @@ namespace CafeClient
         private async void LoadLichSuTuDatabase(int friendId)
         {
 
-            await DatabaseService.InitializeAsync();
-
-            var response = await DatabaseService.Client.From<TinNhan>()
-                .Where(m => m.SenderId == UserSession.MaNguoiDung)
-                .Get();
-
-            var response2 = await DatabaseService.Client.From<TinNhan>()
-                .Where(m => m.RecipientId == UserSession.MaNguoiDung)
-                .Get();
-
-            var response3 = await DatabaseService.Client.From<TinNhan>()
-                .Where(m => m.RecipientId == null)
-                .Get();
-            Console.WriteLine($"[DEBUG] response3 (RecipientId == null) returned {response3.Models.Count} rows");
-            foreach (var m in response3.Models)
+            try
             {
-                Console.WriteLine($"[DEBUG]   -> MaTinNhan={m.MaTinNhan}, SenderId={m.SenderId}, RecipientId={(m.RecipientId.HasValue ? m.RecipientId.Value.ToString() : "NULL")}");
+                // Gọi qua Socket, gửi đi ID của bạn bè và ID của chính mình
+                string request = $"GET_CHAT_HISTORY|{friendId}|{UserSession.MaNguoiDung}";
+                string response = await SocketClient.SendRequestAsync(request);
+
+                string[] parts = response.Split('|');
+                if (parts[0] == "SUCCESS")
+                {
+                    // Giải mã danh sách tin nhắn nhận được từ Server
+                    var filteredMessages = JsonConvert.DeserializeObject<List<TinNhan>>(parts[1]);
+
+                    rtbChat.Clear();
+                    foreach (var msg in filteredMessages)
+                    {
+                        HienThiTinNhan(msg);
+                    }
+                }
+                else
+                {
+                    string errorMsg = parts.Length > 1 ? parts[1] : response;
+                    MessageBox.Show("Lỗi tải lịch sử tin nhắn: " + errorMsg);
+                }
             }
-
-            var allMessages = response.Models
-                .Concat(response2.Models)
-                .Concat(response3.Models)
-                .GroupBy(m => m.MaTinNhan)
-                .Select(g => g.First())
-                .ToList();
-
-            var filteredMessages = allMessages
-                .Where(m => (m.SenderId == UserSession.MaNguoiDung && m.RecipientId == friendId) ||
-                            (m.SenderId == friendId && m.RecipientId == UserSession.MaNguoiDung) ||
-                            (m.RecipientId == null && m.SenderId != UserSession.MaNguoiDung))
-                .OrderBy(m => m.Timestamp)
-                .ToList();
-
-            rtbChat.Clear();
-            foreach (var msg in filteredMessages)
+            catch (Exception ex)
             {
-                HienThiTinNhan(msg);
+                MessageBox.Show("Lỗi hệ thống khi tải chat: " + ex.Message);
             }
         }
         private void lvNhanVien_Click(object sender, EventArgs e)

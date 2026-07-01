@@ -15,8 +15,8 @@ namespace CafeClient
         public static event Action<string> OnAutoPaidReceived;
         private static TcpClient _client;
         private static NetworkStream _stream;
-        private static string _ip = "127.0.0.1"; // IP của máy chạy Server
-        private static int _port = 8888;
+        private static string _ip;   // Sẽ lấy từ cấu hình
+        private static int _port;    // Sẽ lấy từ cấu hình
 
         // Đồng bộ I/O: đảm bảo chỉ một tác vụ đọc/ghi lên stream tại một thời điểm
         private static readonly SemaphoreSlim _ioLock = new SemaphoreSlim(1, 1);
@@ -26,6 +26,44 @@ namespace CafeClient
 
         // Sự kiện để các Form đăng ký lắng nghe tin push từ server
         public static event Action<string> OnMessageReceived;
+
+        static SocketClient()
+        {
+            // Thiết lập giá trị mặc định (phòng trường hợp file json bị lỗi hoặc mất)
+            _ip = "127.0.0.1";
+            _port = 7000;
+
+            try
+            {
+                // Tìm file appsettings.json nằm cùng chỗ với file .exe đang chạy
+                string configPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+
+                if (System.IO.File.Exists(configPath))
+                {
+                    // Đọc file và chuyển thành JSON Object
+                    string json = System.IO.File.ReadAllText(configPath);
+                    var jsonObj = Newtonsoft.Json.Linq.JObject.Parse(json);
+
+                    // Trích xuất IP
+                    string configIp = jsonObj["ServerSettings"]?["IpAddress"]?.ToString();
+                    if (!string.IsNullOrWhiteSpace(configIp))
+                    {
+                        _ip = configIp;
+                    }
+
+                    // Trích xuất Port
+                    string configPort = jsonObj["ServerSettings"]?["Port"]?.ToString();
+                    if (int.TryParse(configPort, out int parsedPort))
+                    {
+                        _port = parsedPort;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[CẢNH BÁO] Lỗi đọc appsettings.json. Hệ thống sẽ dùng IP Local mặc định. Chi tiết: {ex.Message}");
+            }
+        }
 
         public static async Task<bool> ConnectAsync()
         {
