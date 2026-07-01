@@ -24,7 +24,7 @@ namespace CafeServer.Services
                 var account = result.Models.FirstOrDefault();
 
                 // Kiểm tra mật khẩu bằng BCrypt
-                if (account != null && SercurityHelper.VerifyPassword(password, account.MatKhau))
+                if (account != null && SecurityHelper.VerifyPassword(password, account.MatKhau))
                 {
 
                     // =========================================================
@@ -72,7 +72,7 @@ namespace CafeServer.Services
                 }
 
                 // 2. Mã hóa mật khẩu bằng BCrypt
-                string hashedPass = SercurityHelper.HashPassword(pass);
+                string hashedPass = SecurityHelper.HashPassword(pass);
 
                 // 3. Tạo đối tượng mới
                 var newUser = new UserAccount
@@ -223,7 +223,7 @@ namespace CafeServer.Services
         {
             var update = DatabaseService.Client.From<UserAccount>().Where(x => x.MaNguoiDung == id)
                 .Set(x => x.TenDangNhap, user).Set(x => x.HoTen, name).Set(x => x.Email, email).Set(x => x.VaiTro, role);
-            if (!string.IsNullOrEmpty(pass)) update = update.Set(x => x.MatKhau, SercurityHelper.HashPassword(pass));
+            if (!string.IsNullOrEmpty(pass)) update = update.Set(x => x.MatKhau, SecurityHelper.HashPassword(pass));
             await update.Update();
             return true;
         }

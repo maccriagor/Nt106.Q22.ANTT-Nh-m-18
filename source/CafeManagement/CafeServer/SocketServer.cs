@@ -168,7 +168,10 @@ namespace CafeServer
                     if (bytesRead == 0) break;
 
                     string request = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim('\0', ' ', '\r', '\n');
-                    
+
+                    // [THÊM 1 DÒNG NÀY VÀO]: Giải mã gói tin từ Server trả về
+                    request = SecurityHelper.Decrypt(request);
+
                     Console.WriteLine($"[CLIENT SAYS]: {request}");
 
                     string response = await ProcessRequest(request, currentUserId);
@@ -186,8 +189,13 @@ namespace CafeServer
                         currentUserId = 0;
                     }
 
-                    byte[] responseData = Encoding.UTF8.GetBytes(response);
+                    // Mã hóa câu trả lời của Server trước khi gửi đi
+                    string encryptedResponse = SecurityHelper.Encrypt(response);
+
+                    // SỬA Ở ĐÂY: Phải cộng thêm "\n" để Client nhận biết hết gói tin
+                    byte[] responseData = Encoding.UTF8.GetBytes(encryptedResponse + "\n");
                     await stream.WriteAsync(responseData, 0, responseData.Length);
+                    await stream.FlushAsync();
                 }
             }
             catch (Exception ex)
@@ -290,7 +298,7 @@ namespace CafeServer
                     string targetEmail = parts[1].Trim();
                     string newPasswordRaw = parts[2].Trim();
 
-                    string hashedNewPassword = CafeCommon.SercurityHelper.HashPassword(newPasswordRaw);
+                    string hashedNewPassword = CafeCommon.SecurityHelper.HashPassword(newPasswordRaw);
 
                     bool isUpdated = await ServiceManager.User.UpdateUserPasswordAsync(targetEmail, hashedNewPassword);
 
@@ -1102,7 +1110,10 @@ namespace CafeServer
 
         public static async Task Broadcast(string message)
         {
-            byte[] data = Encoding.UTF8.GetBytes(message);
+            // Mã hóa trước khi phát loa cho các máy Client
+            string encryptedMessage = SecurityHelper.Encrypt(message);
+            byte[] data = Encoding.UTF8.GetBytes(encryptedMessage + "\n");
+
             List<NetworkStream> targets;
             lock (_activeStreams) { targets = _activeStreams.ToList(); }
 

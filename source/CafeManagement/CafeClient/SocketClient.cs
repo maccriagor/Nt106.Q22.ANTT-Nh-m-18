@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using CafeCommon;
+using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -101,8 +102,19 @@ namespace CafeClient
                     }
 
                     // 2. Gửi lệnh mới lên Server
-                    byte[] dataSend = Encoding.UTF8.GetBytes(message);
+                    // ========================================================
+                    // 2. GỬI LỆNH LÊN SERVER (Cần Mã Hóa)
+                    // ========================================================
+                    // 2. Gửi lệnh mới lên Server
+                    string encryptedMessage = SecurityHelper.Encrypt(message);
+
+                    // SỬA Ở ĐÂY: Thêm dấu xuống dòng '\n' vào sau gói tin đã mã hóa
+                    byte[] dataSend = Encoding.UTF8.GetBytes(encryptedMessage + "\n");
+
+                    // Đảm bảo dòng lệnh Write vật lý của bạn truyền đúng biến dataSend:
                     await _stream.WriteAsync(dataSend, 0, dataSend.Length);
+                    await _stream.FlushAsync(); // Ép dữ liệu bay đi ngay lập tức
+
 
                     // 3. ĐỌC PHẢN HỒI AN TOÀN
                     var responseBuilder = new StringBuilder();
@@ -128,8 +140,14 @@ namespace CafeClient
                         }
                     }
 
+                    // ========================================================
+                    // KẾT THÚC BƯỚC 3: GIẢI MÃ KẾT QUẢ TRẢ VỀ
+                    // ========================================================
                     string raw = responseBuilder.ToString();
-                    return raw.Trim('\0', ' ', '\r', '\n', '\uFEFF', '\u200B');
+                    string cleanedRaw = raw.Trim('\0', ' ', '\r', '\n', '\uFEFF', '\u200B');
+
+                    // [THÊM DÒNG NÀY]: Giải mã kết quả mà Server vừa ném về
+                    return SecurityHelper.Decrypt(cleanedRaw);
                 }
                 finally
                 {
@@ -180,6 +198,10 @@ namespace CafeClient
                                 if (bytesRead > 0)
                                 {
                                     string message = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim('\0', '\r', '\n', '\uFEFF', '\u200B');
+
+                                    // Thêm dòng này để giải mã gói tin Broadcast từ Server ném về
+                                    message = SecurityHelper.Decrypt(message);
+
                                     Console.WriteLine($"[SocketClient] StartListening received: {message}");
                                     // Kích hoạt sự kiện để Form giao diện cập nhật
                                     OnMessageReceived?.Invoke(message);
