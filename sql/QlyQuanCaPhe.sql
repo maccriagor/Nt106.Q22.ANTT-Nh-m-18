@@ -1,4 +1,10 @@
-﻿-- 1. Quản lý Tài khoản & Nhân viên
+﻿-- Đặt lại múi giờ mặc định của toàn bộ cơ sở dữ liệu về giờ Việt Nam (UTC+7)
+ALTER DATABASE postgres SET timezone TO 'Asia/Ho_Chi_Minh';
+
+-- Áp dụng ngay lập tức cho phiên chạy script hiện tại
+SET timezone TO 'Asia/Ho_Chi_Minh'
+
+-- 1. Quản lý Tài khoản & Nhân viên
 CREATE TABLE UserAccount (
     MaNguoiDung SERIAL PRIMARY KEY,
     TenDangNhap VARCHAR(50) NOT NULL UNIQUE,
