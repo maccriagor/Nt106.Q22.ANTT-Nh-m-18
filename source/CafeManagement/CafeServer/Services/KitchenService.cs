@@ -70,9 +70,9 @@ namespace CafeServer.Services
                         GhiChuBep = item.GhiChuBep,
                         TrangThaiItem = item.TrangThaiItem,
                         MaNhanVienCheBien = item.MaNhanVienCheBien,
-                        NgayOrder = dh?.NgayOrder,
-                        ThoiGianBatDau = item.ThoiGianBatDau,
-                        ThoiGianHoanThanh = item.ThoiGianHoanThanh,
+                        NgayOrder = dh?.NgayOrder != null ? Convert.ToDateTime(dh.NgayOrder).ToLocalTime() : (DateTime?)null,
+                        ThoiGianBatDau = item.ThoiGianBatDau != null ? Convert.ToDateTime(item.ThoiGianBatDau).ToLocalTime() : (DateTime?)null,
+                        ThoiGianHoanThanh = item.ThoiGianHoanThanh != null ? Convert.ToDateTime(item.ThoiGianHoanThanh).ToLocalTime() : (DateTime?)null,
                         ThoiGianDuKien = item.ThoiGianDuKien
                     };
 
@@ -388,19 +388,22 @@ namespace CafeServer.Services
                     // Chỉ cần kiểm tra parentOrder khác null là đủ an toàn
                     if (parentOrder != null)
                     {
-                        // Vì NgayOrder là DateTime thường, ta dùng thẳng luôn không cần .Value
-                        double minutesWaited = (now - parentOrder.NgayOrder).TotalMinutes;
+                        // [SỬA Ở ĐÂY]: Ép thời gian từ Database (UTC) về giờ Việt Nam (Local) 
+                // để đồng bộ với DateTime.Now
+                DateTime orderTime = parentOrder.NgayOrder.ToLocalTime();
+                
+                double minutesWaited = (now - orderTime).TotalMinutes;
 
-                        // Nếu đợi lâu hơn mức quy định -> Ép thành Ưu Tiên
-                        if (minutesWaited >= maxMinutes)
-                        {
-                            await DatabaseService.Client.From<CTDonHang>()
-                                .Where(x => x.MaCT == item.MaCT)
-                                .Set(x => x.UuTien, true)
-                                .Update();
+                // Nếu đợi lâu hơn mức quy định -> Ép thành Ưu Tiên
+                if (minutesWaited >= maxMinutes)
+                {
+                    await DatabaseService.Client.From<CTDonHang>()
+                        .Where(x => x.MaCT == item.MaCT)
+                        .Set(x => x.UuTien, true)
+                        .Update();
 
-                            hasChanges = true; // Bật cờ báo hiệu có sự thay đổi
-                        }
+                    hasChanges = true; // Bật cờ báo hiệu có sự thay đổi
+                }
                     }
                 }
 

@@ -167,35 +167,48 @@ namespace CafeServer
                     int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
                     if (bytesRead == 0) break;
 
-                    string request = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim('\0', ' ', '\r', '\n');
+                    // 1. Đọc nguyên 1 cục dữ liệu thô (Có thể chứa nhiều gói tin dính chùm)
+                    string rawData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
-                    // [THÊM 1 DÒNG NÀY VÀO]: Giải mã gói tin từ Server trả về
-                    request = SecurityHelper.Decrypt(request);
+                    // 2. CẮT GÓI TIN: Tách cục dữ liệu ra thành từng phần dựa vào dấu '\n'
+                    string[] packets = rawData.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-                    Console.WriteLine($"[CLIENT SAYS]: {request}");
-
-                    string response = await ProcessRequest(request, currentUserId);
-
-                    // Nếu lệnh LOGIN thành công --> ghi nhớ ID vào biến currentUserId
-                    if (response.StartsWith("LOGIN_SUCCESS"))
+                    // 3. Xử lý lần lượt từng gói tin một
+                    foreach (string packet in packets)
                     {
-                        string[] resParts = response.Split('|');
-                        currentUserId = int.Parse(resParts[1]); // Lưu MaNguoiDung vào đây
-                        _activeClients.TryAdd(currentUserId, stream);
-                    }
-                    // Nếu lệnh LOGOUT thành công --> xóa ID đi
-                    else if (response == "LOGOUT_SUCCESS")
-                    {
-                        currentUserId = 0;
-                    }
+                        // Dọn dẹp ký tự thừa của TỪNG gói
+                        string cleanPacket = packet.Trim('\0', ' ', '\r');
+                        if (string.IsNullOrEmpty(cleanPacket)) continue;
 
-                    // Mã hóa câu trả lời của Server trước khi gửi đi
-                    string encryptedResponse = SecurityHelper.Encrypt(response);
+                        // GIẢI MÃ từng gói tin
+                        string decryptedRequest = SecurityHelper.Decrypt(cleanPacket);
 
-                    // SỬA Ở ĐÂY: Phải cộng thêm "\n" để Client nhận biết hết gói tin
-                    byte[] responseData = Encoding.UTF8.GetBytes(encryptedResponse + "\n");
-                    await stream.WriteAsync(responseData, 0, responseData.Length);
-                    await stream.FlushAsync();
+                        Console.WriteLine($"[CLIENT SAYS]: {decryptedRequest}");
+
+                        // Đưa vào xử lý logic
+                        string response = await ProcessRequest(decryptedRequest, currentUserId);
+
+                        // Nếu lệnh LOGIN thành công --> ghi nhớ ID vào biến currentUserId
+                        if (response.StartsWith("LOGIN_SUCCESS"))
+                        {
+                            string[] resParts = response.Split('|');
+                            currentUserId = int.Parse(resParts[1]); // Lưu MaNguoiDung vào đây
+                            _activeClients.TryAdd(currentUserId, stream);
+                        }
+                        // Nếu lệnh LOGOUT thành công --> xóa ID đi
+                        else if (response == "LOGOUT_SUCCESS")
+                        {
+                            currentUserId = 0;
+                        }
+
+                        // MÃ HÓA câu trả lời của Server trước khi gửi đi
+                        string encryptedResponse = SecurityHelper.Encrypt(response);
+
+                        // Ép thêm "\n" để Client nhận biết hết gói tin
+                        byte[] responseData = Encoding.UTF8.GetBytes(encryptedResponse + "\n");
+                        await stream.WriteAsync(responseData, 0, responseData.Length);
+                        await stream.FlushAsync();
+                    }
                 }
             }
             catch (Exception ex)
@@ -456,6 +469,7 @@ namespace CafeServer
                     if (delRes.StartsWith("SUCCESS"))
                     {
                         await Broadcast("RELOAD_TABLE_MAP");
+                        await Broadcast("RELOAD_KITCHEN_MAP");
                     }
                     return delRes;
 
@@ -553,6 +567,7 @@ namespace CafeServer
                             {
                                 // Đồng bộ Realtime sơ đồ bàn ăn cho toàn bộ hệ thống nhân viên phục vụ
                                 await Broadcast("RELOAD_TABLE_MAP");
+                                await Broadcast("RELOAD_KITCHEN_MAP");
                                 return "SUCCESS|Chuyển bàn thành công!";
                             }
                             return "FAIL|Chuyển bàn thất bại! (Bàn cũ không có hóa đơn hoạt động hoặc bàn mới không trống)";
@@ -620,6 +635,7 @@ namespace CafeServer
                         if (isSuccess)
                         {
                             // Trạng thái bàn sẽ được cập nhật tự động trực tiếp bên trong hàm SubmitOrderAsync
+                            await Broadcast("RELOAD_TABLE_MAP");
                             return "SUCCESS|Đã gửi order xuống bếp thành công!";
                         }
                         return "FAIL|Lưu đơn hàng hoặc hóa đơn thất bại trên hệ thống Server!";

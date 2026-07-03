@@ -25,6 +25,9 @@ namespace CafeClient
             btnLamMoi.Click += btnLamMoi_Click;
             this.FormClosed += QuanLyOrder_BEP_FormClosed;
 
+            // ĐĂNG KÝ Khi Socket nhận tin, hãy gọi hàm xử lý của tôi
+            SocketClient.OnMessageReceived += SocketClient_OnMessageReceived;
+
             // KHỞI TẠO CẤU HÌNH LƯỚI THỦ CÔNG & KHÓA CHẶT MÀU SẮC CHỐNG TÀNG HÌNH CHỮ
             dgvOrders.Columns.Clear();
             dgvOrders.AutoGenerateColumns = false;
@@ -64,7 +67,25 @@ namespace CafeClient
             };
         }
 
-        private void QuanLyOrder_BEP_Load(object sender, EventArgs e)
+        // Hàm xử lý tin nhắn Real-time
+        private async void SocketClient_OnMessageReceived(string message)
+        {
+            // Chuyển luồng nền về luồng UI (Giao diện) để DataGridView không bị crash Cross-Thread
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() => SocketClient_OnMessageReceived(message)));
+                return;
+            }
+
+            // Nếu Phục vụ vừa gửi Order HOẶC Bếp khác vừa cập nhật món xong
+            if (message == "RELOAD_TABLE_MAP" || message == "RELOAD_KITCHEN_MAP")
+            {
+                Console.WriteLine("[REALTIME KITCHEN] Có thay đổi đơn hàng, tải lại lưới...");
+                await TaiDuLieu();
+            }
+        }
+
+        private async void QuanLyOrder_BEP_Load(object sender, EventArgs e)
         {
             // Thiết lập giá trị các mục phân loại bộ lọc cố định
             cboTrangThai.Items.Clear();
@@ -88,7 +109,7 @@ namespace CafeClient
             TaiDuLieu();
         }
 
-        private async void TaiDuLieu()
+        private async Task TaiDuLieu()
         {
             try
             {
@@ -258,7 +279,7 @@ namespace CafeClient
             }
         }
 
-        private void btnLamMoi_Click(object sender, EventArgs e)
+        private async void btnLamMoi_Click(object sender, EventArgs e)
         {
             TaiDuLieu();
         }

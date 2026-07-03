@@ -141,13 +141,41 @@ namespace CafeClient
                     }
 
                     // ========================================================
-                    // KẾT THÚC BƯỚC 3: GIẢI MÃ KẾT QUẢ TRẢ VỀ
+                    // KẾT THÚC BƯỚC 3: GIẢI MÃ KẾT QUẢ TRẢ VỀ (Chống dính gói tin)
                     // ========================================================
                     string raw = responseBuilder.ToString();
-                    string cleanedRaw = raw.Trim('\0', ' ', '\r', '\n', '\uFEFF', '\u200B');
 
-                    // [THÊM DÒNG NÀY]: Giải mã kết quả mà Server vừa ném về
-                    return SecurityHelper.Decrypt(cleanedRaw);
+                    // 1. Cắt chùm dữ liệu thành các gói tin riêng lẻ dựa vào dấu \n
+                    string[] packets = raw.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    string finalResponse = "ERROR|Không nhận được phản hồi hợp lệ";
+
+                    foreach (string packet in packets)
+                    {
+                        // Dọn dẹp rác của từng gói tin
+                        string cleanPacket = packet.Trim('\0', ' ', '\r', '\uFEFF', '\u200B');
+
+                        // 2. Giải mã từng gói tin một
+                        string decrypted = SecurityHelper.Decrypt(cleanPacket);
+
+                        // 3. Phân loại: Lệnh Broadcast hay Câu trả lời?
+                        if (decrypted.StartsWith("RELOAD_") || decrypted.StartsWith("AUTO_PAID|"))
+                        {
+                            // Nếu xui xẻo có lệnh Broadcast chui vào lúc đang đợi trả lời -> Kích hoạt Event UI luôn
+                            OnMessageReceived?.Invoke(decrypted);
+                            if (decrypted.StartsWith("AUTO_PAID|"))
+                            {
+                                OnAutoPaidReceived?.Invoke(decrypted);
+                            }
+                        }
+                        else
+                        {
+                            // Nếu không phải Broadcast, đây chính là câu trả lời ta đang chờ (VD: SUCCESS|...)
+                            finalResponse = decrypted;
+                        }
+                    }
+
+                    return finalResponse;
                 }
                 finally
                 {
@@ -197,18 +225,25 @@ namespace CafeClient
                                 int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length, token);
                                 if (bytesRead > 0)
                                 {
-                                    string message = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim('\0', '\r', '\n', '\uFEFF', '\u200B');
+                                    string rawMessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
-                                    // Thêm dòng này để giải mã gói tin Broadcast từ Server ném về
-                                    message = SecurityHelper.Decrypt(message);
+                                    // Cắt các gói tin dính chùm
+                                    string[] packets = rawMessage.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-                                    Console.WriteLine($"[SocketClient] StartListening received: {message}");
-                                    // Kích hoạt sự kiện để Form giao diện cập nhật
-                                    OnMessageReceived?.Invoke(message);
-
-                                    if (message.StartsWith("AUTO_PAID|"))
+                                    foreach (string packet in packets)
                                     {
-                                        OnAutoPaidReceived?.Invoke(message);
+                                        string cleanPacket = packet.Trim('\0', '\r', '\uFEFF', '\u200B');
+                                        string decrypted = SecurityHelper.Decrypt(cleanPacket);
+
+                                        Console.WriteLine($"[SocketClient] StartListening received: {decrypted}");
+
+                                        // Kích hoạt sự kiện để Form giao diện cập nhật
+                                        OnMessageReceived?.Invoke(decrypted);
+
+                                        if (decrypted.StartsWith("AUTO_PAID|"))
+                                        {
+                                            OnAutoPaidReceived?.Invoke(decrypted);
+                                        }
                                     }
                                 }
                                 else
