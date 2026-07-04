@@ -241,6 +241,11 @@ namespace CafeServer.Services
                                     IsRead = false
                                 };
 
+                                // ====================================================================
+                                // [SỬA Ở ĐÂY]: BẮT BUỘC PHẢI LƯU XUỐNG DB ĐỂ TIN NHẮN CÓ ID THẬT
+                                // ====================================================================
+                                await ServiceManager.User.SaveMessageToDatabase(systemMsg);
+
                                 // 6.5 Phát tin nhắn realtime cho mọi client đang kết nối (ĐẨY VÀO LUỒNG NGẦM)
                                 string normalizedJson = JsonConvert.SerializeObject(systemMsg);
 
